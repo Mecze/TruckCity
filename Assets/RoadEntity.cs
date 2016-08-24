@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public enum RoadDirection { EW, NE, NEWS, NS, NW, SE, SW  }
+
 
 public class RoadEntity : MonoBehaviour {
     #region Atributos
@@ -204,6 +204,12 @@ public class RoadEntity : MonoBehaviour {
     [SerializeField]
     Renderer roadRenderer;
 
+    /// <summary>
+    /// Los sprites de los puntos cardinales
+    /// </summary>
+    [SerializeField]
+    GameObject[] sprites;
+
 
     #endregion
     #endregion
@@ -213,6 +219,7 @@ public class RoadEntity : MonoBehaviour {
     #region RecordPosition
     void Awake()
     {
+        RecalculateSprites();
         RecordPosition();
     }
     
@@ -248,13 +255,14 @@ public class RoadEntity : MonoBehaviour {
             direction = possibleRotations[0];
             possibleRotations.RemoveAt(0);
             possibleRotations.Add(direction);
+            RecalculateSprites();
         }
     }
 
     #endregion
 
 
-    #region Change ROAD material!
+    #region Change ROAD material and Sprites
     /// <summary>
     /// Cambia el material de la carretera
     /// </summary>
@@ -266,6 +274,93 @@ public class RoadEntity : MonoBehaviour {
         //Material[] currentMats = roadRenderer.materials;
 
     }
+
+    /// <summary>
+    /// Selecciona que Sprites deben estar activados en función de si la carretera se puede mover.
+    /// </summary>
+    void RecalculateSprites() {
+        if (possibleRotations.Count <= 1)
+        {
+            TurnOffAllSprites();
+            return;
+        }
+        TurnOffAllSprites();
+        RoadDirection currentState = direction;
+        RoadDirection nextState = possibleRotations[0];
+        TruckDirection[] differences;
+        TruckDirection[] equals = currentState.Compare(nextState, out differences, true);
+        List<TruckDirection> changed = new List<TruckDirection>();
+        foreach (TruckDirection dir in differences)
+        {
+            if (dir != TruckDirection.None)
+            {
+                TurnOnArrow(dir);
+                changed.Add(dir);
+            }
+        }
+        foreach (TruckDirection dir1 in equals)
+        {
+            if (dir1 != TruckDirection.None)
+            {
+                TurnOnEquals(dir1);
+                changed.Add(dir1);
+            }
+        }
+        if (possibleRotations.Count <= 2) return;
+        RoadDirection AfterState = possibleRotations[1];
+        equals = nextState.Compare(AfterState, out differences, true);
+        foreach (TruckDirection dir in differences)
+        {
+            if (dir != TruckDirection.None && (changed.Contains(dir) == false))
+            {
+                TurnOnArrowTrans(dir);
+                changed.Add(dir);
+            }
+        }
+
+    }
+
+    void TurnOffAllSprites()
+    {
+        foreach (GameObject go in sprites)
+        {
+            go.GetComponent<SpriteRenderer>().enabled = false;
+            go.GetComponent<Animator>().SetBool("Moving", false);
+        }
+    }
+    void TurnOffSprite(TruckDirection dir)
+    {
+        GameObject go = sprites[(int)dir-1];
+        go.GetComponent<SpriteRenderer>().enabled = false;
+        go.GetComponent<Animator>().SetBool("Moving", false);
+    }
+    void TurnOnArrow(TruckDirection dir)
+    {
+        GameObject go = sprites[(int)dir-1];
+        SpriteRenderer ren = go.GetComponent<SpriteRenderer>();
+        ren.enabled = true;
+        ren.sprite = (Sprite)Resources.Load(GameConfig.s.IMGPath + "Arrow", typeof(Sprite));
+        go.GetComponent<Animator>().SetBool("Moving", true);
+    }
+    void TurnOnArrowTrans(TruckDirection dir)
+    {
+        GameObject go = sprites[(int)dir - 1];
+        SpriteRenderer ren = go.GetComponent<SpriteRenderer>();
+        ren.enabled = true;
+        ren.sprite = (Sprite)Resources.Load(GameConfig.s.IMGPath + "ArrowTrans", typeof(Sprite));
+        go.GetComponent<Animator>().SetBool("Moving", false);
+    }
+    void TurnOnEquals(TruckDirection dir)
+    {
+        GameObject go = sprites[(int)dir - 1];
+        SpriteRenderer ren = go.GetComponent<SpriteRenderer>();
+        ren.enabled = true;
+        ren.sprite = (Sprite)Resources.Load(GameConfig.s.IMGPath + "Equals",typeof(Sprite));
+        go.GetComponent<Animator>().SetBool("Moving", false);
+    }
+
+
+
 
     #endregion
 
@@ -399,3 +494,225 @@ public class RoadEntity : MonoBehaviour {
 
 
 }
+
+
+
+public enum RoadDirection { EW, NE, NEWS, NS, NW, SE, SW }
+#region extensions
+
+
+
+public static class RoadDirectionExtensions
+{
+    /// <summary>
+    /// Compara dos "RoadDirection" Devuelve las similitudes en array de Truckdirection
+    /// mediante el RETURN.
+    /// Devuelve las diferencias en array de TruckDirection mediante out.
+    /// Ambas arrays varian entre 0 y 2 elementos
+    /// </summary>
+    /// <param name="thisRoad">selfroad</param>
+    /// <param name="otherRoad">La otra carretera a comparar</param>
+    /// <param name="diferences">OUT de array de TruckDirection</param>
+    /// <param name="focusDifferencesOnOtherRoad">Si es false, el out "differences" devuelve=> ¿Que tiene esta carretera que no tenga "otherRoad"?. Si es true => ¿Que tiene la otra carretera que no tenga esta?</param>
+    /// <returns>array de TruckDirection</returns>
+    public static TruckDirection[] Compare (this RoadDirection thisRoad, RoadDirection otherRoad, out TruckDirection[] diferences, bool focusDifferencesOnOtherRoad = false)
+    {
+        bool b = focusDifferencesOnOtherRoad; //alias
+        //Arrays temporales a llenar
+        TruckDirection[] diff = new TruckDirection[2];
+        TruckDirection[] result = new TruckDirection[2];
+        //contadores para las arrays
+        int i = 0; //result
+        int e = 0; //diff
+        
+        //MainLoop de 1 a 4. el ENUM TruckDirection puede ser casteado a INT (y viceversa)
+        //Nota: Enum Truckdirection. None = 0, N = 1, E = 2, W = 3, S = 4.
+        for (int index = 1; index <= 4; index++)
+        {
+            //Sacamos la dirección que vamos a comprobar en este loop:
+            TruckDirection dir = (TruckDirection)index; //Cast de int a TruckDirection
+
+            //La comprobamos!
+
+            //Si ambos tienen la direción, guaramos la similitud y se acaba el loop
+            if (thisRoad.HasDirection(dir) && otherRoad.HasDirection(dir))
+            {
+                result[i] = dir;
+                i++;
+            }
+            else //Si no comprobamos si alguno de los dos tiene esa dirección
+            {
+                //Nota: b es el focus. 
+                //Sobre Que carretera queremos devolver las diferencias
+                // !b = esta carretera
+                // b = la otra carretera
+                if (thisRoad.HasDirection(dir) && !b)
+                {
+                    diff[e] = dir;
+                    e++;
+                }
+                if (otherRoad.HasDirection(dir) && b)
+                {
+                    diff[e] = dir;
+                    e++;
+                }
+            }
+        }
+        //End of Main Loop
+
+        //reconstruimos ambas arrays y devolvemos.
+        TruckDirection[] resultd = new TruckDirection[result.Length];
+        for (int x = 0; x < result.Length; x++)
+        {
+            resultd[x] = result[x];
+        }
+
+        diferences = new TruckDirection[diff.Length];
+        for (int y = 0; y < diff.Length; y++)
+        {
+            diferences[y] = diff[y];
+        }
+        return resultd;
+    }
+
+
+    /// <summary>
+    /// Consulta si esta carretera tiene la salida indicada
+    /// </summary>
+    /// <param name="direction"></param>
+    /// <returns></returns>
+    public static bool HasDirection(this RoadDirection roadDirection, TruckDirection direction)
+    {
+        bool r = false;
+        switch (direction)
+        {
+            case TruckDirection.N:
+                r = roadDirection.HasN();
+            break;
+            case TruckDirection.E:
+                r = roadDirection.HasE();
+                break;
+            case TruckDirection.W:
+                r = roadDirection.HasW();
+                break;
+            case TruckDirection.S:
+                r = roadDirection.HasS();
+                break;
+            case TruckDirection.None:
+                r = true;
+                break;
+            default:
+                r = false;
+                break;
+        }
+        return r;
+    }
+    
+    public static bool HasN(this RoadDirection roadDirection)
+    {
+        bool r = false;
+        switch (roadDirection)
+        {        
+            case RoadDirection.NE:
+                    r = true;
+                break;
+            case RoadDirection.NEWS:
+                    r = true;
+                    break;
+            case RoadDirection.NS:
+                    r = true;
+                    break;
+            case RoadDirection.NW:
+                    r = true;
+                    break;
+        
+            default:
+                    r = false;
+                    break;
+        }
+        return r;
+
+    }
+    public static bool HasW(this RoadDirection roadDirection)
+    {
+        bool r = false;
+        switch (roadDirection)
+        {
+            case RoadDirection.EW:
+                r = true;
+                break;
+            
+            case RoadDirection.NEWS:
+                r = true;
+                break;
+           
+            case RoadDirection.NW:
+                r = true;
+                break;
+            
+            case RoadDirection.SW:
+                r = true;
+                break;
+
+            default:
+                r = false;
+                break;
+        }
+        return r;
+    }
+    public static bool HasE(this RoadDirection roadDirection)
+    {
+        bool r = false;
+
+        switch (roadDirection)
+        {
+            case RoadDirection.EW:
+                    r = true;
+                break;
+            case RoadDirection.NE:
+                r = true;
+
+                break;
+            case RoadDirection.NEWS:
+                r = true;
+                break;
+            
+            case RoadDirection.SE:
+                r = true;
+                break;
+            
+            default:
+                r = false;
+                break;
+        }
+        return r;
+    }
+    public static bool HasS(this RoadDirection roadDirection)
+    {
+        bool r = false;
+
+        switch (roadDirection)
+        {  
+            case RoadDirection.NEWS:
+                r = true;
+                break;
+            case RoadDirection.NS:
+                r = true;
+                break;           
+            case RoadDirection.SE:
+                r = true;
+                break;
+            case RoadDirection.SW:
+                r = true;
+                break;
+            default:
+                r = false;
+                break;
+        }
+        return r;
+    }
+
+
+
+}
+#endregion

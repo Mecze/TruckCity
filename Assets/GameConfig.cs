@@ -42,6 +42,7 @@ public class GameConfig : MonoBehaviour {
     #endregion
 
     public string materialsPath;
+    public string IMGPath;
 
 
 }

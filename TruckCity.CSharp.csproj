@@ -67,6 +67,7 @@
     <Compile Include="Assets\GameConfig.cs" />
     <Compile Include="Assets\MapController.cs" />
     <Compile Include="Assets\MouseController.cs" />
+    <Compile Include="Assets\OtherLaneChecker.cs" />
     <Compile Include="Assets\RoadCollider.cs" />
     <Compile Include="Assets\RoadEntity.cs" />
     <Compile Include="Assets\TruckEntity.cs" />
