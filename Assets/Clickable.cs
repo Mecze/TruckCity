@@ -19,7 +19,7 @@ public class Clickable : MonoBehaviour {
     {
         if (g != gameObject) return;
         BroadcastMessage("OnClick");
-        Debug.Log(gameObject.name + " Got Clicked!");
+        //Debug.Log(gameObject.name + " Got Clicked!");
 
 
     }

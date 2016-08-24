@@ -1,14 +1,12 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public enum RoadDirection { EW, NE, NEWS, NS, NW, SE, SW  }
 
-public class RoadID : MonoBehaviour {
+public class RoadEntity : MonoBehaviour {
     #region Atributos
-    /// <summary>
-    /// La dirección de este RoadID (EW, NE, NW...)
-    /// </summary>
-    public RoadDirection direction;
+    
 
     /// <summary>
     /// Posición del tipo "Vector3Int"
@@ -170,14 +168,44 @@ public class RoadID : MonoBehaviour {
     }
     #endregion
 
+    #region Propiedades y atributos de rotación
 
-
-    //WIP
-    public bool selectable;
+    /// <summary>
+    /// La dirección ACTUAL de este RoadID (EW, NE, NW...)
+    /// </summary>
+    [Header("Rotaciones")]
     [SerializeField]
-    SpriteRenderer selectableSprite;
-    // /WIP
+    RoadDirection _direction;
+    public RoadDirection direction
+    {
+        get
+        {
+            return _direction;
+        }
 
+        set
+        {
+            _direction = value;
+            ChangeMaterial(_direction);
+        }
+    }
+
+
+    /// <summary>
+    /// Posibles rotaciones de esta carretera
+    /// </summary>    
+    [SerializeField]
+    List<RoadDirection> possibleRotations;
+
+    /// <summary>
+    /// Se trata del componente que contiene el material del HIJO de este objeto
+    /// Es el que muestra la imagen de la carretera (material)
+    /// </summary>
+    [SerializeField]
+    Renderer roadRenderer;
+
+
+    #endregion
     #endregion
 
 
@@ -215,15 +243,31 @@ public class RoadID : MonoBehaviour {
 
     void OnClick()
     {
-
+        if (possibleRotations.Count > 1)
+        {
+            direction = possibleRotations[0];
+            possibleRotations.RemoveAt(0);
+            possibleRotations.Add(direction);
+        }
     }
 
     #endregion
 
 
+    #region Change ROAD material!
+    /// <summary>
+    /// Cambia el material de la carretera
+    /// </summary>
+    /// <param name="dir"></param>
+    void ChangeMaterial(RoadDirection dir)
+    {
+        Material mat = (Material)Resources.Load(GameConfig.s.materialsPath + roadDirToString(dir));
+        roadRenderer.material = mat;
+        //Material[] currentMats = roadRenderer.materials;
 
+    }
 
-
+    #endregion
 
     #region utils
 
@@ -235,7 +279,7 @@ public class RoadID : MonoBehaviour {
     /// <param name="road1"></param>
     /// <param name="road2"></param>
     /// <returns></returns>
-    public static bool CheckConnection(RoadID road1, RoadID road2)
+    public static bool CheckConnection(RoadEntity road1, RoadEntity road2)
     {
         bool r = true; //Presuponemos "true"
         //en el "out" de CheckAdjacencyWith se devuelve una dirección
@@ -261,10 +305,6 @@ public class RoadID : MonoBehaviour {
 
 
         return r;
-
-
-
-
     }
 
 
@@ -301,6 +341,58 @@ public class RoadID : MonoBehaviour {
         return result;
 
     }
+
+    public const string EW = "EW";
+    public const string NS = "NS";
+    public const string SE = "SE";
+    public const string SW = "SW";
+    public const string NW = "NW";
+    public const string NE = "NE";
+    public const string NEWS= "NEWS";
+
+    /// <summary>
+    /// Devuelve un string que equivale a la dirección de una carretera
+    /// </summary>
+    /// <param name="road">Lacarretera</param>
+    /// <returns>Un string</returns>
+    public static string roadDirToString(RoadDirection road)
+    {
+        string s;
+        switch (road)
+        {
+            case RoadDirection.EW:
+                s = EW;
+                break;
+            case RoadDirection.NE:
+                s = NE;
+                break;
+            case RoadDirection.NEWS:
+                s = NEWS;
+                break;
+            case RoadDirection.NS:
+                s = NS;
+                break;
+            case RoadDirection.NW:
+                s = NW;
+                break;
+            case RoadDirection.SE:
+                s = SE;
+                break;
+            case RoadDirection.SW:
+                s = SW;
+                break;
+            default:
+                s = "";
+                break;
+        }
+
+
+
+        return s;
+
+    }
+
+
     #endregion
 
 

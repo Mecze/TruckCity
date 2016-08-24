@@ -3,7 +3,7 @@ using System.Collections;
 
 public class RoadCollider : MonoBehaviour {
     [SerializeField]
-    RoadID myRoadId;
+    RoadEntity myRoadEntity;
     [SerializeField]
     RoadDirection[] roadDirectionCondition;
     [SerializeField]
@@ -24,7 +24,7 @@ public class RoadCollider : MonoBehaviour {
 
         for (int i = 0; i < numberOfConditions; i++)
         {
-            if (myRoadId.direction == roadDirectionCondition[i])
+            if (myRoadEntity.direction == roadDirectionCondition[i])
             {
                 if (truckDirectionCondition[i] == te.direction)
                 {
@@ -35,7 +35,7 @@ public class RoadCollider : MonoBehaviour {
         if (border)
         {
             TruckDirection direction = te.direction;
-            RoadID NextTile;
+            RoadEntity NextTile;
             if (gameObject.name == "TopCollider")
                 if (direction != TruckDirection.N) return;
             if (gameObject.name == "BottomCollider")
@@ -45,15 +45,15 @@ public class RoadCollider : MonoBehaviour {
             if (gameObject.name == "RightCollider")
                 if (direction != TruckDirection.E) return;
 
-            if (MapController.s.CheckNextTile(myRoadId.position, direction, out NextTile))
+            if (MapController.s.CheckNextTile(myRoadEntity.position, direction, out NextTile))
             {
-                bool b = RoadID.CheckConnection(myRoadId, NextTile);
-                if (!b) te.ChangeDirection(RoadID.ReverseDirection(te.direction), Turn.Reverse);
+                bool b = RoadEntity.CheckConnection(myRoadEntity, NextTile);
+                if (!b) te.ChangeDirection(RoadEntity.ReverseDirection(te.direction), Turn.Reverse);
             }
             else
             {
                 //Da la vuelta al camion
-                te.ChangeDirection(RoadID.ReverseDirection(te.direction), Turn.Reverse);
+                te.ChangeDirection(RoadEntity.ReverseDirection(te.direction), Turn.Reverse);
             }
 
 
