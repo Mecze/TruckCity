@@ -24,7 +24,7 @@ public class RoadCollider : MonoBehaviour {
 
         for (int i = 0; i < numberOfConditions; i++)
         {
-            if (myRoadId.roadID == roadDirectionCondition[i])
+            if (myRoadId.direction == roadDirectionCondition[i])
             {
                 if (truckDirectionCondition[i] == te.direction)
                 {
@@ -45,7 +45,7 @@ public class RoadCollider : MonoBehaviour {
             if (gameObject.name == "RightCollider")
                 if (direction != TruckDirection.E) return;
 
-            if (MapController.s.CheckNextTile(myRoadId.pos, direction, out NextTile))
+            if (MapController.s.CheckNextTile(myRoadId.position, direction, out NextTile))
             {
                 bool b = RoadID.CheckConnection(myRoadId, NextTile);
                 if (!b) te.ChangeDirection(RoadID.ReverseDirection(te.direction), Turn.Reverse);

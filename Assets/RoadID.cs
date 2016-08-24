@@ -4,7 +4,16 @@ using System.Collections;
 public enum RoadDirection { EW, NE, NEWS, NS, NW, SE, SW  }
 
 public class RoadID : MonoBehaviour {
-    public RoadDirection roadID;
+    #region Atributos
+    /// <summary>
+    /// La dirección de este RoadID (EW, NE, NW...)
+    /// </summary>
+    public RoadDirection direction;
+
+    /// <summary>
+    /// Posición del tipo "Vector3Int"
+    /// </summary>
+    public Vector3Int position;
 
     #region Propiedades HAS<Direction>
     //estas propiedades indican si una carretera tiene una salida hacia
@@ -16,7 +25,7 @@ public class RoadID : MonoBehaviour {
     {
         get
         {
-            switch (roadID)
+            switch (direction)
             {
                 case RoadDirection.EW:
                     _HasW = true;
@@ -47,7 +56,7 @@ public class RoadID : MonoBehaviour {
     {
         get
         {
-            switch (roadID)
+            switch (direction)
             {
                 case RoadDirection.EW:
                     _HasE = true;
@@ -75,7 +84,7 @@ public class RoadID : MonoBehaviour {
     {
         get
         {
-            switch (roadID)
+            switch (direction)
             {
                 
                 case RoadDirection.NEWS:
@@ -105,7 +114,7 @@ public class RoadID : MonoBehaviour {
     {
         get
         {
-            switch (roadID)
+            switch (direction)
             {               
                 case RoadDirection.NE:
                     _HasN = true;
@@ -162,41 +171,61 @@ public class RoadID : MonoBehaviour {
     #endregion
 
 
-    public Vector3Int pos;
-    
 
-
+    //WIP
     public bool selectable;
     [SerializeField]
     SpriteRenderer selectableSprite;
+    // /WIP
+
+    #endregion
 
 
 
+    #region RecordPosition
     void Awake()
     {
         RecordPosition();
     }
-
+    
+    /// <summary>
+    /// Al iniciar el juego registra la posición de este bloque en el mapa.
+    /// </summary>
     void RecordPosition()
     {
         if (gameObject.name == "CubeRoadSE" || gameObject.name == "CubeRoadNS (2)")
         {
             Debug.Log("asdf");
         }
-        pos = new Vector3Int();
-        pos.x = Mathf.RoundToInt(transform.position.x);
-        pos.y = Mathf.RoundToInt(transform.position.y);
-        pos.z = Mathf.RoundToInt(transform.position.z);
+        position = new Vector3Int();
+        position.x = Mathf.RoundToInt(transform.position.x);
+        position.y = Mathf.RoundToInt(transform.position.y);
+        position.z = Mathf.RoundToInt(transform.position.z);
 
-        MapController.s.mapGO.Add(pos, gameObject);
-        MapController.s.mapRoad.Add(pos, this);
+        MapController.s.mapGO.Add(position, gameObject);
+        MapController.s.mapRoad.Add(position, this);
 
         //Debug.Log("Registrado: " + transform.position.x + ", " + transform.position.z + " en " + pos.x + ", " + pos.z);
 
 
     }
+    #endregion
 
-    
+    #region OnClick!
+
+    void OnClick()
+    {
+
+    }
+
+    #endregion
+
+
+
+
+
+
+    #region utils
 
     /// <summary>
     /// Devuelve true si hay conexi�n entre ambas carreteras
@@ -214,13 +243,13 @@ public class RoadID : MonoBehaviour {
         //Además devuelve True si es adyacente o false si no lo es
         //Si no están Adyacentes hacemos return false;
         TruckDirection from1to2;
-        if (!road1.pos.CheckAdjacencyWith(road2.pos, out from1to2)) return false;
+        if (!road1.position.CheckAdjacencyWith(road2.position, out from1to2)) return false;
         //Igual en la otra dirección
         TruckDirection from2to1;
-        if (!road2.pos.CheckAdjacencyWith(road1.pos, out from2to1)) return false; ;
+        if (!road2.position.CheckAdjacencyWith(road1.position, out from2to1)) return false; ;
 
         //Si llegamos hasta aquí, estan adyacentes y ambos "fromXtoX" tienen información
-        
+
         //CheckAdjacency devuelve "true" y el out en "TruckDirection.None" (en ambos)
         //Si se trata, casualmente, de la misma casilla, devolvemos true automaticamente
         if (from1to2 == TruckDirection.None || from2to1 == TruckDirection.None) return true;
@@ -229,18 +258,17 @@ public class RoadID : MonoBehaviour {
         if (!road1.HasDirection(from1to2)) r = false;
         //Si road2 no posee la dirección hasta road1, se falla el check
         if (!road2.HasDirection(from2to1)) r = false;
-               
+
 
         return r;
 
 
 
-        
+
     }
 
 
 
-    #region utils
     /// <summary>
     /// Devuelve el punto cardinal contrario (Entra sur, sale norte)
     /// </summary>

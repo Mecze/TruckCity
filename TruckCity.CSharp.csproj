@@ -63,7 +63,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Clickable.cs" />
     <Compile Include="Assets\MapController.cs" />
+    <Compile Include="Assets\MouseController.cs" />
     <Compile Include="Assets\RoadCollider.cs" />
     <Compile Include="Assets\RoadID.cs" />
     <Compile Include="Assets\TruckEntity.cs" />
