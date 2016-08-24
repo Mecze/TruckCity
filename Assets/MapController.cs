@@ -45,17 +45,17 @@ public class MapController : MonoBehaviour {
 
 
     public Dictionary<Vector3Int, GameObject> mapGO;
-    public Dictionary<Vector3Int, RoadID> mapRoad;
+    public Dictionary<Vector3Int, RoadEntity> mapRoad;
  
 
     void Awake()
     {
         mapGO = new Dictionary<Vector3Int, GameObject>();
-        mapRoad = new Dictionary<Vector3Int, RoadID>();
+        mapRoad = new Dictionary<Vector3Int, RoadEntity>();
     }
 
 
-    public bool CheckNextTile(Vector3Int pos, TruckDirection dir, out RoadID roadID)
+    public bool CheckNextTile(Vector3Int pos, TruckDirection dir, out RoadEntity roadID)
     {
         roadID = null;
         Vector3Int des = new Vector3Int(pos.x,pos.y,pos.z);

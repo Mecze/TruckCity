@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
-public enum TruckDirection { N,E,W,S,None}
+public enum TruckDirection { None=0,N=1,E=2,W=3,S=4}
 
 public enum Turn { Close, Wide, Reverse }
 
@@ -10,6 +11,9 @@ public class TruckEntity : MonoBehaviour
 
     public TruckDirection direction;
     public bool Moving = true;
+
+
+
 
     [Header("Curves Offset Position")]
     [SerializeField]
@@ -31,6 +35,18 @@ public class TruckEntity : MonoBehaviour
     //[HideInInspector]
     [SerializeField]
     float _currentSpeed = 0f;
+
+    [Header("Collision with other Trucks")]
+    [SerializeField]
+    float ignoreCollisionWhenTurningTime = 0.2f;
+    [HideInInspector]
+    public bool ignoringCollisionsBecauseOfTurning = false;
+    float ignoreCollisionTimer = 0f;
+    [HideInInspector]
+    public int otherLaneTrucks = 0;
+    bool waitingToOtherLaneToClearToReverse = false;
+    
+
 
     public float currentSpeed
     {
@@ -84,6 +100,13 @@ public class TruckEntity : MonoBehaviour
 
     void Movement()
     {
+        if (waitingToOtherLaneToClearToReverse && otherLaneTrucks == 0)
+        {
+            waitingToOtherLaneToClearToReverse = false;
+            Moving = true;
+            ChangeDirection(RoadEntity.ReverseDirection(direction), Turn.Reverse);
+        }
+
         if (Moving && Colliding == false)
         {
             currentSpeed += acceleration * Time.deltaTime;            
@@ -93,6 +116,15 @@ public class TruckEntity : MonoBehaviour
         if (Colliding == true || Moving == false)
         {
             currentSpeed = 0f;
+        }
+        if (ignoringCollisionsBecauseOfTurning || ignoreCollisionTimer > 0f)
+        {
+            ignoreCollisionTimer -= Time.deltaTime;
+            if (ignoreCollisionTimer <= 0f)
+            {
+                ignoreCollisionTimer = 0f;
+                ignoringCollisionsBecauseOfTurning = false;
+            }
         }
     }
 
@@ -202,6 +234,13 @@ public class TruckEntity : MonoBehaviour
 
     public void ChangeDirection(TruckDirection newdirection, Turn turn)
     {
+        if (turn == Turn.Reverse && otherLaneTrucks > 0)
+        {
+            waitingToOtherLaneToClearToReverse = true;
+            Moving = false;
+            return;       
+        }
+
         float rotateOffset = 0f;
         if (turn == Turn.Close) rotateOffset = rotateOffsetClose;
         if (turn == Turn.Wide) rotateOffset = rotateOffsetWide;
@@ -211,35 +250,35 @@ public class TruckEntity : MonoBehaviour
         switch (newdirection)
         {
             case TruckDirection.N:
-                r = RotateNorth;                
-                offset = new Vector3(0, 0, rotateOffset);
+                r = RotateNorth;                                
                 ClampAxis(true);
                 break;
             case TruckDirection.E:
-                r = RotateEast;
-                offset = new Vector3(rotateOffset, 0, 0);
+                r = RotateEast;                
                 ClampAxis(false);
                 break;
             case TruckDirection.W:
-                r = RotateWest;
-                offset = new Vector3(-rotateOffset, 0, 0);
+                r = RotateWest;                
                 ClampAxis(false);
                 break;
             case TruckDirection.S:
                 r = RotateSouth;
                 ClampAxis(true);
-                offset = new Vector3(0, 0, -rotateOffset);
-
-
                 break;
             default:
 
                 break;
         }
+        ignoringCollisionsBecauseOfTurning = true;
+        ignoreCollisionTimer = ignoreCollisionWhenTurningTime;
         direction = newdirection;
-        currentSpeed -= turnPenalty;        
-        transform.position = transform.position + offset;
+        currentSpeed -= turnPenalty;
         transform.rotation = Quaternion.Euler(r);
+        offset = transform.forward * rotateOffset;
+        transform.position = transform.position + offset;
+        
+        
+
 
 
     }

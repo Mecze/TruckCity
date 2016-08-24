@@ -11,8 +11,11 @@ public class TruckFrontChecker : MonoBehaviour {
     {
         if (other.tag == "Truck")
         {
-            mytruck.Colliding = true;
-            Debug.Log("Tocamientos");
+            if (!other.GetComponent<TruckEntity>().ignoringCollisionsBecauseOfTurning)
+            {
+                mytruck.Colliding = true;
+                Debug.Log("Tocamientos");
+            }
         }
 
     }
