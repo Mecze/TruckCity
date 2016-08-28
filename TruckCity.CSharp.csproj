@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Assets\Clickable.cs" />
     <Compile Include="Assets\GameConfig.cs" />
+    <Compile Include="Assets\GasMeter.cs" />
     <Compile Include="Assets\MapController.cs" />
     <Compile Include="Assets\MouseController.cs" />
     <Compile Include="Assets\OtherLaneChecker.cs" />

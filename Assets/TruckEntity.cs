@@ -45,7 +45,19 @@ public class TruckEntity : MonoBehaviour
     [HideInInspector]
     public int otherLaneTrucks = 0;
     bool waitingToOtherLaneToClearToReverse = false;
-    
+
+    [Header("Gas")]
+    [SerializeField]
+    float currentGas;
+    [SerializeField]
+    float maxGas;
+    [SerializeField]
+    float gasConsumption;
+    [SerializeField]
+    float depletedGasThreshold;
+    [SerializeField]
+    GasMeter gasMeter;
+
 
 
     public float currentSpeed
@@ -109,8 +121,11 @@ public class TruckEntity : MonoBehaviour
 
         if (Moving && Colliding == false)
         {
-            currentSpeed += acceleration * Time.deltaTime;            
+            currentSpeed += acceleration * Time.deltaTime;
+            
+            if (gasMeter.currentGas <= 0f && currentSpeed > depletedGasThreshold) currentSpeed = depletedGasThreshold;            
             this.transform.Translate(Vector3.forward * Time.deltaTime * currentSpeed);
+            ConsumeGas(currentSpeed);
 
         }
         if (Colliding == true || Moving == false)
@@ -126,6 +141,17 @@ public class TruckEntity : MonoBehaviour
                 ignoringCollisionsBecauseOfTurning = false;
             }
         }
+
+
+
+    }
+    void ConsumeGas(float thisspeed)
+    {
+        if (thisspeed < depletedGasThreshold) return;
+        currentGas -= Time.deltaTime * (gasConsumption);
+        if (currentGas <= 0) currentGas = 0;
+        gasMeter.currentGas = currentGas / maxGas;
+
     }
 
     #region change direction
@@ -250,19 +276,23 @@ public class TruckEntity : MonoBehaviour
         switch (newdirection)
         {
             case TruckDirection.N:
-                r = RotateNorth;                                
+                r = RotateNorth;
+                gasMeter.reverse = false;
                 ClampAxis(true);
                 break;
             case TruckDirection.E:
-                r = RotateEast;                
+                r = RotateEast;
+                gasMeter.reverse = true;     
                 ClampAxis(false);
                 break;
             case TruckDirection.W:
+                gasMeter.reverse = false;
                 r = RotateWest;                
                 ClampAxis(false);
                 break;
             case TruckDirection.S:
                 r = RotateSouth;
+                gasMeter.reverse = true;
                 ClampAxis(true);
                 break;
             default:
@@ -276,6 +306,7 @@ public class TruckEntity : MonoBehaviour
         transform.rotation = Quaternion.Euler(r);
         offset = transform.forward * rotateOffset;
         transform.position = transform.position + offset;
+        
         
         
 
