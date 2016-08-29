@@ -9,9 +9,11 @@ public class TruckFrontChecker : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Truck")
+        if (other.tag == "TruckCollider")
         {
-            if (!other.GetComponent<TruckEntity>().ignoringCollisionsBecauseOfTurning)
+            if (other.transform.parent.tag != "Truck") return;
+            bool b = other.transform.parent.GetComponent<TruckEntity>().ignoringCollisionsBecauseOfTurning;
+            if (!b)
             {
                 mytruck.Colliding = true;
                 Debug.Log("Tocamientos");
@@ -21,7 +23,7 @@ public class TruckFrontChecker : MonoBehaviour {
     }
         void OnTriggerExit(Collider other)
     {
-            if (other.tag == "Truck")
+            if (other.tag == "TruckCollider")
             {
                 mytruck.Colliding = false;
             }

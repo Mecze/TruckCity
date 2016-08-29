@@ -154,6 +154,13 @@ public class TruckEntity : MonoBehaviour
 
     }
 
+    public void RefilGas()
+    {
+        currentGas = maxGas;
+    }
+
+
+
     #region change direction
 
     public void CheckDirection(RoadDirection newroaddirection, Turn checkTurn)
