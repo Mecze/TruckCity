@@ -63,12 +63,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Cargo.cs" />
     <Compile Include="Assets\Clickable.cs" />
     <Compile Include="Assets\FloatingText.cs" />
     <Compile Include="Assets\GameConfig.cs" />
     <Compile Include="Assets\GameController.cs" />
     <Compile Include="Assets\GasMeter.cs" />
     <Compile Include="Assets\GasStation.cs" />
+    <Compile Include="Assets\LoadUnload.cs" />
     <Compile Include="Assets\MapController.cs" />
     <Compile Include="Assets\MouseController.cs" />
     <Compile Include="Assets\OtherLaneChecker.cs" />

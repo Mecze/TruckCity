@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public enum enumColor { Red = 0, Green = 1,Yellow = 2,Blue = 3 }
+
 
 public class GameController : MonoBehaviour {
     #region Singleton
@@ -48,8 +48,7 @@ public class GameController : MonoBehaviour {
 
     public float defaulYFloatingText;
 
-    public Color[] publicColors;
-
+    
 
 
 
@@ -91,15 +90,21 @@ public class GameController : MonoBehaviour {
     {
         GameObject go = (GameObject)GameObject.Instantiate(textGOPrefab,pos,Quaternion.identity);
         go.GetComponent<FloatingText>().phrase = text;
-        go.GetComponent<FloatingText>().myColor = publicColors[(int)publiccolor];
+        go.GetComponent<FloatingText>().myColor = GameConfig.s.publicColors[(int)publiccolor];
         go.GetComponent<FloatingText>().WakeMeUp();
 
     }
+
+
+    public float score = 0f;
+
 
     void Start()
     {
         //FloatingTextSpawn(4f, 3f, "Prueba", enumColor.Blue);
     }
+
+
 
 
 }
