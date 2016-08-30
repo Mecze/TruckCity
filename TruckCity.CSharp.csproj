@@ -63,26 +63,29 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Cargo.cs" />
-    <Compile Include="Assets\Clickable.cs" />
-    <Compile Include="Assets\FloatingText.cs" />
-    <Compile Include="Assets\GameConfig.cs" />
-    <Compile Include="Assets\GameController.cs" />
-    <Compile Include="Assets\GasMeter.cs" />
-    <Compile Include="Assets\GasStation.cs" />
-    <Compile Include="Assets\LoadUnload.cs" />
-    <Compile Include="Assets\MapController.cs" />
-    <Compile Include="Assets\MouseController.cs" />
-    <Compile Include="Assets\OtherLaneChecker.cs" />
-    <Compile Include="Assets\Resources\Scripts\Data\Profile.cs" />
-    <Compile Include="Assets\Resources\Scripts\Monobehaviour\sSaveLoad.cs" />
-    <Compile Include="Assets\RoadCollider.cs" />
-    <Compile Include="Assets\RoadEntity.cs" />
-    <Compile Include="Assets\Singleton.cs" />
-    <Compile Include="Assets\TruckEntity.cs" />
-    <Compile Include="Assets\TruckFrontChecker.cs" />
-    <Compile Include="Assets\Vector3Int.cs" />
-    <Compile Include="Assets\sProfileManager.cs" />
+    <Compile Include="Assets\Resources\Scripts\Cargo.cs" />
+    <Compile Include="Assets\Resources\Scripts\Clickable.cs" />
+    <Compile Include="Assets\Resources\Scripts\FloatingText.cs" />
+    <Compile Include="Assets\Resources\Scripts\GameConfig.cs" />
+    <Compile Include="Assets\Resources\Scripts\GameController.cs" />
+    <Compile Include="Assets\Resources\Scripts\GasMeter.cs" />
+    <Compile Include="Assets\Resources\Scripts\GasStation.cs" />
+    <Compile Include="Assets\Resources\Scripts\LoadUnload.cs" />
+    <Compile Include="Assets\Resources\Scripts\MapController.cs" />
+    <Compile Include="Assets\Resources\Scripts\MouseController.cs" />
+    <Compile Include="Assets\Resources\Scripts\OtherLaneChecker.cs" />
+    <Compile Include="Assets\Resources\Scripts\Profile.cs" />
+    <Compile Include="Assets\Resources\Scripts\RoadCollider.cs" />
+    <Compile Include="Assets\Resources\Scripts\RoadEntity.cs" />
+    <Compile Include="Assets\Resources\Scripts\Singleton.cs" />
+    <Compile Include="Assets\Resources\Scripts\TruckEntity.cs" />
+    <Compile Include="Assets\Resources\Scripts\TruckFrontChecker.cs" />
+    <Compile Include="Assets\Resources\Scripts\Vector3Int.cs" />
+    <Compile Include="Assets\Resources\Scripts\sMenu.cs" />
+    <Compile Include="Assets\Resources\Scripts\sMenuButton.cs" />
+    <Compile Include="Assets\Resources\Scripts\sProfileManager.cs" />
+    <Compile Include="Assets\Resources\Scripts\sSaveLoad.cs" />
+    <Compile Include="Assets\RoadEndCollider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
