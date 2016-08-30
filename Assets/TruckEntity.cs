@@ -58,6 +58,8 @@ public class TruckEntity : MonoBehaviour
     [SerializeField]
     GasMeter gasMeter;
 
+    [Header("Cargo")]
+    public Cargo myCargo;
 
 
     public float currentSpeed

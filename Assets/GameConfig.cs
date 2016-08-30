@@ -1,9 +1,13 @@
 using UnityEngine;
 using System.Collections;
 
+public enum enumColor { Red = 0, Green = 1, Yellow = 2, Blue = 3 }
+public enum CargoType { None = 0, Pink = 1, Brown = 2 }
+
 public class GameConfig : MonoBehaviour {
     #region Singleton
     private static GameConfig s_singleton = null;
+
 
     public static GameConfig singleton
     {
@@ -41,8 +45,25 @@ public class GameConfig : MonoBehaviour {
     }
     #endregion
 
+
+
     public string materialsPath;
     public string IMGPath;
+
+
+    public Color[] publicColors;
+
+    #region cargoFILE Path configuration
+    [Header("Cargo: filename of the Materials Config")]
+    public string cargoMaterialFileName;
+    [Header("Cargo: filename of the Sprite Config")]
+    public string cargoSpriteCommonFileName;
+    public string[] cargoSpriteFileName;
+
+    public Color[] cargoColors;
+
+
+    #endregion
 
 
 }
