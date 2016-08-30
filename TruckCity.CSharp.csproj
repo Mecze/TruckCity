@@ -74,11 +74,15 @@
     <Compile Include="Assets\MapController.cs" />
     <Compile Include="Assets\MouseController.cs" />
     <Compile Include="Assets\OtherLaneChecker.cs" />
+    <Compile Include="Assets\Resources\Scripts\Data\Profile.cs" />
+    <Compile Include="Assets\Resources\Scripts\Monobehaviour\sSaveLoad.cs" />
     <Compile Include="Assets\RoadCollider.cs" />
     <Compile Include="Assets\RoadEntity.cs" />
+    <Compile Include="Assets\Singleton.cs" />
     <Compile Include="Assets\TruckEntity.cs" />
     <Compile Include="Assets\TruckFrontChecker.cs" />
     <Compile Include="Assets\Vector3Int.cs" />
+    <Compile Include="Assets\sProfileManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
