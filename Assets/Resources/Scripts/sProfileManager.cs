@@ -49,15 +49,19 @@ public class sProfileManager : Singleton<sProfileManager> {
         //sSaveLoad.DeleteSavedGame(); //
         //---DEVELOPER
 
+
         //Inicializa el Perfil   (Se hace en el GET)
+#pragma warning disable 0219
         Profile pf = sProfileManager.ProfileSingleton;
+#pragma warning restore 0219
+        //pf no vale para nada realmente! (Por ahora)
 
         //Comprueba si hay una partida guardada... estabamos jugando
         //pf.currentlyPlayingLevel = sSaveLoad.CheckIfSavedGame();
 
         //Si estabamos jugando:
-       
-            StartCoroutine(ChangeScene(1)); //Vamos al menu
+
+        StartCoroutine(ChangeScene(1)); //Vamos al menu
         
         
         

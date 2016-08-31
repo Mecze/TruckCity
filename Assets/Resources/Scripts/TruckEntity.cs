@@ -60,8 +60,9 @@ public class TruckEntity : MonoBehaviour
 
     [Header("Cargo")]
     public Cargo myCargo;
-
+#pragma warning disable 0414
     int Debug = 0;
+#pragma warning restore 0414
 
 
     public float currentSpeed

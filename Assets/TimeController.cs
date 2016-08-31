@@ -2,11 +2,12 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using UnityEngine.UI;
 
 public class TimeController : MonoBehaviour {
     #region Declaración de Variables y Propiedades
-    [Header("Timer Settings")]    
-    [SerializeField]    
+    [Header("Timer Settings")]
+    [SerializeField]
     //Se trata de los minutos por donde empieza el Timer
     int minutes;
 
@@ -18,13 +19,15 @@ public class TimeController : MonoBehaviour {
     //Esto es solo para DEBUG (eliminar en versión final)
     //Es para saber en que "Step" va el timer en el inspector
     //Tambien habria que eliminar la parte de "out" de timer.UpdateTimer()
+#pragma warning disable 0414
     int debugStep;
+#pragma warning restore 0414
 
     [SerializeField]
     //Indica si el tiempo va hacia atras o hacia adelante
     bool decrement = true;
 
-    [Header("If !decrement. When to finish (0 = infinite)")]    
+    [Header("When to finish (0 = infinite)")]
 
     [SerializeField]
     //Indica cuando debe detenerse el temporizador. Si es 0 es infinito
@@ -37,7 +40,33 @@ public class TimeController : MonoBehaviour {
     public Timer timer;
     //Este es el tiempo ACTUAL.
     //TimeStep contiene: Minutos(int) y segundos(float) (ver mas abajo)
-    public TimeStep currentTime;
+    TimeStep _currentTime;
+    public TimeStep currentTime
+    {
+        get
+        {
+            return _currentTime;
+        }
+
+        set
+        {
+            if (_currentTime == null) _currentTime = new TimeStep(minutes, seconds);
+            if (_currentTime.minutes != value.minutes || _currentTime.seconds != value.seconds)
+            {
+                UpdateGUI(value);
+            }
+
+            _currentTime = value;
+        }
+    }
+
+
+    [Header("GUI")]
+    [SerializeField]
+    Text TimerGUI;
+
+    
+
     #endregion
 
     #region Metodos
@@ -75,6 +104,27 @@ public class TimeController : MonoBehaviour {
         //por defecto el timer esta parado, lo empezamos
        timer.StartTimer();
     }
+    /// <summary>
+    /// Actualiza la GUI (un text)
+    /// </summary>
+    /// <param name="thisTime"></param>
+    void UpdateGUI(TimeStep thisTime)
+    {
+        //Formatea el Texto y lo presenta.
+        double totalMiliSeconds = (thisTime.minutes * 60000) + (int)(seconds *1000);
+        TimeSpan ts = TimeSpan.FromMilliseconds(totalMiliSeconds);
+        //string s = ts.Milliseconds.ToString();
+        //s = s.Substring(0, 1);
+        string minutesString = ts.Minutes.ToString();
+        if (minutesString.Length <= 1) minutesString = "0" + minutesString;
+        string secondsString = ts.Seconds.ToString();
+        if (secondsString.Length <= 1) secondsString = "0" + secondsString;
+
+
+        TimerGUI.text = minutesString + ":" + secondsString;// + "." + s;
+
+    }
+
     #endregion
 }
 
