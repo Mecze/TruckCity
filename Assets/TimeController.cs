@@ -14,7 +14,7 @@ public class TimeController : MonoBehaviour {
     [SerializeField]
     //se trata de los segundos por empieza el Timer
     float seconds;
-
+    
     [SerializeField]
     //Esto es solo para DEBUG (eliminar en versión final)
     //Es para saber en que "Step" va el timer en el inspector
@@ -28,20 +28,17 @@ public class TimeController : MonoBehaviour {
     bool decrement = true;
 
     [Header("When to finish (0 = infinite)")]
-
+    
     [SerializeField]
     //Indica cuando debe detenerse el temporizador. Si es 0 es infinito
-    int finishAtMinutes;
-    [SerializeField]
-    //Indica cuando debe detenerse el temporizador. Si es 0 es infinito
-    float finishAtSeconds;
+    float finishAtSecond = 0f;
 
     //Mi Timer
     public Timer timer;
+
     //Este es el tiempo ACTUAL.
-    //TimeStep contiene: Minutos(int) y segundos(float) (ver mas abajo)
-    TimeStep _currentTime;
-    public TimeStep currentTime
+    float _currentTime;
+    public float currentTime
     {
         get
         {
@@ -50,22 +47,20 @@ public class TimeController : MonoBehaviour {
 
         set
         {
-            if (_currentTime == null) _currentTime = new TimeStep(minutes, seconds);
-            if (_currentTime.minutes != value.minutes || _currentTime.seconds != value.seconds)
+            
+            if (value != _currentTime)
             {
+                //Al cambiar currentTime, se actualiza el GUI
                 UpdateGUI(value);
             }
 
             _currentTime = value;
         }
     }
-
-
+    
     [Header("GUI")]
     [SerializeField]
-    Text TimerGUI;
-
-    
+    Text TimerGUI;   
 
     #endregion
 
@@ -87,12 +82,12 @@ public class TimeController : MonoBehaviour {
             currentTime = timer.UpdateTimer(Time.deltaTime, out debugStep);
         }
 
-        
+
         //debug
         //Esto es para ver como corre el temporizador en el inspector
         //Las dos lineas siguientes son innecesarias.
-        minutes = currentTime.minutes;
-        seconds = currentTime.seconds;
+        minutes = Mathf.FloorToInt(currentTime) / 60;
+        seconds = currentTime % 60f;
     }
 
     void Awake()
@@ -100,25 +95,26 @@ public class TimeController : MonoBehaviour {
         //Llamamos al CONTRUCTOR de la clase Timer y le pasamos los datos
         //Entre ellos:
         // Tiempo , la acción a ejecutar al terminar el timer, y el momento final de timer
-       timer = new Timer(minutes, seconds,() => { Debug.Log("Timer Finished"); }, finishAtMinutes, finishAtSeconds);
+       timer = new Timer(seconds,() => { Debug.Log("Timer Finished"); }, finishAtSecond);
         //por defecto el timer esta parado, lo empezamos
        timer.StartTimer();
     }
+    
+
     /// <summary>
     /// Actualiza la GUI (un text)
     /// </summary>
     /// <param name="thisTime"></param>
-    void UpdateGUI(TimeStep thisTime)
+    void UpdateGUI(float currentSeconds)
     {
-        //Formatea el Texto y lo presenta.
-        double totalMiliSeconds = (thisTime.minutes * 60000) + (int)(seconds *1000);
-        TimeSpan ts = TimeSpan.FromMilliseconds(totalMiliSeconds);
+        //Formatea el Texto y lo presenta.        
+        TimeSpan ts = TimeSpan.FromSeconds(currentSeconds);
         //string s = ts.Milliseconds.ToString();
-        //s = s.Substring(0, 1);
+        //s = s.Substring(0, 1);        
         string minutesString = ts.Minutes.ToString();
         if (minutesString.Length <= 1) minutesString = "0" + minutesString;
         string secondsString = ts.Seconds.ToString();
-        if (secondsString.Length <= 1) secondsString = "0" + secondsString;
+        if (secondsString.Length <= 1) secondsString = "0" + Mathf.FloorToInt(currentTime % 60f);
 
 
         TimerGUI.text = minutesString + ":" + secondsString;// + "." + s;
@@ -133,9 +129,8 @@ public class Timer
 {
     #region Declaración de Variables y Propiedades
     bool started; //si es false no corre el tiempo
-    //Tiempo actual
-    int minutes = 1;
-    float seconds = 1f;    
+    //Tiempo actual    
+    float currentTime = 1f; //EN SEGUNDOS!
     //Esto es el ultimo "int" por que pasamos ocn nuestro float (seconds)
     int lastStep = 0;
     //esto es el "int" en el que el Timer se acaba
@@ -147,33 +142,25 @@ public class Timer
     #endregion
     #region constructores
 
-    public Timer(int minute, float second, Action FinishedAction, int finMin = 0, float finSec = 0f)
+    public Timer(float second, Action FinishedAction, float finSec = 0f)
     {
-        if (minute < 0) minute = 0;
-        if (second < 0f) second = 0f;
-        //Si se alimenta el constructor con mas de 60 segundos:
-        while (second >= 60f)
-        {
-            second -= 60f;
-            minute += 1;
-        }
+        
+        if (second < 0f) second = 0f;       
+       
         //iniciamos el diccionaio
         ActionList = new Dictionary<int, Action>();
         
         //transformamos minutos y segundos de fin de Timer en Step:
-        finishStep = (finMin*60) + (int)finSec;
+        finishStep = (int)finSec;
 
         //Asignamos lo demas
         finishedAction = FinishedAction;
-        minutes = minute;
-        seconds = second;
+        
+        currentTime = second;
         //lastStep es igual al tiempo en el que estamos transformado en Step
-        lastStep = (int)seconds + (60 * minutes);
+        lastStep = (int)currentTime;
     }
-    public Timer(float second, Action action, float finSec)
-    {//otro constructor
-        new Timer(0, second, action, 0,finSec);
-    }
+   
     #endregion
 
     #region Metodos
@@ -185,46 +172,31 @@ public class Timer
     /// </summary>
     /// <param name="deltaTime">el tiempo que pasa (negativo para bajar, positivo para subir</param>
     /// <returns>El tiempo actual</returns>
-    public TimeStep UpdateTimer(float deltaTime, out int debugStep)
+    public float UpdateTimer(float deltaTime, out int debugStep)
     {
         //Si este Timer está parado no hacemos nada
         if (started == true)
         {
 
             //Actualizamos los segundos
-            seconds += deltaTime;
-
-            //Comprobación de si los segundos llegan a 60
-            while (seconds >= 60f)
-            {
-                minutes += 1;
-                seconds -= 60f;
-            }
+            currentTime += deltaTime;
+                        
 
             //Comprobación de si lo segundos llegan a 0
-            while (seconds <= 0f)
-            {
-                minutes -= 1;
-                if (minutes < 0f) //Si llega a 0 segundos , 0 minutos
-                {                    
-                    TimerFinished();
-                    seconds = 0f;
-                    minutes = 0;
-                    break;
-                }
-                else
-                {
-                    seconds += 60f;
-                }
+            while (currentTime <= 0f)
+            {                   
+                TimerFinished();
+                currentTime = 0f;                    
+                break; 
             }                        
 
             //esta parte llama a las acciones registradas en el diccionario 
             //Calculamos en que "Step" estamos 
             int thisStep = 0;
-            //Si subimos, miramos el Int mas pequeño, si bajamos el mas grande
+            // miramos el int mas pequeño
             //Es decir, el ultimo "int" por el que pasamos.
-            if (deltaTime >= 0f) thisStep = Mathf.FloorToInt(seconds) + (60 * minutes);            
-            if (deltaTime <= 0f) thisStep = Mathf.CeilToInt(seconds) + (60 * minutes);
+            thisStep = Mathf.FloorToInt(currentTime);            
+            
             
             while (thisStep < lastStep)
             {
@@ -245,9 +217,9 @@ public class Timer
         debugStep = lastStep;
 
         //Generamos el RETURN
-        TimeStep ts = new TimeStep(minutes, seconds);
+        return currentTime;
 
-        return ts;
+        
     }
     #endregion
 
@@ -308,24 +280,5 @@ public class Timer
     #endregion
 }
 
-public class TimeStep
-{
-    #region Declaración de Variables y Propiedades
-    public int minutes;
-    public float seconds;
-    #endregion
 
-    #region Constructors
-    public TimeStep(int minute, float second)
-    {
-        minutes = minute;
-        seconds = second;
-    }
-    public TimeStep() //por defecto
-    {
-        minutes = 0;
-        seconds = 0f;
-    }    
-    #endregion
-}
 
