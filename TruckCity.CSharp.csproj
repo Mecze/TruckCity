@@ -73,6 +73,7 @@
     <Compile Include="Assets\Resources\Scripts\LoadUnload.cs" />
     <Compile Include="Assets\Resources\Scripts\MapController.cs" />
     <Compile Include="Assets\Resources\Scripts\MouseController.cs" />
+    <Compile Include="Assets\Resources\Scripts\ObjectCloner.cs" />
     <Compile Include="Assets\Resources\Scripts\OtherLaneChecker.cs" />
     <Compile Include="Assets\Resources\Scripts\Profile.cs" />
     <Compile Include="Assets\Resources\Scripts\RoadCollider.cs" />

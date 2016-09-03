@@ -69,7 +69,7 @@ public class LoadUnload : MonoBehaviour {
         if (cargo.cargo == AcceptedCargo)
         {//Descargamos
             cargo.cargo = CargoType.None;
-            GameController.s.score += 1;//TODO, SCORE SYSTEM!
+            GameController.s.delivered += 1;//TODO, SCORE SYSTEM!
             GameController.s.FloatingTextSpawn(this.transform.position.x, this.transform.position.z, "Unload: +1 Score!", enumColor.Green);
         }
 

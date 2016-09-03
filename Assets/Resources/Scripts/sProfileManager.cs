@@ -1,9 +1,12 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
 public class sProfileManager : Singleton<sProfileManager> {
     
+
+
     static Profile _singleton = null;
     public static Profile ProfileSingleton
     {
@@ -37,6 +40,7 @@ public class sProfileManager : Singleton<sProfileManager> {
 
     public Profile defaultProfile;
 
+    public List<LevelConditions> levelconditions;
 
 
 

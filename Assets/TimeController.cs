@@ -5,6 +5,47 @@ using System;
 using UnityEngine.UI;
 
 public class TimeController : MonoBehaviour {
+    #region Singleton
+    private static TimeController s_singleton = null;
+
+    public static TimeController singleton
+    {
+        get
+        {
+            if (s_singleton == null)
+            {
+                s_singleton = FindObjectOfType<TimeController>();
+            }
+            if (s_singleton == null)
+            {
+                //Esto no deberia pasar nunca!
+                Debug.LogError("No Existe Singleton TimeController");
+            }
+            return s_singleton;
+        }
+        set { s_singleton = value; }
+    }
+    public static TimeController s
+    {
+        get
+        {
+            if (s_singleton == null)
+            {
+                s_singleton = FindObjectOfType<TimeController>();
+            }
+            if (s_singleton == null)
+            {
+                //Esto no deberia pasar nunca!
+                Debug.LogError("No Existe Singleton TimeController");
+            }
+            return s_singleton;
+        }
+        set { s_singleton = value; }
+    }
+
+
+    #endregion
+
     #region Declaración de Variables y Propiedades
     [Header("Timer Settings")]
     [SerializeField]
@@ -88,8 +129,9 @@ public class TimeController : MonoBehaviour {
         //Las dos lineas siguientes son innecesarias.
         minutes = Mathf.FloorToInt(currentTime) / 60;
         seconds = currentTime % 60f;
+        //UpdateGUI();
     }
-
+    /*
     void Awake()
     {
         //Llamamos al CONTRUCTOR de la clase Timer y le pasamos los datos
@@ -99,7 +141,17 @@ public class TimeController : MonoBehaviour {
         //por defecto el timer esta parado, lo empezamos
        timer.StartTimer();
     }
-    
+    */
+    public void SetTimer(float time, Action FinishAction, bool decrement, float finishAtSeconds =0f)
+    {
+        this.decrement = decrement;
+        this.finishAtSecond = finishAtSeconds;
+        seconds = time;
+        timer = new Timer(seconds, FinishAction, finishAtSecond);
+        timer.StartTimer();
+
+
+    }
 
     /// <summary>
     /// Actualiza la GUI (un text)
@@ -210,7 +262,11 @@ public class Timer
             }
 
             //Comprueba si ha llegado el final del timer
-            if (finishStep == lastStep) TimerFinished();
+            int i = 0;
+            if (deltaTime < 0f) i = -1;
+            if (finishStep + i == lastStep ) {
+                TimerFinished();
+            }
             
         }
         //Linea de Debug, para ver luego en el inspector por el step en el que estamos
@@ -279,6 +335,9 @@ public class Timer
     #endregion
     #endregion
 }
+
+
+
 
 
 
