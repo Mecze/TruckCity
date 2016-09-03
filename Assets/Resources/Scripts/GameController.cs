@@ -389,7 +389,7 @@ public class LevelConditions
         int i = 0;
         foreach (Quest q in _quests)
         {
-            if (q.completed && i < q.starRewards) i = q.starRewards;
+            if (q.completed) i += q.starRewards;
         }
         return i;
     }
