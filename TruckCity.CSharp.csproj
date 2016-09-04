@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Assets\Resources\Scripts\Cargo.cs" />
     <Compile Include="Assets\Resources\Scripts\Clickable.cs" />
+    <Compile Include="Assets\Resources\Scripts\Extension.cs" />
     <Compile Include="Assets\Resources\Scripts\FloatingText.cs" />
     <Compile Include="Assets\Resources\Scripts\GameConfig.cs" />
     <Compile Include="Assets\Resources\Scripts\GameController.cs" />

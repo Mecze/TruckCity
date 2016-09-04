@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
-public delegate void ScoreEvent(int increment);
+public delegate void ScoreEvent(CargoType cargo);
 public delegate void MoneyEvent(int increment);
 
 
@@ -72,23 +73,20 @@ public class GameController : MonoBehaviour {
     public LevelConditions myLevel;
 
     #region delivered (score)
-    private int _delivered = 0;
-    public int delivered
+    [SerializeField]
+    List<CargoDelivered> _cargosDelivered;
+    public List<CargoDelivered> CargosDelivered
     {
         get
         {
-            return _delivered;
+            return _cargosDelivered;
         }
 
         set
         {
-            int i = value - _delivered;
-            _delivered = value;
-            if (OnScore != null) OnScore(i);
-
+            _cargosDelivered = value;
         }
     }
-
 
     #endregion
     #region money
@@ -107,6 +105,8 @@ public class GameController : MonoBehaviour {
             if (OnMoneyGain != null) OnMoneyGain(i);
         }
     }
+
+   
     #endregion
     public static event ScoreEvent OnScore;
     public static event MoneyEvent OnMoneyGain;
@@ -168,6 +168,12 @@ public class GameController : MonoBehaviour {
 
     #region levelmanagement
 
+    public static void OnScoreCall(CargoType cargo)
+    {
+        if (OnScore != null) OnScore(cargo);
+    }
+
+
     void fillmylevel()
     {
         myLevel = ObjectCloner.Clone<LevelConditions>(sProfileManager.instance.levelconditions.Find(x => x.level == level));
@@ -196,10 +202,16 @@ public class GameController : MonoBehaviour {
     }
     #region levellisteners & endgameCheckers
     #region TimeAttackMode
-    void TimeAttackOnScoreListener(int increment)
+    void TimeAttackOnScoreListener(CargoType cargo)
         {
-            //Checkeamos si se cumplió alguna misión!
-            foreach (Quest q in myLevel.quests) q.CheckQuest(delivered, WinCondition.Delivered);
+        //Checkeamos si se cumplió alguna misión!
+        CargoDelivered CD = _cargosDelivered.Find(x => x.type == cargo);
+        if (CD == null) {
+            Debug.LogError("Cannot Find CargoType: " + cargo.ToString());
+            return;
+        }
+        int cargoamount = CD.delivered;
+        foreach (Quest q in myLevel.quests) q.CheckQuest(cargoamount, WinCondition.Delivered, cargo);
         //TODO: UpdateGUI;
     }
     void TimeAttackOnMoneyGainListener(int increment)
@@ -211,9 +223,26 @@ public class GameController : MonoBehaviour {
 
     void TimeAttackEndGameVictoryCheck()
     {
+
         int stars = myLevel.CheckQuests();
         //TODO: DO GUI
         Debug.Log("Has Conseguido " + stars.ToString() + " estrellas!");
+        //TODO: Victory Screen.
+
+
+
+        foreach (TruckEntity te in FindObjectsOfType<TruckEntity>()) te.Freeze();
+        foreach (RoadEntity re in FindObjectsOfType<RoadEntity>()) re.Freeze();
+
+        if (stars >0) sProfileManager.ProfileSingleton.profileLevels[level].beated = true;
+        sProfileManager.ProfileSingleton.profileLevels[level].stars = stars;
+        sSaveLoad.SaveProfile();
+
+
+        //TODO: LoadScene after VictoryScreen
+        SceneManager.LoadScene(1);
+
+
     }
     #endregion
     #endregion
@@ -361,10 +390,13 @@ public class LevelConditions
 
 
 
+
+
     #endregion
+       
 
     #region constructor
-    
+
     public LevelConditions(int level, LevelMode levelmode, int startingmoney, int startingtimer, List<Quest> listofquests, List<ConstantEffect> listofeffects = null)
     {
         _level = level;
@@ -380,6 +412,8 @@ public class LevelConditions
 
     #endregion
     
+
+
     /// <summary>
     /// Devuelve el numero de Estrellas conseguidas
     /// </summary>
@@ -452,11 +486,27 @@ public class Quest{
             _winAmount = value;
         }
     }
+    #endregion
 
+    #region CargoType
+    [SerializeField]
+    CargoType _cargoType;
+    public CargoType CargoType
+    {
+        get
+        {
+            return _cargoType;
+        }
 
-
+        set
+        {
+            _cargoType = value;
+        }
+    }
 
     #endregion
+
+
     [SerializeField]
     int _starRewards;
     public int starRewards
@@ -472,8 +522,10 @@ public class Quest{
         }
     }
 
-    #region constructor
     
+
+    #region constructor
+
     public Quest(WinCondition wincondition, int amount)
     {
         _winCondition = wincondition;
@@ -482,10 +534,16 @@ public class Quest{
 
     #endregion
 
-    public void CheckQuest(int amountToCheck, WinCondition TypeOfWinChecked)
+    public void CheckQuest(int amountToCheck, WinCondition TypeOfWinChecked, CargoType cargo = CargoType.None)
     {
         if (_winCondition != TypeOfWinChecked) return;
         if (_completed) return;
+        if (TypeOfWinChecked == WinCondition.Delivered)
+        {
+            if (_cargoType != cargo) return;
+        }
+
+
         if (amountToCheck >= _winAmount) _completed = true;
         
     }
@@ -574,5 +632,70 @@ public class ConstantEffect
         _amount = effectamount;
     }
     #endregion
+}
+
+
+
+
+[System.Serializable]
+public class CargoDelivered
+{
+    #region type
+    [SerializeField]
+    CargoType _type;
+    public CargoType type
+    {
+        get
+        {
+            return _type;
+        }
+
+        set
+        {
+            _type = value;
+        }
+    }
+    #endregion
+
+    #region UIShown
+    [SerializeField]
+    bool _uishown;
+    public bool uishown
+    {
+        get
+        {
+            return _uishown;
+        }
+
+        set
+        {
+            _uishown = value;
+        }
+    }
+
+
+    #endregion
+
+    #region delivered
+    [SerializeField]
+    int _delivered;
+    public int delivered
+    {
+        get
+        {
+            return _delivered;
+        }
+
+        set
+        {
+            _delivered = value;
+            GameController.OnScoreCall(_type);
+            
+        }
+    }
+
+    #endregion
+
+
 }
 

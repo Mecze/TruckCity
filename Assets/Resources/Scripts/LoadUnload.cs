@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 public class LoadUnload : MonoBehaviour {
 
@@ -68,8 +69,14 @@ public class LoadUnload : MonoBehaviour {
         if (!cargo.Loaded) return; //est� vacio!
         if (cargo.cargo == AcceptedCargo)
         {//Descargamos
-            cargo.cargo = CargoType.None;
-            GameController.s.delivered += 1;//TODO, SCORE SYSTEM!
+            CargoDelivered CD = GameController.s.CargosDelivered.Find(x => x.type == cargo.cargo);
+            if (CD == null)
+            {
+                Debug.LogError("UNLOAD: Cannot Find CargoType: " + cargo.ToString());
+                return;
+            }
+            CD.delivered += 1;
+            cargo.cargo = CargoType.None;            
             GameController.s.FloatingTextSpawn(this.transform.position.x, this.transform.position.z, "Unload: +1 Score!", enumColor.Green);
         }
 
