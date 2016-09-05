@@ -111,6 +111,13 @@ public class GameController : MonoBehaviour {
     public static event ScoreEvent OnScore;
     public static event MoneyEvent OnMoneyGain;
 
+    [SerializeField]
+    GameObject QuestSlatePrefabDelivered;
+    [SerializeField]
+    GameObject QuestSlatePrefabMoney;
+    [SerializeField]
+    GameObject QuestSlatePrefabTimer;
+
 
 
     void Awake()
@@ -177,9 +184,38 @@ public class GameController : MonoBehaviour {
     void fillmylevel()
     {
         myLevel = ObjectCloner.Clone<LevelConditions>(sProfileManager.instance.levelconditions.Find(x => x.level == level));
-        foreach (Quest q in myLevel.quests) q.completed = false;
+        foreach (Quest q in myLevel.quests) {
+            q.completed = false;
+            CreateGUISlate(q);
+
+        }
+
         //TODO: UPDATEGUI
         configthislevel();
+    }
+
+    void CreateGUISlate(Quest q)
+    {
+        GameObject go;
+        switch (q.winCondition)
+        {
+            case WinCondition.Delivered:
+                go = GameObject.Instantiate(QuestSlatePrefabDelivered);
+                QuestSlateDelivery qs = go.GetComponent<QuestSlateDelivery>();
+                qs.MyCargoDelivered = CargosDelivered.Find(x => x.type == q.CargoType);
+                qs.MyQuest = q;
+                break;
+            case WinCondition.Money:
+                go = GameObject.Instantiate(QuestSlatePrefabMoney);
+                break;
+            case WinCondition.Time:
+                go = GameObject.Instantiate(QuestSlatePrefabTimer);
+                break;
+            default:
+                break;
+        }
+        
+
     }
 
     void configthislevel()
@@ -212,7 +248,7 @@ public class GameController : MonoBehaviour {
         }
         int cargoamount = CD.delivered;
         foreach (Quest q in myLevel.quests) q.CheckQuest(cargoamount, WinCondition.Delivered, cargo);
-        //TODO: UpdateGUI;
+        foreach (QuestSlateDelivery qsd in FindObjectsOfType<QuestSlateDelivery>()) qsd.UpdateGUI();
     }
     void TimeAttackOnMoneyGainListener(int increment)
     {

@@ -63,6 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\QuestSlateDelivery.cs" />
     <Compile Include="Assets\Resources\Scripts\Cargo.cs" />
     <Compile Include="Assets\Resources\Scripts\Clickable.cs" />
     <Compile Include="Assets\Resources\Scripts\Extension.cs" />
