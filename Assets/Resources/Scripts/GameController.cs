@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -7,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 public delegate void ScoreEvent(CargoType cargo);
 public delegate void MoneyEvent(int increment);
+public delegate void CompeletedQuestEvent(float momentInTime);
 
 
 
@@ -52,7 +54,7 @@ public class GameController : MonoBehaviour {
         set { s_singleton = value; }
     }
 
-    
+
 
 
     #endregion
@@ -90,6 +92,10 @@ public class GameController : MonoBehaviour {
 
     #endregion
     #region money
+    [Header("Money")]
+    [SerializeField]
+    Text MoneyText;
+    [SerializeField]
     private int _money = 0;
     public int money
     {
@@ -100,17 +106,19 @@ public class GameController : MonoBehaviour {
 
         set
         {
-            int i = value - _money;            
+            int i = value - _money;
             _money = value;
             if (OnMoneyGain != null) OnMoneyGain(i);
+            MoneyText.text = _money.ToString();
         }
     }
 
-   
+
     #endregion
     public static event ScoreEvent OnScore;
     public static event MoneyEvent OnMoneyGain;
-
+    public static event CompeletedQuestEvent OnCompeletedQuest;
+    [Header("Prefabs")]
     [SerializeField]
     GameObject QuestSlatePrefabDelivered;
     [SerializeField]
@@ -125,7 +133,7 @@ public class GameController : MonoBehaviour {
         fillmylevel();
     }
 
-
+    
 
     #region FloatingTextThing
 
@@ -183,10 +191,26 @@ public class GameController : MonoBehaviour {
 
     void fillmylevel()
     {
+        MoneyText.text = _money.ToString();
         myLevel = ObjectCloner.Clone<LevelConditions>(sProfileManager.instance.levelconditions.Find(x => x.level == level));
+        int e = 0;
         foreach (Quest q in myLevel.quests) {
             q.completed = false;
-            CreateGUISlate(q);
+            q.LinkedQuest = new List<Quest>();
+            
+            if (q.LinkedQuestIndex.Count > 0)
+            {                
+                foreach (int i in q.LinkedQuestIndex)
+                {
+                    if (i < e) {
+                        q.LinkedQuest.Add(myLevel.quests[i]);
+                        q.LinkedQuestEnabled = true;
+                    }
+                }
+                
+            }
+            e += 1;
+            CreateGUISlate(q, e);
 
         }
 
@@ -194,7 +218,7 @@ public class GameController : MonoBehaviour {
         configthislevel();
     }
 
-    void CreateGUISlate(Quest q)
+    void CreateGUISlate(Quest q, int position)
     {
         GameObject go;
         switch (q.winCondition)
@@ -202,14 +226,23 @@ public class GameController : MonoBehaviour {
             case WinCondition.Delivered:
                 go = GameObject.Instantiate(QuestSlatePrefabDelivered);
                 QuestSlateDelivery qs = go.GetComponent<QuestSlateDelivery>();
+                qs.position = position;
                 qs.MyCargoDelivered = CargosDelivered.Find(x => x.type == q.CargoType);
                 qs.MyQuest = q;
                 break;
             case WinCondition.Money:
                 go = GameObject.Instantiate(QuestSlatePrefabMoney);
+                QuestSlateDelivery qs1 = go.GetComponent<QuestSlateDelivery>();
+                qs1.position = position;
+                qs1.MyCargoDelivered = CargosDelivered.Find(x => x.type == q.CargoType);
+                qs1.MyQuest = q;
                 break;
             case WinCondition.Time:
                 go = GameObject.Instantiate(QuestSlatePrefabTimer);
+                QuestSlateDelivery qs2 = go.GetComponent<QuestSlateDelivery>();
+                qs2.position = position;
+                qs2.MyCargoDelivered = CargosDelivered.Find(x => x.type == q.CargoType);
+                qs2.MyQuest = q;
                 break;
             default:
                 break;
@@ -225,6 +258,7 @@ public class GameController : MonoBehaviour {
             case LevelMode.TimeAttack:
                 OnScore = TimeAttackOnScoreListener;
                 OnMoneyGain = TimeAttackOnMoneyGainListener;
+                OnCompeletedQuest = TimeAttackOnCompletedQuestListener;
 
 
 
@@ -247,14 +281,44 @@ public class GameController : MonoBehaviour {
             return;
         }
         int cargoamount = CD.delivered;
-        foreach (Quest q in myLevel.quests) q.CheckQuest(cargoamount, WinCondition.Delivered, cargo);
+        bool b = false;
+        foreach (Quest q in myLevel.quests)
+        {
+            if (q.CheckQuest(cargoamount, WinCondition.Delivered, cargo)) b = true;
+        }
+        //Si se cumplió alguna misión lanzamos el evento de misión completada (que tal vez complete otras misiones)
+        if (b && OnCompeletedQuest != null) OnCompeletedQuest(TimeController.s.timeSpent);
         foreach (QuestSlateDelivery qsd in FindObjectsOfType<QuestSlateDelivery>()) qsd.UpdateGUI();
     }
     void TimeAttackOnMoneyGainListener(int increment)
     {
         //Checkeamos si se cumplió alguna misión!
-        foreach (Quest q in myLevel.quests) q.CheckQuest(money, WinCondition.Money);
-        //TODO: UpdateGUI;
+        bool b = false;
+        foreach (Quest q in myLevel.quests) 
+        {
+            if (q.CheckQuest(money, WinCondition.Money)) b = true;
+        }
+        //Si se cumplió alguna misión lanzamos el evento de misión completada (que tal vez complete otras misiones)
+        if (b && OnCompeletedQuest != null) OnCompeletedQuest(TimeController.s.timeSpent);
+
+
+
+        foreach (QuestSlateDelivery qsd in FindObjectsOfType<QuestSlateDelivery>()) qsd.UpdateGUI();
+    }
+    void TimeAttackOnCompletedQuestListener(float time)
+    {        
+        //Checkeamos si se cumplió alguna misión!
+        bool b = false;
+        foreach (Quest q in myLevel.quests)
+        {
+            if (q.CheckQuest((int)time, WinCondition.Time, CargoType.None, true)) b = true;
+        }
+        //Si se cumplió alguna misión lanzamos el evento de misión completada (que tal vez complete otras misiones)
+        if (b && OnCompeletedQuest != null) OnCompeletedQuest(TimeController.s.timeSpent);
+
+
+
+        foreach (QuestSlateDelivery qsd in FindObjectsOfType<QuestSlateDelivery>()) qsd.UpdateGUI();
     }
 
     void TimeAttackEndGameVictoryCheck()
@@ -489,8 +553,58 @@ public class Quest{
 
 
     #endregion
+    
+    #region LinkedQuest
+    [NonSerialized]
+    List<Quest> _linkedQuest;
+    
+    public List<Quest> LinkedQuest
+    {
+        get
+        {
+            return _linkedQuest;
+        }
 
+        set
+        {
+            _linkedQuest = value;
+        }
+    }
+    #endregion
+    
+    #region LinkedQuestIndex
+    [SerializeField]
+    List<int> _LinkedQuestIndex;
+    public List<int> LinkedQuestIndex
+    {
+        get
+        {
+            return _LinkedQuestIndex;
+        }
 
+        set
+        {
+            _LinkedQuestIndex = value;
+        }
+    }
+    #endregion
+
+    #region LinkedQuestsBool
+    [SerializeField]
+    bool _linkedQuestEnabled = false;
+    public bool LinkedQuestEnabled
+    {
+        get
+        {
+            return _linkedQuestEnabled;
+        }
+
+        set
+        {
+            _linkedQuestEnabled = value;
+        }
+    }
+    #endregion 
     #region winCondition
     [SerializeField]
     WinCondition _winCondition;
@@ -560,27 +674,49 @@ public class Quest{
 
     
 
+
+
+
+
+
+
     #region constructor
 
     public Quest(WinCondition wincondition, int amount)
     {
         _winCondition = wincondition;
         _winAmount = amount;
+        _linkedQuestEnabled = false;
     }
 
     #endregion
 
-    public void CheckQuest(int amountToCheck, WinCondition TypeOfWinChecked, CargoType cargo = CargoType.None)
+    public bool CheckQuest(int amountToCheck, WinCondition TypeOfWinChecked, CargoType cargo = CargoType.None, bool Under = true)
     {
-        if (_winCondition != TypeOfWinChecked) return;
-        if (_completed) return;
+        if (_winCondition != TypeOfWinChecked) return false;
+        if (_completed) return false;
         if (TypeOfWinChecked == WinCondition.Delivered)
         {
-            if (_cargoType != cargo) return;
+            if (_cargoType != cargo) return false;
+        }
+
+        if (_linkedQuestEnabled)
+        {
+            if (!(_linkedQuest.Any(x => x.completed == false)))
+            {//Si no encuentra false (todas las quests enlazadas están true)
+                if (Under) if (amountToCheck <= _winAmount) _completed = true;
+                if (!Under) if (amountToCheck >= _winAmount) _completed = true;
+            }
+
+
+        }else
+        {
+            if (amountToCheck >= _winAmount) _completed = true;
         }
 
 
-        if (amountToCheck >= _winAmount) _completed = true;
+        return _completed;
+        
         
     }
 

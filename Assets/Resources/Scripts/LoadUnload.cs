@@ -11,6 +11,8 @@ public class LoadUnload : MonoBehaviour {
     SpriteRenderer mySprite;
     [SerializeField]
     Animator myAnimator;
+    [SerializeField]
+    int MoneyValue = 20;
 
     [SerializeField]
     CargoType _acceptedCargo;
@@ -78,6 +80,7 @@ public class LoadUnload : MonoBehaviour {
             CD.delivered += 1;
             cargo.cargo = CargoType.None;            
             GameController.s.FloatingTextSpawn(this.transform.position.x, this.transform.position.z, "Unload: +1 Score!", enumColor.Green);
+            GameController.s.money += MoneyValue;
         }
 
 

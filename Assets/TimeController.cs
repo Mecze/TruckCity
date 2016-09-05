@@ -78,6 +78,7 @@ public class TimeController : MonoBehaviour {
     public Timer timer;
 
     //Este es el tiempo ACTUAL.
+    [SerializeField]
     float _currentTime;
     public float currentTime
     {
@@ -96,6 +97,20 @@ public class TimeController : MonoBehaviour {
             }
 
             _currentTime = value;
+        }
+    }
+    public float timeSpent
+    {
+        get
+        {
+            if (decrement)
+            {
+                return seconds - _currentTime;
+            }else
+            {
+                return _currentTime - seconds;
+            }
+
         }
     }
     
@@ -128,7 +143,7 @@ public class TimeController : MonoBehaviour {
         //Esto es para ver como corre el temporizador en el inspector
         //Las dos lineas siguientes son innecesarias.
         minutes = Mathf.FloorToInt(currentTime) / 60;
-        seconds = currentTime % 60f;
+        //seconds = currentTime % 60f;
         //UpdateGUI();
     }
     /*
