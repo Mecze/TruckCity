@@ -11,10 +11,6 @@ public delegate void MoneyEvent(int increment);
 public delegate void CompeletedQuestEvent(float momentInTime);
 
 
-
-
-
-
 public class GameController : MonoBehaviour {
     #region Singleton
     private static GameController s_singleton = null;
@@ -73,7 +69,7 @@ public class GameController : MonoBehaviour {
     /// </summary>
 
     public LevelConditions myLevel;
-
+    [Header("Delivered")]
     #region delivered (score)
     [SerializeField]
     List<CargoDelivered> _cargosDelivered;
@@ -91,8 +87,9 @@ public class GameController : MonoBehaviour {
     }
 
     #endregion
-    #region money
     [Header("Money")]
+    #region money
+
     [SerializeField]
     Text MoneyText;
     [SerializeField]
@@ -118,6 +115,21 @@ public class GameController : MonoBehaviour {
     public static event ScoreEvent OnScore;
     public static event MoneyEvent OnMoneyGain;
     public static event CompeletedQuestEvent OnCompeletedQuest;
+    [Header("GUI")]
+    [SerializeField]
+    GameObject IntroPanel;
+    [SerializeField]
+    GameObject OutroPanel;
+    [SerializeField]
+    GameObject GUIPanel;
+    [SerializeField]
+    Animator CoundownAnimator;
+    [SerializeField]
+    GameObject CounddownOBJ;
+    [SerializeField]
+    GameObject FinishText;
+
+
     [Header("Prefabs")]
     [SerializeField]
     GameObject QuestSlatePrefabDelivered;
@@ -125,13 +137,19 @@ public class GameController : MonoBehaviour {
     GameObject QuestSlatePrefabMoney;
     [SerializeField]
     GameObject QuestSlatePrefabTimer;
+    [SerializeField]
+    GameObject IPQuestSlatePrefab;
 
 
 
     void Awake()
     {
         fillmylevel();
-    }
+        
+        
+    }   
+
+   
 
     
 
@@ -187,10 +205,39 @@ public class GameController : MonoBehaviour {
     {
         if (OnScore != null) OnScore(cargo);
     }
+    public void LaunchCountdownAnimation()
+    {
+        IntroPanel.SetActive(false);
+        GUIPanel.SetActive(true);
+        CounddownOBJ.SetActive(true);
+        CoundownAnimator.SetBool("Start", true);
+    }
+
+
+    public void StartGame()
+    {
+
+        FreezeGame(false);
+        CounddownOBJ.SetActive(false);
+
+
+    }
+
+    public void RetryLevel()
+    {
+        SceneManager.LoadScene(level+2);
+    }
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene(1);
+    }
 
 
     void fillmylevel()
     {
+        FreezeGame(true);
+        IntroPanel.SetActive(true);
+        GUIPanel.SetActive(true);
         MoneyText.text = _money.ToString();
         myLevel = ObjectCloner.Clone<LevelConditions>(sProfileManager.instance.levelconditions.Find(x => x.level == level));
         int e = 0;
@@ -211,12 +258,27 @@ public class GameController : MonoBehaviour {
             }
             e += 1;
             CreateGUISlate(q, e);
-
+            CreateIPGUISlate(q, e, true);
         }
 
-        //TODO: UPDATEGUI
+        GUIPanel.SetActive(false);
+        IntroPanel.SetActive(true);
         configthislevel();
     }
+
+    void CreateIPGUISlate(Quest q, int position, bool intro)
+    {
+        GameObject go;
+        go = GameObject.Instantiate(IPQuestSlatePrefab);
+        QuestSlateDeliveryIntro qs = go.GetComponent<QuestSlateDeliveryIntro>();
+        qs.Intro = intro;
+        qs.position = position;
+        qs.MyCargoDelivered = CargosDelivered.Find(x => x.type == q.CargoType);
+        qs.MyQuest = q;
+        qs.AutoAnchor();
+        
+    }
+
 
     void CreateGUISlate(Quest q, int position)
     {
@@ -262,7 +324,7 @@ public class GameController : MonoBehaviour {
 
 
 
-                TimeController.s.SetTimer((float)myLevel.startingTimer, TimeAttackEndGameVictoryCheck, true);
+                TimeController.s.SetTimer((float)myLevel.startingTimer, TimeAttackEndGameVictoryCheck, true, 0f, false);
                 break;
             default:
                 break;
@@ -270,6 +332,23 @@ public class GameController : MonoBehaviour {
 
 
     }
+
+    IEnumerator EndGameSequence()
+    {
+        yield return new WaitForSeconds(2f);
+        OutroPanel.SetActive(true);
+        GUIPanel.SetActive(false);
+        int e = 0;
+        foreach (Quest q in myLevel.quests)
+        {               
+            e += 1;
+            //CreateGUISlate(q, e);
+            CreateIPGUISlate(q, e,false);
+        }
+
+    }
+
+
     #region levellisteners & endgameCheckers
     #region TimeAttackMode
     void TimeAttackOnScoreListener(CargoType cargo)
@@ -324,28 +403,53 @@ public class GameController : MonoBehaviour {
     void TimeAttackEndGameVictoryCheck()
     {
 
+
+        FreezeGame(true);
+        FinishText.SetActive(true);
+        SaveProfile();
+        StartCoroutine(EndGameSequence());
+        
+    }
+    void SaveProfile() {
+        bool b = false;
         int stars = myLevel.CheckQuests();
-        //TODO: DO GUI
-        Debug.Log("Has Conseguido " + stars.ToString() + " estrellas!");
-        //TODO: Victory Screen.
-
-
-
-        foreach (TruckEntity te in FindObjectsOfType<TruckEntity>()) te.Freeze();
-        foreach (RoadEntity re in FindObjectsOfType<RoadEntity>()) re.Freeze();
-
-        if (stars >0) sProfileManager.ProfileSingleton.profileLevels[level].beated = true;
-        sProfileManager.ProfileSingleton.profileLevels[level].stars = stars;
-        sSaveLoad.SaveProfile();
-
-
-        //TODO: LoadScene after VictoryScreen
-        SceneManager.LoadScene(1);
+        if (stars > 0) { b = true; sProfileManager.ProfileSingleton.profileLevels[level].beated = true; }
+        if (sProfileManager.ProfileSingleton.profileLevels[level].stars < stars) { b = true; sProfileManager.ProfileSingleton.profileLevels[level].stars = stars; }
+        if (b) sSaveLoad.SaveProfile();       
 
 
     }
     #endregion
     #endregion
+
+
+
+
+    #region Freeze Control
+
+    
+    /// <summary>
+    /// freezes all game
+    /// </summary>
+    /// <param name="freeze">True= freezes, false= unfreezes</param>
+    void FreezeGame(bool freeze)
+    {
+        
+        if (freeze)
+        {
+            foreach (TruckEntity te in FindObjectsOfType<TruckEntity>()) te.Freeze();
+            foreach (RoadEntity re in FindObjectsOfType<RoadEntity>()) re.Freeze();
+            if (TimeController.s.timer != null) TimeController.s.timer.StopTimer();
+        }
+        else
+        {
+            foreach (TruckEntity te in FindObjectsOfType<TruckEntity>()) te.Unfreeze();
+            foreach (RoadEntity re in FindObjectsOfType<RoadEntity>()) re.Unfreeze();
+            if (TimeController.s.timer != null) TimeController.s.timer.StartTimer();
+        }
+    }
+    #endregion
+
 
     #endregion
 

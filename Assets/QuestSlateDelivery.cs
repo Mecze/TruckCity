@@ -61,7 +61,12 @@ public class QuestSlateDelivery : MonoBehaviour {
     [SerializeField]
     Sprite UndoneStarImg;
     List<Image> stars;
-
+    [SerializeField]
+    Sprite CargoIMG;
+    [SerializeField]
+    Sprite MoneyIMG;
+    [SerializeField]
+    Sprite TimerIMG;
 
 
     void Awake()
@@ -132,7 +137,7 @@ public class QuestSlateDelivery : MonoBehaviour {
                 first = false;
             }
             //QuestText.text = s + QuestText.text;
-            QuestText.text = (position.ToString() + ". " + s + " " + GameConfig.s.playerOrdersQuestSlate[(int)_myQuest.winCondition]);
+            QuestText.text = (position.ToString() + ". " + s + " "+ GameConfig.s.playerOrdersQuestSlate[(int)_myQuest.winCondition]);
         }
         else
         {

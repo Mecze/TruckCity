@@ -157,13 +157,13 @@ public class TimeController : MonoBehaviour {
        timer.StartTimer();
     }
     */
-    public void SetTimer(float time, Action FinishAction, bool decrement, float finishAtSeconds =0f)
+    public void SetTimer(float time, Action FinishAction, bool decrement, float finishAtSeconds =0f, bool StartTimer=true)
     {
         this.decrement = decrement;
         this.finishAtSecond = finishAtSeconds;
         seconds = time;
         timer = new Timer(seconds, FinishAction, finishAtSecond);
-        timer.StartTimer();
+        if (StartTimer) timer.StartTimer();
 
 
     }
