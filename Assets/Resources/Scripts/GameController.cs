@@ -239,7 +239,7 @@ public class GameController : MonoBehaviour {
         IntroPanel.SetActive(true);
         GUIPanel.SetActive(true);
         MoneyText.text = _money.ToString();
-        myLevel = ObjectCloner.Clone<LevelConditions>(sProfileManager.instance.levelconditions.Find(x => x.level == level));
+        if (sProfileManager.instance != null) myLevel = ObjectCloner.Clone<LevelConditions>(sProfileManager.instance.levelconditions.Find(x => x.level == level));
         int e = 0;
         foreach (Quest q in myLevel.quests) {
             q.completed = false;

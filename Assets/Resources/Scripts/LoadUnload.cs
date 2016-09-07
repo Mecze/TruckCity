@@ -79,7 +79,7 @@ public class LoadUnload : MonoBehaviour {
             }
             CD.delivered += 1;
             cargo.cargo = CargoType.None;            
-            GameController.s.FloatingTextSpawn(this.transform.position.x, this.transform.position.z, "Unload: +1 Score!", enumColor.Green);
+            GameController.s.FloatingTextSpawn(this.transform.position.x, this.transform.position.z, "Unload: +"+ MoneyValue.ToString()+ " Money!", enumColor.Green);
             GameController.s.money += MoneyValue;
         }
 

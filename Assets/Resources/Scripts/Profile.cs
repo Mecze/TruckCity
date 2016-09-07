@@ -66,6 +66,14 @@ public class ProfileLevels
     /// </summary>
     public int stars = 0;
 
+    /// <summary>
+    /// Maximo de strellas
+    /// </summary>
+    public int maxStars = 3;
+
+    public int starsToUnlock = 1;
+
+
 
 
 }
