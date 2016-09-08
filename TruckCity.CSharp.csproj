@@ -95,6 +95,8 @@
     <Compile Include="Assets\TimeController.cs" />
     <Compile Include="Assets\UnlockAnim.cs" />
     <Compile Include="Assets\UnlockedAnimScript.cs" />
+    <Compile Include="Assets\Wander.cs" />
+    <Compile Include="Assets\WanderTruckTracker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\Outlined2 2D.shader" />
