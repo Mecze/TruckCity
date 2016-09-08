@@ -1,0 +1,15 @@
+Base path: C:/Program Files/Unity/Editor/Data
+Cmd: getPlatforms
+Cmd: disassembleShader
+  api=15 insize=917 outsize=1807 ok=1
+Cmd: compileSnippet
+  api=8 type=1 insize=1015 outsize=417 kw= pd=UNITY_NO_LINEAR_COLORSPACE UNITY_ENABLE_REFLECTION_BUFFERS UNITY_PBS_USE_BRDF3 ok=1
+Cmd: disassembleShader
+  api=14 insize=417 outsize=1037 ok=1
+Cmd: disassembleShader
+  api=15 insize=917 outsize=1807 ok=1
+Cmd: disassembleShader
+  api=14 insize=417 outsize=1037 ok=1
+Unhandled exception: Protocol error - failed to read correct magic number
+
+Quitting shader compiler process

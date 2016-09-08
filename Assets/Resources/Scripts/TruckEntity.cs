@@ -6,12 +6,12 @@ public enum TruckDirection { None=0,N=1,E=2,W=3,S=4}
 
 public enum Turn { Close, Wide, Reverse }
 
-public class TruckEntity : MonoBehaviour
+public class TruckEntity : MonoBehaviour, IFreezable
 {
 
     public TruckDirection direction;
     public bool Moving = true;
-
+    bool freeze = false;
 
 
 
@@ -60,8 +60,9 @@ public class TruckEntity : MonoBehaviour
 
     [Header("Cargo")]
     public Cargo myCargo;
-
+#pragma warning disable 0414
     int Debug = 0;
+#pragma warning restore 0414
 
 
     public float currentSpeed
@@ -97,7 +98,22 @@ public class TruckEntity : MonoBehaviour
     [HideInInspector]
     public Vector3 RotateNorth = new Vector3(0, 0, 0);
 
-   
+
+    #endregion
+
+
+    #region Freeze
+
+    public void Freeze()
+    {
+        freeze = true;
+    }
+    public void Unfreeze()
+    {
+        freeze = false;
+    }
+
+
     #endregion
 
     void Awake()
@@ -107,6 +123,7 @@ public class TruckEntity : MonoBehaviour
 
     void Update()
     {
+        if (freeze) return;
         Movement();
 
 
@@ -373,5 +390,12 @@ public class TruckEntity : MonoBehaviour
 
 
 
+}
+
+
+public interface IFreezable
+{
+    void Freeze();
+    void Unfreeze();
 }
 

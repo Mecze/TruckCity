@@ -65,5 +65,9 @@ public class GameConfig : MonoBehaviour {
 
     #endregion
 
+    #region strings for Quest Slate
+    public string[] playerOrdersQuestSlate;
 
+
+    #endregion
 }

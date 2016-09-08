@@ -4,9 +4,10 @@ using System.Collections.Generic;
 
 
 
-public class RoadEntity : MonoBehaviour {
+public class RoadEntity : MonoBehaviour, IFreezable {
     #region Atributos
-    
+
+    bool freeze = false;
 
     /// <summary>
     /// Posición del tipo "Vector3Int"
@@ -245,6 +246,21 @@ public class RoadEntity : MonoBehaviour {
 
 
 
+    #region Freeze
+
+    public void Freeze()
+    {
+        freeze = true;
+    }
+    public void Unfreeze()
+    {
+        freeze = false;
+    }
+
+
+    #endregion
+
+
     #region RecordPosition
     void Awake()
     {
@@ -279,6 +295,7 @@ public class RoadEntity : MonoBehaviour {
 
     void OnClick()
     {
+        if (freeze) return;
         if (possibleRotations.Count > 1)
         {
             if (NumberOfTruckOnTop > 0) return;
@@ -290,6 +307,8 @@ public class RoadEntity : MonoBehaviour {
     }
 
     #endregion
+
+
 
 
     #region Change ROAD material and Sprites
