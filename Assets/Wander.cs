@@ -9,12 +9,19 @@ public enum AIWanderState {WalkingTowards = 0, LookingTrucks = 1, LookingPoint =
 
 public class Wander : MonoBehaviour
 {
+    [Header("Avalaible Behaviours")]
     [SerializeField]
-    AIWanderState AIstate = AIWanderState.LookingTrucks;
+    bool WalkTowards = true;
+    [SerializeField]
+    bool LookingTrucks = true;
+    [SerializeField]
+    bool LookingPoints = true;
+
+    [Header("Config")]
     [SerializeField]
     float ChangeStateInterval = 3f;
     [SerializeField]
-    float speed = 0.01f;
+    float walkSpeed = 0.01f;
     [SerializeField]
     Animator walkAnimator;
 
@@ -24,11 +31,18 @@ public class Wander : MonoBehaviour
 
     [SerializeField]
     List<Transform> InterestPoints;
+    [SerializeField]
+    List<Transform> LookPoints;
     public List<Transform> nearbyTruck;
 
 
+
     bool changedState = false;
-    
+
+    [Header("Current State (debug)")]
+    [SerializeField]
+    AIWanderState AIstate = AIWanderState.LookingTrucks;
+
 
 
     void Awake()
@@ -57,11 +71,17 @@ public class Wander : MonoBehaviour
         AIWanderState lastState = AIstate;
         int max = Enum.GetValues(typeof(AIWanderState)).Length;
         int random = 0;
+        bool correctPick = false;
         do
         {
             random = UnityEngine.Random.Range(0, max);
-            AIstate = (AIWanderState)random;            
-        } while (AIstate == lastState);
+            AIstate = (AIWanderState)random;
+            correctPick = true;
+            if (AIstate == AIWanderState.LookingPoint && !LookingPoints) correctPick = false;
+            if (AIstate == AIWanderState.LookingTrucks && !LookingTrucks)correctPick = false;            
+            if (AIstate == AIWanderState.WalkingTowards && !WalkTowards) correctPick = false;
+
+        } while (AIstate == lastState || correctPick == false);
         changedState = true;
 
 
@@ -77,10 +97,11 @@ public class Wander : MonoBehaviour
                 if (changedState)
                 {
                     PickDirection();
-                    walkAnimator.SetBool("Walk", true);
+                    
                 }
+                walkAnimator.SetBool("Walk", true);
                 Vector3 v = (Vector3.forward);                
-                transform.transform.Translate(v * speed * Time.deltaTime);
+                transform.transform.Translate(v * walkSpeed * Time.deltaTime);
 
                 break;
             case AIWanderState.LookingTrucks:
@@ -94,9 +115,10 @@ public class Wander : MonoBehaviour
                 //Chaned to this state or the truck we were watching left
                 if (changedState || nearbyTruck.ElementAtOrDefault(TruckPicked) == null )
                 {//pick new truck
-                    walkAnimator.SetBool("Walk", false);
+                    
                     TruckPicked = UnityEngine.Random.Range(0, nearbyTruck.Count);
                 }
+                walkAnimator.SetBool("Walk", false);
                 Vector3 ve = nearbyTruck[TruckPicked].position;
                 ve.y = transform.position.y;
                 transform.LookAt(ve);
@@ -106,8 +128,9 @@ public class Wander : MonoBehaviour
                 if (changedState)
                 {
                     PickDirectionTolook();
-                    walkAnimator.SetBool("Walk", false);
+                    
                 }
+                walkAnimator.SetBool("Walk", false);
                 break;
             default:
                 break;
@@ -142,12 +165,12 @@ public class Wander : MonoBehaviour
     void PickDirectionTolook()
     {
 
-        int max = InterestPoints.Count;
+        int max = LookPoints.Count;
         int last = interestPickedToLook;
         do
         {
             interestPickedToLook = UnityEngine.Random.Range(0, max);
-            Vector3 v = InterestPoints[interestPickedToLook].position;
+            Vector3 v = LookPoints[interestPickedToLook].position;
             v.y = transform.position.y;
             transform.LookAt(v);
 
@@ -160,6 +183,13 @@ public class Wander : MonoBehaviour
         {
             AIstate = AIWanderState.LookingTrucks;
             changedState = true;
+            if (AIstate == AIWanderState.LookingTrucks && !LookingTrucks)
+            {
+                AIstate = AIWanderState.LookingPoint;
+                changedState = false;
+                if (AIstate == AIWanderState.LookingPoint && !LookingPoints) AIstate = AIWanderState.WalkingTowards;
+            }
+            
         }
 
     }
