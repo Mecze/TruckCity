@@ -150,6 +150,9 @@ public class Wander : MonoBehaviour
 
     void PickDirection()
     {
+        //Failsafes
+        if (InterestPoints.Count == 1) interestPicked = 0;        
+        if (InterestPoints.Count <= 1) return;        
 
         int max = InterestPoints.Count;
         int last = interestPicked;        
@@ -164,6 +167,9 @@ public class Wander : MonoBehaviour
     }
     void PickDirectionTolook()
     {
+        //Failsafes
+        if (LookPoints.Count == 1) interestPickedToLook = 0;        
+        if (LookPoints.Count <= 1) return;
 
         int max = LookPoints.Count;
         int last = interestPickedToLook;
