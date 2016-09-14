@@ -1,38 +1,17 @@
 fileFormatVersion: 2
-guid: 56b273fd5f0f1c5439350379c10848e6
-timeCreated: 1472557232
+guid: cdb192e3e4abea9408787554b871156e
+timeCreated: 1473870616
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: Camera
-    100002: Lamp
-    100004: //RootNode
-    100006: redtruck.merged
-    100008: RedTruck
-    100010: RedTruck.001
-    100012: RedTruck.002
-    400000: Camera
-    400002: Lamp
-    400004: //RootNode
-    400006: redtruck.merged
-    400008: RedTruck
-    400010: RedTruck.001
-    400012: RedTruck.002
-    2300000: redtruck.merged
-    2300002: RedTruck
-    2300004: RedTruck.001
-    2300006: RedTruck.002
-    2300008: //RootNode
-    3300000: redtruck.merged
-    3300002: RedTruck
-    3300004: RedTruck.001
-    3300006: RedTruck.002
-    3300008: //RootNode
-    4300000: redtruck.merged
-    4300002: RedTruck
-    4300004: RedTruck.001
-    4300006: RedTruck.002
+    100000: default
+    100002: //RootNode
+    400000: default
+    400002: //RootNode
+    2300000: default
+    3300000: default
+    4300000: default
   materials:
     importMaterials: 1
     materialName: 0
@@ -58,14 +37,14 @@ ModelImporter:
   meshes:
     lODScreenPercentages: []
     globalScale: 1
-    meshCompression: 0
+    meshCompression: 3
     addColliders: 0
     importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
-    keepQuads: 0
+    keepQuads: 1
     weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
