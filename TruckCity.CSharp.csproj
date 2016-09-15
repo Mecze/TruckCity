@@ -63,6 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Extensions.cs" />
     <Compile Include="Assets\IntroAnimationBehaviour.cs" />
     <Compile Include="Assets\Materials\CustomStandartShaderGUI.cs" />
     <Compile Include="Assets\QuestSlateDelivery.cs" />
@@ -93,8 +94,11 @@
     <Compile Include="Assets\Resources\Scripts\sSaveLoad.cs" />
     <Compile Include="Assets\RoadEndCollider.cs" />
     <Compile Include="Assets\TimeController.cs" />
+    <Compile Include="Assets\TreeSpawn.cs" />
     <Compile Include="Assets\UnlockAnim.cs" />
     <Compile Include="Assets\UnlockedAnimScript.cs" />
+    <Compile Include="Assets\Wander.cs" />
+    <Compile Include="Assets\WanderTruckTracker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\Outlined2 2D.shader" />
