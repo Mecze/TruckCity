@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using PicaVoxel;
 
 
 
@@ -8,6 +9,9 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     #region Atributos
 
     bool freeze = false;
+
+    [SerializeField]
+    Volume myRoad;
 
     /// <summary>
     /// Posición del tipo "Vector3Int"
@@ -199,13 +203,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     /// </summary>    
     [SerializeField]
     List<RoadDirection> possibleRotations;
-
-    /// <summary>
-    /// Se trata del componente que contiene el material del HIJO de este objeto
-    /// Es el que muestra la imagen de la carretera (material)
-    /// </summary>
-    [SerializeField]
-    Renderer roadRenderer;
+    
 
     /// <summary>
     /// Los sprites de los puntos cardinales
@@ -295,6 +293,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
 
     void OnClick()
     {
+
         if (freeze) return;
         if (possibleRotations.Count > 1)
         {
@@ -331,8 +330,13 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     /// <param name="dir"></param>
     void ChangeMaterial(RoadDirection dir)
     {
+        myRoad.SetFrame((int)dir);
+
+
+        /* OLD VERSION! MATERIOAL VERSION
         Material mat = (Material)Resources.Load(GameConfig.s.materialsPath + roadDirToString(dir));
         roadRenderer.material = mat;
+        */
         //Material[] currentMats = roadRenderer.materials;
 
     }
