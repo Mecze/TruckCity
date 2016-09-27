@@ -55,25 +55,25 @@ public class MapController : MonoBehaviour {
     }
 
 
-    public bool CheckNextTile(Vector3Int pos, TruckDirection dir, out RoadEntity roadID)
+    public bool CheckNextTile(Vector3Int pos, CardinalPoint dir, out RoadEntity roadID)
     {
         roadID = null;
         Vector3Int des = new Vector3Int(pos.x,pos.y,pos.z);
         switch (dir)
         {
-            case TruckDirection.N:
+            case CardinalPoint.N:
                 des.z += 1;
                 break;
-            case TruckDirection.E:
+            case CardinalPoint.E:
                 des.x += 1;
                 break;
-            case TruckDirection.W:
+            case CardinalPoint.W:
                 des.x -= 1;
                 break;
-            case TruckDirection.S:
+            case CardinalPoint.S:
                 des.z -= 1;
                 break;
-            case TruckDirection.None:
+            case CardinalPoint.None:
                 break;
             default:
                 break;

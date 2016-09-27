@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
 
+public delegate void OnStartClockDelegate();
+
 public class TimeController : MonoBehaviour {
     #region Singleton
     private static TimeController s_singleton = null;
@@ -46,6 +48,10 @@ public class TimeController : MonoBehaviour {
 
     #endregion
 
+    #region Events
+    public static event OnStartClockDelegate OnStartClock;
+    #endregion
+
     #region Declaración de Variables y Propiedades
     [Header("Timer Settings")]
     [SerializeField]
@@ -66,13 +72,15 @@ public class TimeController : MonoBehaviour {
 
     [SerializeField]
     //Indica si el tiempo va hacia atras o hacia adelante
-    bool decrement = true;
+    public bool decrement = true;
 
     [Header("When to finish (0 = infinite)")]
     
     [SerializeField]
     //Indica cuando debe detenerse el temporizador. Si es 0 es infinito
     float finishAtSecond = 0f;
+
+    bool FirstUpdate = false;
 
     //Mi Timer
     public Timer timer;
@@ -137,7 +145,13 @@ public class TimeController : MonoBehaviour {
             //mas
             currentTime = timer.UpdateTimer(Time.deltaTime, out debugStep);
         }
-
+        /*
+        if (!FirstUpdate)
+        {
+            FirstUpdate = true;
+            if (OnStartClock != null) OnStartClock();
+        }
+        */
 
         //debug
         //Esto es para ver como corre el temporizador en el inspector
@@ -164,6 +178,8 @@ public class TimeController : MonoBehaviour {
         seconds = time;
         timer = new Timer(seconds, FinishAction, finishAtSecond);
         if (StartTimer) timer.StartTimer();
+        currentTime = timer.UpdateTimer(0f, out debugStep);
+        if (OnStartClock != null) OnStartClock();
 
 
     }
@@ -315,8 +331,14 @@ public class Timer
     /// <returns>True si salió bien, False si ya existia</returns>
     public bool AddAction(int second, Action action)
     {
-        if (ActionList.ContainsKey(second)) return false;
-        ActionList.Add(second, action);
+        if (ActionList.ContainsKey(second))
+        {
+            ActionList[second] += action;
+        }
+        else
+        {
+            ActionList.Add(second, action);
+        }
         return true;
     }
     /// <summary>

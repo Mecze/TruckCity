@@ -2,14 +2,14 @@ using UnityEngine;
 using System.Collections;
 using System;
 
-public enum TruckDirection { None=0,N=1,E=2,W=3,S=4}
+public enum CardinalPoint { None=0,N=1,E=2,W=3,S=4}
 
 public enum Turn { Close, Wide, Reverse }
 
 public class TruckEntity : MonoBehaviour, IFreezable
 {
 
-    public TruckDirection direction;
+    public CardinalPoint direction;
     public bool Moving = true;
     bool freeze = false;
 
@@ -186,30 +186,30 @@ public class TruckEntity : MonoBehaviour, IFreezable
 
     public void CheckDirection(RoadDirection newroaddirection, Turn checkTurn)
     {
-        TruckDirection newtruckdirection = direction;
+        CardinalPoint newtruckdirection = direction;
         switch (newroaddirection)
         {
             #region LineasRectas
             //LineaRecta E <-> W
             case RoadDirection.EW:
-                if (direction == TruckDirection.W)
+                if (direction == CardinalPoint.W)
                 {
-                    newtruckdirection = TruckDirection.W;
+                    newtruckdirection = CardinalPoint.W;
                 }
-                if (direction == TruckDirection.E)
+                if (direction == CardinalPoint.E)
                 {
-                    newtruckdirection = TruckDirection.E;
+                    newtruckdirection = CardinalPoint.E;
                 }
                 break;
             //LineaRecta N <-> S
             case RoadDirection.NS:
-                if (direction == TruckDirection.S)
+                if (direction == CardinalPoint.S)
                 {
-                    newtruckdirection = TruckDirection.S;
+                    newtruckdirection = CardinalPoint.S;
                 }
-                if (direction == TruckDirection.N)
+                if (direction == CardinalPoint.N)
                 {
-                    newtruckdirection = TruckDirection.N;
+                    newtruckdirection = CardinalPoint.N;
                 }
                 break;
             #endregion
@@ -220,51 +220,51 @@ public class TruckEntity : MonoBehaviour, IFreezable
 
             #region Curvas
             case RoadDirection.NE:
-                if (direction == TruckDirection.S)
+                if (direction == CardinalPoint.S)
                 {
                     if (checkTurn != Turn.Wide) return;                    
-                    newtruckdirection = TruckDirection.E;
+                    newtruckdirection = CardinalPoint.E;
                 }
-                if (direction == TruckDirection.W)
+                if (direction == CardinalPoint.W)
                 {
                     if (checkTurn != Turn.Close) return;
-                    newtruckdirection = TruckDirection.N;
+                    newtruckdirection = CardinalPoint.N;
                 }
                 break;
             case RoadDirection.NW:
-                if (direction == TruckDirection.S)
+                if (direction == CardinalPoint.S)
                 {
                     if (checkTurn != Turn.Close) return;
-                    newtruckdirection = TruckDirection.W;
+                    newtruckdirection = CardinalPoint.W;
                 }
-                if (direction == TruckDirection.E)
+                if (direction == CardinalPoint.E)
                 {
                     if (checkTurn != Turn.Wide) return;
-                    newtruckdirection = TruckDirection.N;
+                    newtruckdirection = CardinalPoint.N;
                 }
                 break;
             case RoadDirection.SE:
-                if (direction == TruckDirection.N)
+                if (direction == CardinalPoint.N)
                 {
                     if (checkTurn != Turn.Close) return;
-                    newtruckdirection = TruckDirection.E;
+                    newtruckdirection = CardinalPoint.E;
                 }
-                if (direction == TruckDirection.W)
+                if (direction == CardinalPoint.W)
                 {
                     if (checkTurn != Turn.Wide) return;
-                    newtruckdirection = TruckDirection.S;
+                    newtruckdirection = CardinalPoint.S;
                 }
                 break;
             case RoadDirection.SW:
-                if (direction == TruckDirection.N)
+                if (direction == CardinalPoint.N)
                 {
                     if (checkTurn != Turn.Wide) return;
-                    newtruckdirection = TruckDirection.W;
+                    newtruckdirection = CardinalPoint.W;
                 }
-                if (direction == TruckDirection.E)
+                if (direction == CardinalPoint.E)
                 {
                     if (checkTurn != Turn.Close) return;
-                    newtruckdirection = TruckDirection.S;
+                    newtruckdirection = CardinalPoint.S;
                 }
                 break;
             #endregion
@@ -286,7 +286,7 @@ public class TruckEntity : MonoBehaviour, IFreezable
     }
 
 
-    public void ChangeDirection(TruckDirection newdirection, Turn turn, float additionOffset = 0f)
+    public void ChangeDirection(CardinalPoint newdirection, Turn turn, float additionOffset = 0f)
     {
         if (turn == Turn.Reverse && otherLaneTrucks > 0)
         {
@@ -309,22 +309,22 @@ public class TruckEntity : MonoBehaviour, IFreezable
         Vector3 offset = new Vector3(0, 0, 0);
         switch (newdirection)
         {
-            case TruckDirection.N:
+            case CardinalPoint.N:
                 r = RotateNorth;
                 gasMeter.reverse = false;
                 ClampAxis(true);
                 break;
-            case TruckDirection.E:
+            case CardinalPoint.E:
                 r = RotateEast;
                 gasMeter.reverse = true;     
                 ClampAxis(false);
                 break;
-            case TruckDirection.W:
+            case CardinalPoint.W:
                 gasMeter.reverse = false;
                 r = RotateWest;                
                 ClampAxis(false);
                 break;
-            case TruckDirection.S:
+            case CardinalPoint.S:
                 r = RotateSouth;
                 gasMeter.reverse = true;
                 ClampAxis(true);
@@ -355,11 +355,11 @@ public class TruckEntity : MonoBehaviour, IFreezable
         if (!verticalAxis)
         {
             if (newPos.z < 0) neg = true;
-            if (direction == TruckDirection.W || direction == TruckDirection.N)
+            if (direction == CardinalPoint.W || direction == CardinalPoint.N)
             {
                 newPos.z = Mathf.Round(Mathf.Abs(newPos.z));
             }
-            else if (direction == TruckDirection.E || direction == TruckDirection.S)
+            else if (direction == CardinalPoint.E || direction == CardinalPoint.S)
             {
                 newPos.z = Mathf.Round(Mathf.Abs(newPos.z));
             }
@@ -368,11 +368,11 @@ public class TruckEntity : MonoBehaviour, IFreezable
         else
         {
             if (newPos.x < 0) neg = true;
-            if (direction == TruckDirection.W || direction == TruckDirection.N)
+            if (direction == CardinalPoint.W || direction == CardinalPoint.N)
             {
                 newPos.x = Mathf.Round(Mathf.Abs(newPos.x));
             }
-            else if (direction == TruckDirection.E || direction == TruckDirection.S)
+            else if (direction == CardinalPoint.E || direction == CardinalPoint.S)
             {
                 newPos.x = Mathf.Round(Mathf.Abs(newPos.x));
             }
