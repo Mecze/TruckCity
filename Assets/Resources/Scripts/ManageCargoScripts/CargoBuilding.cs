@@ -61,6 +61,7 @@ public class CargoBuilding : MonoBehaviour {
     List<GameObject> highlightsGo;
     [SerializeField]
     List<Image> highlights;
+    
 
     #endregion
 
@@ -100,7 +101,10 @@ public class CargoBuilding : MonoBehaviour {
             }
         }
         */
-        midBoxes[0].GetComponent<AutoGrid>().Adjust();
+        foreach (Transform go in midBoxes)
+        {
+            go.gameObject.GetComponent<AutoGrid>().Adjust();
+        }
 
     }
 

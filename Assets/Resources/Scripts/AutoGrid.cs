@@ -9,6 +9,10 @@ public class AutoGrid : MonoBehaviour {
     [SerializeField]
     int autoMaxCol = 2;
 
+    [Header("ForceSquare (Manual or Auto)")]
+    [SerializeField]
+    bool forceSquare = true;
+
     [Header("Manual")]
     [SerializeField]
     int row;
@@ -45,7 +49,21 @@ public class AutoGrid : MonoBehaviour {
         }
         glg.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
         glg.constraintCount = myCol;
-        glg.cellSize = new Vector2(rt.rect.width / myCol, rt.rect.height / myRow);
+        float cellXSize = rt.rect.width / myCol;
+        float cellYSize = rt.rect.height / myRow;
+
+        if (forceSquare)
+        {//Cramps to the smallest
+            if (cellXSize < cellYSize)
+            {
+                cellYSize = cellXSize;
+            }else
+            {
+                cellXSize = cellYSize;
+            }
+        }
+
+        glg.cellSize = new Vector2(cellXSize, cellYSize);
 
 
 
