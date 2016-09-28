@@ -25,8 +25,11 @@ public delegate void OnProducedDelegate();
 public delegate void OnLoadCargoDelegate();
 
 public class CargoBuilding : MonoBehaviour {
-    //public bool Loads;
 
+
+    [Header("Spawn? (Do Manual References Below!)")]
+    [SerializeField]
+    bool dontSpawnAnything = false;
     [Header("Config")]
     [SerializeField]
     Color buildingColor;
@@ -143,18 +146,24 @@ public class CargoBuilding : MonoBehaviour {
     /// <param name="pc"></param>
     void SpawnAndConfigCargoSpriteProduces(ProducesCargo pc)
     {
-        foreach (CardinalPoint cp in pc.direction)
-        {
-            GameObject GO = SpawnCargoSprite(cp);
-            CargoSprite cs = GO.GetComponent<CargoSprite>();
-            SpawnArrow(cp, GameConfig.s.cargoColors[(int)pc.CargoType], false);
-            pc.myCargoSpriteReference.Add(cs);
-        }
-        pc.myBuilding = this;
         pc.amountOfItems = pc.startingAmount;
-        pc.UpdateMyCargoSprites();
+
+        if (!dontSpawnAnything)
+        {
+            foreach (CardinalPoint cp in pc.direction)
+            {
+                GameObject GO = SpawnCargoSprite(cp);
+                CargoSprite cs = GO.GetComponent<CargoSprite>();
+                SpawnArrow(cp, GameConfig.s.cargoColors[(int)pc.CargoType], false);
+                pc.myCargoSpriteReference.Add(cs);
+            }
+            
+        }
+
+        pc.myBuilding = this;
         OnTruckLoadStation += pc.TruckOnPointListener;
-        if (pc.needsIncome) OnTruckUnloaded += pc.TruckOnPointListenerINCOME;
+        if (pc.needsIncome) OnTruckUnloaded += pc.TruckOnPointListenerINCOME;        
+        pc.UpdateMyCargoSprites();
         pc.Initialize();
 
 
@@ -169,13 +178,15 @@ public class CargoBuilding : MonoBehaviour {
     /// <param name="ac"></param>
     void SpawnAndConfigCargoSpriteRecives(AcceptsCargo ac)
     {
-        
-        foreach (CardinalPoint cp in ac.direction)
+        if (!dontSpawnAnything)
         {
-            GameObject GO = SpawnCargoSprite(cp);
-            CargoSprite cs = GO.GetComponent<CargoSprite>();
-            SpawnArrow(cp, GameConfig.s.cargoColors[(int)ac.CargoType], true);
-            ac.myCargoSpriteReference.Add(cs);
+            foreach (CardinalPoint cp in ac.direction)
+            {
+                GameObject GO = SpawnCargoSprite(cp);
+                CargoSprite cs = GO.GetComponent<CargoSprite>();
+                SpawnArrow(cp, GameConfig.s.cargoColors[(int)ac.CargoType], true);
+                ac.myCargoSpriteReference.Add(cs);
+            }
         }
         ac.myBuilding = this;        
         ac.UpdateMyCargoSprites();
