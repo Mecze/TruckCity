@@ -32,10 +32,10 @@ public class CargoBuilding : MonoBehaviour {
     Color buildingColor;
 
     [SerializeField]
-    List<ProducesCargo> producesCargo;
+    public List<ProducesCargo> producesCargo;
 
     [SerializeField]
-    List<AcceptsCargo> acceptsCargo;
+    public List<AcceptsCargo> acceptsCargo;
 
 
 
@@ -77,6 +77,7 @@ public class CargoBuilding : MonoBehaviour {
     #endregion
 
     public event OnTruckLoadStationDelegate OnTruckLoadStation;
+    public event OnTruckLoadStationDelegate OnTruckUnloaded;
 
     void Awake()
     {
@@ -148,7 +149,8 @@ public class CargoBuilding : MonoBehaviour {
         pc.myBuilding = this;
         pc.amountOfItems = pc.startingAmount;
         pc.UpdateMyCargoSprites();
-        OnTruckLoadStation += pc.TruckOnPointListener;        
+        OnTruckLoadStation += pc.TruckOnPointListener;
+        if (pc.needsIncome) OnTruckUnloaded += pc.TruckOnPointListenerINCOME;
         pc.Initialize();
 
 
@@ -202,6 +204,15 @@ public class CargoBuilding : MonoBehaviour {
     public void TruckOnStation(CardinalPoint cp, Cargo cargo)
     {
         if (OnTruckLoadStation != null) OnTruckLoadStation(cp, cargo, this);
+    }
+    /// <summary>
+    /// Fires Event OnTruckUnloaded
+    /// </summary>
+    /// <param name="cp"></param>
+    /// <param name="cargo"></param>
+    public void TruckGotUnloaded(CardinalPoint cp, Cargo cargo)
+    {
+        if (OnTruckUnloaded != null) OnTruckUnloaded(cp, cargo, this);
     }
 
 

@@ -2,6 +2,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Linq;
+using System;
+using Eppy;
 
 //////////////////////////////
 /// TRUCK CITY!
@@ -306,16 +309,8 @@ public class CargoSprite : MonoBehaviour {
     }
 
     public void SetTimerSteps()
-    {
-        float r = 0f;
-        float oneStep = (float)timeToProduce / (float)(timerSteps.Count -1);
-        int i = Mathf.FloorToInt(timer / (float)oneStep);
-        if (i > timerSteps.Count - 1) i = timerSteps.Count - 1;
-        if (i < 0) i = 0;
-        r = timerSteps[i];
-
-
-        myTimer.fillAmount = r;
+    {       
+        myTimer.fillAmount = timerSteps[timerSteps.GetClosestIndex(_timer)];
         if (_amountOfItems == maxAmountOfItems) myTimer.fillAmount = 0f;
     }
     /*

@@ -17,10 +17,7 @@ public class AcceptsCargo : CargoManagement
 {
     public int moneyGained;
 
-    //public event OnDeliveranceDelegate OnDelivery;
-
-
-
+   
 
     public override void TruckOnPointListener(CardinalPoint cp, Cargo cargo, CargoBuilding building)
     {
@@ -36,10 +33,15 @@ public class AcceptsCargo : CargoManagement
             return;
         }
         CD.delivered += 1;
+        building.TruckGotUnloaded(cp, cargo);
         cargo.cargo = CargoType.None; //Cargamos el vehiculo
         GameController.s.money += moneyGained;
         GameController.s.FloatingTextSpawn(building.myTransform.position, "Cargo Delivered!", enumColor.Green);
+        
+       
+
     }
+
 
     public override void UpdateMyCargoSprites()
     {

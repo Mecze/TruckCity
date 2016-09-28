@@ -150,6 +150,10 @@
     <Compile Include="Assets\Resources\Scripts\TriggerInvisible.cs" />
     <Compile Include="Assets\Resources\Scripts\TruckEntity.cs" />
     <Compile Include="Assets\Resources\Scripts\TruckFrontChecker.cs" />
+    <Compile Include="Assets\Resources\Scripts\Tuple.cs" />
+    <Compile Include="Assets\Resources\Scripts\Tuple2.cs" />
+    <Compile Include="Assets\Resources\Scripts\Tuple3.cs" />
+    <Compile Include="Assets\Resources\Scripts\Tuple4.cs" />
     <Compile Include="Assets\Resources\Scripts\UnlockAnim.cs" />
     <Compile Include="Assets\Resources\Scripts\UnlockedAnimScript.cs" />
     <Compile Include="Assets\Resources\Scripts\Vector3Int.cs" />

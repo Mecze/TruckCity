@@ -10,20 +10,33 @@ using System.Collections;
 /// Hereda de CargoManagement
 //////////////////////////////
 
-public enum TimeToProduce { ThreeSeconds = 3, SixSeconds = 6, TwelveSeconds = 12, TwentyFourSeconds = 24 }
+public enum TimeToProduce {None = 0, ThreeSeconds = 3, SixSeconds = 6, TwelveSeconds = 12, TwentyFourSeconds = 24 }
 
 [System.Serializable]
 public class ProducesCargo : CargoManagement
 {
     //All of this goes to Inspector for configuration when 
     //the level is created    
+    
     public int maxProduced;
     public int startingAmount;
-    public TimeToProduce timeToProduce;
+    [SerializeField]
+    private TimeToProduce _timeToProduce;
+
+    [Header("Income Config (only of true)")]
+    public bool needsIncome = false; //Si es TRUE se genera mas lento
+    public CargoType cargoNeededForIncome;
+    public bool IncomeActive = false; //indica si se usa noincomegeneration o timetoproduce
+    public TimeToProduce noIncomeGeneration = TimeToProduce.None; //Cuando se dispara y se recibe un CARGO de aquí, el Produces Cargo ignora el "Penalty" que lleva de base durante X tiempo y se genera "rapido"
+    public int duration = 0;
+    int secondToStop;
+
     /*
     public event OnProducedDelegate OnProduce;
     public event OnLoadCargoDelegate OnLoadCargo;
     */
+
+
 
     #region properties
     int _amountOfItems;
@@ -43,7 +56,7 @@ public class ProducesCargo : CargoManagement
             if (myCargoSpriteReference != null) foreach (CargoSprite cs in myCargoSpriteReference) cs.amountOfItems = _amountOfItems;
         }
     }
-
+    [SerializeField]
     float _timer;
     /// <summary>
     /// InnerTimer, Comunicates changes to its asociated sprites
@@ -61,32 +74,37 @@ public class ProducesCargo : CargoManagement
             if (myCargoSpriteReference != null) foreach (CargoSprite cs in myCargoSpriteReference) cs.timer = _timer;
         }
     }
+    public TimeToProduce relativeTimeToProduce
+    {
+        get
+        {
+            if (!IncomeActive && needsIncome) return noIncomeGeneration;
+            return _timeToProduce;
+        }
+    }
+    public TimeToProduce timeToProduce
+    {
+        get
+        {
+            return _timeToProduce;
+        }
+
+        set
+        {
+            _timeToProduce = value;
+        }
+    }
 
     #endregion
 
     #region Listener: Truck on Station Event    
     public override void TruckOnPointListener(CardinalPoint cp, Cargo cargo, CargoBuilding building)
     {
-        if (!direction.Contains(cp))
-        {
-            return; //Si no ha pasado por nuestro lado no hacemos nada
-        }
-        if (cargo.cargo != CargoType.None)
-        {
-            return; //Si est� lleno no hacemos nada
-        }
-        if (myCargoSpriteReference == null)
-        {
-            return; //FAILSAFE, en caso de que no haya referencia escrita por ManagesCargo
-        }
-        if (amountOfItems == 0)
-        {
-            return; //Si no hay items disponibles no hacemos nada
-        }
-        if (myBuilding != building)
-        {
-            return;// Check the building
-        }
+        if (!direction.Contains(cp))  return; //Si no ha pasado por nuestro lado no hacemos nada        
+        if (cargo.cargo != CargoType.None) return; //Si est� lleno no hacemos nada
+        if (myCargoSpriteReference == null) return; //FAILSAFE, en caso de que no haya referencia escrita por ManagesCargo        
+        if (amountOfItems == 0) return; //Si no hay items disponibles no hacemos nada        
+        if (myBuilding != building) return;// Check the building
 
         cargo.cargo = CargoType; //Cargamos el vehiculo
         bool startcd = false;
@@ -95,7 +113,24 @@ public class ProducesCargo : CargoManagement
         amountOfItems--; //Restamos uno a la cantidad de items que tenemos 
         if (startcd) StartCooldown();
     }
+
+    public void TruckOnPointListenerINCOME(CardinalPoint cp, Cargo cargo, CargoBuilding building)
+    {        
+        if (cargo.cargo != cargoNeededForIncome) return; //Si est� vacio no hacemos nada
+        if (myCargoSpriteReference == null) return; //FAILSAFE, en caso de que no haya referencia escrita por ManagesCargo
+        if (myBuilding != building) return; //We check the building
+
+        IncomeActive = true;
+        secondToStop = TimeController.s.AdvanceTimeXSeconds(duration);
+        TimeController.s.timer.AddAction(secondToStop, (() => {
+            if (TimeController.s.GiveCurrentStep() == secondToStop)IncomeActive = false;
+        }));    
+
+    }
+    
     #endregion
+
+
 
     #region update CargoSprites
     /// <summary>
@@ -139,8 +174,8 @@ public class ProducesCargo : CargoManagement
     void CooldownTick()
     {
         //Debug.Log(TimeController.s.currentTime.ToString() + " CooldownTick: " + timer.ToString());
-        timer = timer + 1f;
-        if (timer > (int)timeToProduce)
+        if (relativeTimeToProduce != TimeToProduce.None) timer = timer + (1f / (int)relativeTimeToProduce);
+        if (timer > 1f)
         {
             timer = 0f;
             amountOfItems++;
@@ -179,8 +214,7 @@ public class ProducesCargo : CargoManagement
             this.maxProduced == other.maxProduced &&
             this.direction == other.direction &&
             this.startingAmount == other.startingAmount &&
-            this.timeToProduce == other.timeToProduce);
-    }
+            this.timeToProduce == other.timeToProduce);    }
     public override int GetHashCode()
     {
         int a = 0;

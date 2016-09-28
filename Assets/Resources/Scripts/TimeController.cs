@@ -203,6 +203,39 @@ public class TimeController : MonoBehaviour {
         TimerGUI.text = minutesString + ":" + secondsString;// + "." + s;
 
     }
+    /// <summary>
+    /// Devuelve el momento en el tiempo hacia adelante
+    /// Si el reloj es por Decrementos será hacia abajo
+    /// Si el reloj es por Incremewntos será hacia arriba
+    /// </summary>
+    /// <param name="seconds"></param>
+    /// <returns></returns>
+    public int AdvanceTimeXSeconds(int seconds)
+    {
+        int r = 0;
+        if (decrement)
+        {
+            r = (Mathf.FloorToInt(currentTime) - seconds) - 1;
+        }else
+        {
+            r = (Mathf.FloorToInt(currentTime) + seconds);
+        }
+        return r;
+    }
+
+    public int GiveCurrentStep()
+    {
+        int r = 0;
+        if (decrement)
+        {
+            r = Mathf.FloorToInt(currentTime) - 1;
+        }else
+        {
+            r = Mathf.FloorToInt(currentTime) + 1;
+        }
+        return r;
+    }
+
 
     #endregion
 }
