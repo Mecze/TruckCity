@@ -145,24 +145,24 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     /// </summary>
     /// <param name="direction"></param>
     /// <returns></returns>
-    public bool HasDirection(TruckDirection direction)
+    public bool HasDirection(CardinalPoint direction)
     {
         bool r = false;
         switch (direction)
         {
-            case TruckDirection.N:
+            case CardinalPoint.N:
                 r = HasN;
                 break;
-            case TruckDirection.E:
+            case CardinalPoint.E:
                 r = HasE;
                 break;
-            case TruckDirection.W:
+            case CardinalPoint.W:
                 r = HasW;
                 break;
-            case TruckDirection.S:
+            case CardinalPoint.S:
                 r = HasS;
                 break;
-            case TruckDirection.None:
+            case CardinalPoint.None:
                 r = true;
                 break;
             default:
@@ -353,20 +353,20 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         TurnOffAllSprites();
         RoadDirection currentState = direction;
         RoadDirection nextState = possibleRotations[0];
-        TruckDirection[] differences;
-        TruckDirection[] equals = currentState.Compare(nextState, out differences, true);
-        List<TruckDirection> changed = new List<TruckDirection>();
-        foreach (TruckDirection dir in differences)
+        CardinalPoint[] differences;
+        CardinalPoint[] equals = currentState.Compare(nextState, out differences, true);
+        List<CardinalPoint> changed = new List<CardinalPoint>();
+        foreach (CardinalPoint dir in differences)
         {
-            if (dir != TruckDirection.None)
+            if (dir != CardinalPoint.None)
             {
                 TurnOnArrow(dir);
                 changed.Add(dir);
             }
         }
-        foreach (TruckDirection dir1 in equals)
+        foreach (CardinalPoint dir1 in equals)
         {
-            if (dir1 != TruckDirection.None)
+            if (dir1 != CardinalPoint.None)
             {
                 TurnOnEquals(dir1);
                 changed.Add(dir1);
@@ -375,9 +375,9 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         if (possibleRotations.Count <= 2) return;
         RoadDirection AfterState = possibleRotations[1];
         equals = nextState.Compare(AfterState, out differences, true);
-        foreach (TruckDirection dir in differences)
+        foreach (CardinalPoint dir in differences)
         {
-            if (dir != TruckDirection.None && (changed.Contains(dir) == false))
+            if (dir != CardinalPoint.None && (changed.Contains(dir) == false))
             {
                 TurnOnArrowTrans(dir);
                 changed.Add(dir);
@@ -395,13 +395,13 @@ public class RoadEntity : MonoBehaviour, IFreezable {
             go.GetComponent<Animator>().SetBool("Moving", false);
         }
     }
-    void TurnOffSprite(TruckDirection dir)
+    void TurnOffSprite(CardinalPoint dir)
     {
         GameObject go = sprites[(int)dir-1];
         go.GetComponent<SpriteRenderer>().enabled = false;
         go.GetComponent<Animator>().SetBool("Moving", false);
     }
-    void TurnOnArrow(TruckDirection dir)
+    void TurnOnArrow(CardinalPoint dir)
     {
         GameObject go = sprites[(int)dir-1];
         SpriteRenderer ren = go.GetComponent<SpriteRenderer>();
@@ -409,7 +409,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         ren.sprite = (Sprite)Resources.Load(GameConfig.s.IMGPath + "Arrow", typeof(Sprite));
         go.GetComponent<Animator>().SetBool("Moving", true);
     }
-    void TurnOnArrowTrans(TruckDirection dir)
+    void TurnOnArrowTrans(CardinalPoint dir)
     {
         GameObject go = sprites[(int)dir - 1];
         SpriteRenderer ren = go.GetComponent<SpriteRenderer>();
@@ -417,7 +417,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         ren.sprite = (Sprite)Resources.Load(GameConfig.s.IMGPath + "ArrowTrans", typeof(Sprite));
         go.GetComponent<Animator>().SetBool("Moving", false);
     }
-    void TurnOnEquals(TruckDirection dir)
+    void TurnOnEquals(CardinalPoint dir)
     {
         GameObject go = sprites[(int)dir - 1];
         SpriteRenderer ren = go.GetComponent<SpriteRenderer>();
@@ -466,17 +466,17 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         //que apunta hacia donde está el otro RoadID.
         //Además devuelve True si es adyacente o false si no lo es
         //Si no están Adyacentes hacemos return false;
-        TruckDirection from1to2;
+        CardinalPoint from1to2;
         if (!road1.position.CheckAdjacencyWith(road2.position, out from1to2)) return false;
         //Igual en la otra dirección
-        TruckDirection from2to1;
+        CardinalPoint from2to1;
         if (!road2.position.CheckAdjacencyWith(road1.position, out from2to1)) return false; ;
 
         //Si llegamos hasta aquí, estan adyacentes y ambos "fromXtoX" tienen información
 
         //CheckAdjacency devuelve "true" y el out en "TruckDirection.None" (en ambos)
         //Si se trata, casualmente, de la misma casilla, devolvemos true automaticamente
-        if (from1to2 == TruckDirection.None || from2to1 == TruckDirection.None) return true;
+        if (from1to2 == CardinalPoint.None || from2to1 == CardinalPoint.None) return true;
 
         //Si road1 no posee la dirección hasta road2, se falla el check
         if (!road1.HasDirection(from1to2)) r = false;
@@ -494,28 +494,28 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     /// </summary>
     /// <param name="direction"></param>
     /// <returns></returns>
-    public static TruckDirection ReverseDirection(TruckDirection direction)
+    public static CardinalPoint ReverseDirection(CardinalPoint direction)
     {
-        TruckDirection result = TruckDirection.None;
+        CardinalPoint result = CardinalPoint.None;
         switch (direction)
         {
-            case TruckDirection.N:
-                result = TruckDirection.S;
+            case CardinalPoint.N:
+                result = CardinalPoint.S;
                 break;
-            case TruckDirection.E:
-                result = TruckDirection.W;
+            case CardinalPoint.E:
+                result = CardinalPoint.W;
                 break;
-            case TruckDirection.W:
-                result = TruckDirection.E;
+            case CardinalPoint.W:
+                result = CardinalPoint.E;
                 break;
-            case TruckDirection.S:
-                result = TruckDirection.N;
+            case CardinalPoint.S:
+                result = CardinalPoint.N;
                 break;
-            case TruckDirection.None:
-                result = TruckDirection.None;
+            case CardinalPoint.None:
+                result = CardinalPoint.None;
                 break;
             default:
-                result = TruckDirection.None;
+                result = CardinalPoint.None;
                 break;
         }
         return result;
@@ -600,12 +600,12 @@ public static class RoadDirectionExtensions
     /// <param name="diferences">OUT de array de TruckDirection</param>
     /// <param name="focusDifferencesOnOtherRoad">Si es false, el out "differences" devuelve=> ¿Que tiene esta carretera que no tenga "otherRoad"?. Si es true => ¿Que tiene la otra carretera que no tenga esta?</param>
     /// <returns>array de TruckDirection</returns>
-    public static TruckDirection[] Compare (this RoadDirection thisRoad, RoadDirection otherRoad, out TruckDirection[] diferences, bool focusDifferencesOnOtherRoad = false)
+    public static CardinalPoint[] Compare (this RoadDirection thisRoad, RoadDirection otherRoad, out CardinalPoint[] diferences, bool focusDifferencesOnOtherRoad = false)
     {
         bool b = focusDifferencesOnOtherRoad; //alias
         //Arrays temporales a llenar
-        TruckDirection[] diff = new TruckDirection[2];
-        TruckDirection[] result = new TruckDirection[2];
+        CardinalPoint[] diff = new CardinalPoint[2];
+        CardinalPoint[] result = new CardinalPoint[2];
         //contadores para las arrays
         int i = 0; //result
         int e = 0; //diff
@@ -615,7 +615,7 @@ public static class RoadDirectionExtensions
         for (int index = 1; index <= 4; index++)
         {
             //Sacamos la dirección que vamos a comprobar en este loop:
-            TruckDirection dir = (TruckDirection)index; //Cast de int a TruckDirection
+            CardinalPoint dir = (CardinalPoint)index; //Cast de int a TruckDirection
 
             //La comprobamos!
 
@@ -646,13 +646,13 @@ public static class RoadDirectionExtensions
         //End of Main Loop
 
         //reconstruimos ambas arrays y devolvemos.
-        TruckDirection[] resultd = new TruckDirection[result.Length];
+        CardinalPoint[] resultd = new CardinalPoint[result.Length];
         for (int x = 0; x < result.Length; x++)
         {
             resultd[x] = result[x];
         }
 
-        diferences = new TruckDirection[diff.Length];
+        diferences = new CardinalPoint[diff.Length];
         for (int y = 0; y < diff.Length; y++)
         {
             diferences[y] = diff[y];
@@ -666,24 +666,24 @@ public static class RoadDirectionExtensions
     /// </summary>
     /// <param name="direction"></param>
     /// <returns></returns>
-    public static bool HasDirection(this RoadDirection roadDirection, TruckDirection direction)
+    public static bool HasDirection(this RoadDirection roadDirection, CardinalPoint direction)
     {
         bool r = false;
         switch (direction)
         {
-            case TruckDirection.N:
+            case CardinalPoint.N:
                 r = roadDirection.HasN();
             break;
-            case TruckDirection.E:
+            case CardinalPoint.E:
                 r = roadDirection.HasE();
                 break;
-            case TruckDirection.W:
+            case CardinalPoint.W:
                 r = roadDirection.HasW();
                 break;
-            case TruckDirection.S:
+            case CardinalPoint.S:
                 r = roadDirection.HasS();
                 break;
-            case TruckDirection.None:
+            case CardinalPoint.None:
                 r = true;
                 break;
             default:

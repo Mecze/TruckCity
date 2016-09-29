@@ -62,6 +62,7 @@ public class GameConfig : MonoBehaviour {
 
     public Color[] cargoColors;
 
+    public Color[] cargoTextColors;
 
     #endregion
 

@@ -7,7 +7,7 @@ public class RoadEndCollider : MonoBehaviour {
     RoadEntity myRoad;
 
     [SerializeField]
-    TruckDirection thisDirection;
+    CardinalPoint thisDirection;
 
 
 
@@ -27,16 +27,16 @@ public class RoadEndCollider : MonoBehaviour {
 
         if (te.direction == thisDirection)
         {
-            TruckDirection direction = te.direction;
+            CardinalPoint direction = te.direction;
             RoadEntity NextTile;
             if (gameObject.name == "TopEndCollider")
-                if (direction != TruckDirection.N) return;
+                if (direction != CardinalPoint.N) return;
             if (gameObject.name == "BottomEndCollider")
-                if (direction != TruckDirection.S) return;
+                if (direction != CardinalPoint.S) return;
             if (gameObject.name == "LeftEndCollider")
-                if (direction != TruckDirection.W) return;
+                if (direction != CardinalPoint.W) return;
             if (gameObject.name == "RightEndCollider")
-                if (direction != TruckDirection.E) return;
+                if (direction != CardinalPoint.E) return;
 
             if (MapController.s.CheckNextTile(myRoad.position, direction, out NextTile))
             {

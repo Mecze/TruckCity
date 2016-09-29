@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public static class ExtensionsToThings
 {
@@ -33,6 +34,10 @@ public static class ExtensionsToThings
 
         }
 
+    }
+    public static int GetClosestIndex(this List<float> doublelist, float targetvalue)
+    {
+        return doublelist.IndexOf(doublelist.OrderBy(d => Mathf.Abs(d - targetvalue)).ElementAt(0));
     }
 
 

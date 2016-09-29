@@ -9,9 +9,9 @@ public class RoadCollider : MonoBehaviour {
     [SerializeField]
     RoadDirection[] roadDirectionCondition;
     [SerializeField]
-    TruckDirection[] truckDirectionCondition;
+    CardinalPoint[] truckDirectionCondition;
     [SerializeField]
-    TruckDirection[] newTruckDirection;
+    CardinalPoint[] newTruckDirection;
     [SerializeField]
     Turn[] newTurn;
     [SerializeField]

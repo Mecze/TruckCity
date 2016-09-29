@@ -90,10 +90,10 @@ public class Vector3Int  {
     /// </summary>
     /// <param name="other">El otro Vector3Int</param>
     /// <returns>Norte, Sur, Este, Oeste (N, S, E, W) ó None</returns>
-    public bool CheckAdjacencyWith(Vector3Int other, out TruckDirection result)
+    public bool CheckAdjacencyWith(Vector3Int other, out CardinalPoint result)
     {
         bool r = false;
-        result = TruckDirection.None;
+        result = CardinalPoint.None;
         //Diferencia ejeX
         int deltaX = x - other.x;
         //Diferencia ejeZ
@@ -107,13 +107,13 @@ public class Vector3Int  {
             if (deltaX == 1)
             {
                 r = true;
-                result = TruckDirection.W;
+                result = CardinalPoint.W;
             }
             //Del reves
             if (deltaX == -1)
             {
                 r = true;
-                result = TruckDirection.E;
+                result = CardinalPoint.E;
             }
             //Nota: si es mayor o menor de (+/-)1 no son adyacentes
         }
@@ -124,13 +124,13 @@ public class Vector3Int  {
             if (deltaZ == 1)
             {
                 r = true;
-                result = TruckDirection.S;
+                result = CardinalPoint.S;
             }
             //Del reves
             if (deltaZ == -1)
             {
                 r = true;
-                result = TruckDirection.N;
+                result = CardinalPoint.N;
             }
         }
 
