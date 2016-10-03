@@ -75,6 +75,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\LoadingScreenManager.cs" />
     <Compile Include="Assets\MenuLevel.cs" />
     <Compile Include="Assets\Mobile Cartoon GUI 2\Examples\NGUI Example\Scripts\AchievementNotification.cs" />
     <Compile Include="Assets\Mobile Cartoon GUI 2\Examples\NGUI Example\Scripts\AchievementWindow.cs" />

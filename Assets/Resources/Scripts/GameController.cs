@@ -225,7 +225,7 @@ public class GameController : MonoBehaviour {
 
     public void RetryLevel()
     {
-        SceneManager.LoadScene(level+2);
+        SceneManager.LoadScene(level+3);
     }
     public void BackToMenu()
     {

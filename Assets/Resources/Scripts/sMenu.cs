@@ -78,9 +78,7 @@ public class sMenu : MonoBehaviour {
     }
     void NewGameLoadGame(int levelIndex)
     {
-        sProfileManager.ProfileSingleton.newLevelIndex = levelIndex;
-        sProfileManager.ProfileSingleton.startNewLevel = true;
-        SceneManager.LoadScene(levelIndex+2);
+        sProfileManager.instance.ChangeLevel(levelIndex);
     }
 
     /*void Unlocks()

@@ -2,10 +2,15 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class sProfileManager : Singleton<sProfileManager> {
     
 
+  
+    [SerializeField]
+    bool ForceNewProfile;
+    
 
     static Profile _singleton = null;
     public static Profile ProfileSingleton
@@ -14,18 +19,23 @@ public class sProfileManager : Singleton<sProfileManager> {
         {
             if (_singleton == null)
             {
-                Profile pf = sSaveLoad.LoadProfile();
-                if (pf == null || pf.version == "" || pf.version != sProfileManager.instance.defaultProfile.version)
+                if (sProfileManager.instance.ForceNewProfile)
                 {
-                    Debug.Log("NEW PROFILE!");
-                    _singleton = sProfileManager.instance.defaultProfile;
-                    sSaveLoad.savedProfile = _singleton;
+                    _singleton = NewProfile();
                 }
                 else
                 {
-                    _singleton = pf;
-                    sSaveLoad.savedProfile = _singleton;
-                    Debug.Log("Profile Loaded");
+                    Profile pf = sSaveLoad.LoadProfile();
+                    if (pf == null || pf.version == "" || pf.version != sProfileManager.instance.defaultProfile.version)
+                    {
+                        _singleton = NewProfile();
+                    }
+                    else
+                    {
+                        _singleton = pf;
+                        sSaveLoad.savedProfile = _singleton;
+                        Debug.Log("Profile Loaded");
+                    }
                 }
             }
             return _singleton;
@@ -38,15 +48,28 @@ public class sProfileManager : Singleton<sProfileManager> {
         }
     }
 
+
+
     public Profile defaultProfile;
 
     public List<LevelConditions> levelconditions;
 
 
 
+    static Profile NewProfile()
+    {
+        Debug.Log("NEW PROFILE!");
+        sSaveLoad.savedProfile = sProfileManager.instance.defaultProfile; ;
+        return sSaveLoad.savedProfile;
+    }
+    
+
+
 
     void Start()
-    {//Esto solo sera ejecutado cuando se crea este objeto.
+    {
+        
+     //Esto solo sera ejecutado cuando se crea este objeto.
      //Gracias a que hereda de Singleton<> y "Is Peristent" es true
 
         //DEVELOPER!
@@ -78,6 +101,22 @@ public class sProfileManager : Singleton<sProfileManager> {
         yield return new WaitForSeconds(3f);
         SceneManager.LoadScene(i);
     }
+
+    public void ChangeLevel(int levelIndex)
+    {
+        sProfileManager.ProfileSingleton.newLevelIndex = levelIndex;
+        sProfileManager.ProfileSingleton.ChangingLevel = true;
+        LoadingScreenManager.LoadScene(levelIndex+3);
+        
+    }
     
 
+
+
 }
+
+
+
+
+
+

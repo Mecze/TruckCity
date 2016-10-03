@@ -17,9 +17,9 @@ public class Profile {
     public bool currentlyPlayingLevel;
 
     /// <summary>
-    /// If True, will create a new game when the Main Scene Loads (SET newLevelIndex!)
+    /// If True, we HAVE to change level after loading screen sets over screen
     /// </summary>
-    public bool startNewLevel;
+    public bool ChangingLevel;
 
     /// <summary>
     /// Points to the level to create new

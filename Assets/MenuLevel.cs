@@ -10,7 +10,7 @@ using System.Collections.Generic;
 /// y manejar que se hace cuando se pincha
 //////////////////////////////
 
-
+   
 public class MenuLevel : MonoBehaviour {
     [Header("References")]
     [SerializeField]
@@ -21,6 +21,10 @@ public class MenuLevel : MonoBehaviour {
     List<GameObject> stars;
     [SerializeField]
     UILabel lockStars;
+    [SerializeField]
+    TweenScale tween2;
+
+    bool pressed;
 
     ProfileLevels _myProfileLevel;
 
@@ -66,6 +70,20 @@ public class MenuLevel : MonoBehaviour {
     {
         sMenu.singleton.OnLevelButtonClick(_myProfileLevel.index);
     }
+    public void back()
+    {
+        if (pressed)
+        {
+            clicked();
+            pressed = false;
+        }else
+        {
+            tween2.PlayReverse();
+            pressed = true;
+        }
+        //ProfileManager.instance.LoadingScreen = true;
 
+    }
+    
 
 }
