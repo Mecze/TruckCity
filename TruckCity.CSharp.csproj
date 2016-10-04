@@ -75,23 +75,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\GuiButtonWatch.cs" />
     <Compile Include="Assets\LoadingScreenManager.cs" />
     <Compile Include="Assets\MenuLevel.cs" />
-    <Compile Include="Assets\Mobile Cartoon GUI 2\Examples\NGUI Example\Scripts\AchievementNotification.cs" />
-    <Compile Include="Assets\Mobile Cartoon GUI 2\Examples\NGUI Example\Scripts\AchievementWindow.cs" />
-    <Compile Include="Assets\Mobile Cartoon GUI 2\Examples\NGUI Example\Scripts\ButtonSendAchievement.cs" />
-    <Compile Include="Assets\Mobile Cartoon GUI 2\Examples\NGUI Example\Scripts\ButtonState.cs" />
-    <Compile Include="Assets\Mobile Cartoon GUI 2\Examples\NGUI Example\Scripts\Description.cs" />
-    <Compile Include="Assets\Mobile Cartoon GUI 2\Examples\NGUI Example\Scripts\DockButtonBouncing.cs" />
-    <Compile Include="Assets\Mobile Cartoon GUI 2\Examples\NGUI Example\Scripts\NGUIExample.cs" />
-    <Compile Include="Assets\Mobile Cartoon GUI 2\Examples\NGUI Example\Scripts\NGUIThemeSwitch.cs" />
-    <Compile Include="Assets\Mobile Cartoon GUI 2\Examples\NGUI Example\Scripts\NotificationTextFX.cs" />
-    <Compile Include="Assets\Mobile Cartoon GUI 2\Examples\NGUI Example\Scripts\SettingsWindow.cs" />
-    <Compile Include="Assets\Mobile Cartoon GUI 2\Examples\NGUI Example\Scripts\SlicedSprites.cs" />
-    <Compile Include="Assets\Mobile Cartoon GUI 2\Examples\NGUI Example\Scripts\StoreUpgradeButton.cs" />
-    <Compile Include="Assets\Mobile Cartoon GUI 2\Examples\NGUI Example\Scripts\StoreWindow.cs" />
-    <Compile Include="Assets\Mobile Cartoon GUI 2\Examples\NGUI Example\Scripts\ThemeButtonBegging.cs" />
-    <Compile Include="Assets\Mobile Cartoon GUI 2\Examples\NGUI Example\Scripts\Upgrades.cs" />
     <Compile Include="Assets\Mobile Cartoon GUI 2\Scripts\ButtonAnimationContoller.cs" />
     <Compile Include="Assets\NGUI\Examples\Scripts\InventorySystem\Game\EquipItems.cs" />
     <Compile Include="Assets\NGUI\Examples\Scripts\InventorySystem\Game\EquipRandomItem.cs" />
@@ -293,7 +279,7 @@
     <Compile Include="Assets\Resources\Scripts\ObjectCloner.cs" />
     <Compile Include="Assets\Resources\Scripts\OtherLaneChecker.cs" />
     <Compile Include="Assets\Resources\Scripts\Profile.cs" />
-    <Compile Include="Assets\Resources\Scripts\QuestSlateDelivery.cs" />
+    <Compile Include="Assets\Resources\Scripts\QuestSlate.cs" />
     <Compile Include="Assets\Resources\Scripts\QuestSlateDeliveryIntro.cs" />
     <Compile Include="Assets\Resources\Scripts\RoadCollider.cs" />
     <Compile Include="Assets\Resources\Scripts\RoadEndCollider.cs" />

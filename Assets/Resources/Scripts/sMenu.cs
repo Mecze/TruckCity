@@ -29,17 +29,20 @@ public class sMenu : MonoBehaviour {
         }
     }
     #endregion
+#pragma warning disable 0169
     public GameObject buttonPrefab;
     //public GameObject currentGamePanel;
     //public GameObject surePanel;
-    int lastSelectedIndex;
+    //int lastSelectedIndex;
     bool promptIsUp = false;
+
     [SerializeField]
     UILabel StarsText;
 
+
     [SerializeField]
     GameObject anchor;
-
+#pragma warning restore 0169
     void Start()
     {
 
@@ -80,14 +83,6 @@ public class sMenu : MonoBehaviour {
     {
         sProfileManager.instance.ChangeLevel(levelIndex);
     }
-
-    /*void Unlocks()
-    {
-        
-        Profile profile = sProfileManager.ProfileSingleton;
-        
-
-    }
-    */
+       
 
 }

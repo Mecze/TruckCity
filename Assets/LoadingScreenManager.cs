@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class LoadingScreenManager : MonoBehaviour
 {
+    
 
     [Header("Loading Visuals")]
    // public GameObject loadingIcon;
@@ -29,12 +30,16 @@ public class LoadingScreenManager : MonoBehaviour
     AsyncOperation operation;
     Scene currentScene;
 
+    public static bool forceUnload = false;
+    public static int forceUnloadIndex = 0;
     public static int sceneToLoad = -1;
     // IMPORTANT! This is the build index of your loading scene. You need to change this to match your actual scene index
     static int loadingSceneIndex = 2;
 
-    public static void LoadScene(int levelNum)
+    public static void LoadScene(int levelNum, bool ForceUnload = false, int ForceUnloadIndex = 0)
     {
+        forceUnload = ForceUnload;
+        forceUnloadIndex = ForceUnloadIndex;
         Application.backgroundLoadingPriority = ThreadPriority.High;
         sceneToLoad = levelNum;
         SceneManager.LoadScene(loadingSceneIndex);
@@ -52,6 +57,11 @@ public class LoadingScreenManager : MonoBehaviour
 
     private IEnumerator LoadAsync(int levelNum)
     {
+        if (forceUnload)
+        {
+            SceneManager.UnloadScene(forceUnloadIndex);
+        }
+
         ShowLoadingVisuals();
         FadeIn();
 

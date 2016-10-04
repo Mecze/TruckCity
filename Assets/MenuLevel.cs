@@ -24,7 +24,8 @@ public class MenuLevel : MonoBehaviour {
     [SerializeField]
     TweenScale tween2;
 
-    bool pressed;
+    public bool hover = false;
+    public bool pressed = false;
 
     ProfileLevels _myProfileLevel;
 
@@ -43,13 +44,18 @@ public class MenuLevel : MonoBehaviour {
         }
     }
 
+    void Awake()
+    {
+        
+    }
+
     public void UpdateGUI()
     {
         image.spriteName = "Level_" + _myProfileLevel.index.ToString();
         if (!myProfileLevel.locked)
         {
             lockPanel.SetActive(false);
-            for (int i = 0; i < myProfileLevel.stars-1; i++)
+            for (int i = 0; i <= myProfileLevel.stars-1; i++)
             {
                 stars[i].SetActive(true);
             }
@@ -72,18 +78,41 @@ public class MenuLevel : MonoBehaviour {
     }
     public void back()
     {
-        if (pressed)
+        if (!pressed)
         {
-            clicked();
-            pressed = false;
+            if (hover) clicked();
+            //pressed = true;
         }else
         {
-            tween2.PlayReverse();
-            pressed = true;
+            //tween2.PlayReverse();
+            //pressed = false;
         }
         //ProfileManager.instance.LoadingScreen = true;
 
     }
     
+    public void HoverOut()
+    {
+        hover = false;
+        if (pressed)
+        {
+            tween2.PlayReverse();
+            pressed = false;
+        }
+    }
+    public void HoverIn()
+    {
+        hover = true;
+    }
+    public void OnPress()
+    {
+        pressed = true;
+        tween2.PlayForward();        
+    }
+    public void OnRelease()
+    {
+        pressed = false;
+        tween2.PlayReverse();        
+    }
 
 }

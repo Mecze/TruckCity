@@ -49,7 +49,7 @@ public class TimeController : MonoBehaviour {
     #endregion
 
     #region Events
-    public static event OnStartClockDelegate OnStartClock;
+    public event OnStartClockDelegate OnStartClock;
     #endregion
 
     #region Declaración de Variables y Propiedades
@@ -79,8 +79,6 @@ public class TimeController : MonoBehaviour {
     [SerializeField]
     //Indica cuando debe detenerse el temporizador. Si es 0 es infinito
     float finishAtSecond = 0f;
-
-    bool FirstUpdate = false;
 
     //Mi Timer
     public Timer timer;
@@ -124,7 +122,7 @@ public class TimeController : MonoBehaviour {
     
     [Header("GUI")]
     [SerializeField]
-    Text TimerGUI;   
+    UILabel TimerGUI;   
 
     #endregion
 
@@ -144,33 +142,23 @@ public class TimeController : MonoBehaviour {
         {
             //mas
             currentTime = timer.UpdateTimer(Time.deltaTime, out debugStep);
-        }
-        /*
-        if (!FirstUpdate)
-        {
-            FirstUpdate = true;
-            if (OnStartClock != null) OnStartClock();
-        }
-        */
+        }       
 
         //debug
         //Esto es para ver como corre el temporizador en el inspector
         //Las dos lineas siguientes son innecesarias.
-        minutes = Mathf.FloorToInt(currentTime) / 60;
-        //seconds = currentTime % 60f;
-        //UpdateGUI();
+        minutes = Mathf.FloorToInt(currentTime) / 60;        
     }
-    /*
-    void Awake()
-    {
-        //Llamamos al CONTRUCTOR de la clase Timer y le pasamos los datos
-        //Entre ellos:
-        // Tiempo , la acción a ejecutar al terminar el timer, y el momento final de timer
-       timer = new Timer(seconds,() => { Debug.Log("Timer Finished"); }, finishAtSecond);
-        //por defecto el timer esta parado, lo empezamos
-       timer.StartTimer();
-    }
-    */
+   
+    /// <summary>
+    /// Inicializa el Timer
+    /// Esto se llama desde GameController al principio del Nivel
+    /// </summary>
+    /// <param name="time">Desde donde empieza a contar el reloj</param>
+    /// <param name="FinishAction">"ACTION" que se realiza al terminar el reloj</param>
+    /// <param name="decrement">Si el Reloj cuenta hacia arriba o hacia abajo</param>
+    /// <param name="finishAtSeconds">[Por defecto = 0] Cuando Termina el Timer</param>
+    /// <param name="StartTimer">[Por defecto = True] Si el Timer debe empezar</param>
     public void SetTimer(float time, Action FinishAction, bool decrement, float finishAtSeconds =0f, bool StartTimer=true)
     {
         this.decrement = decrement;
@@ -180,6 +168,7 @@ public class TimeController : MonoBehaviour {
         if (StartTimer) timer.StartTimer();
         currentTime = timer.UpdateTimer(0f, out debugStep);
         if (OnStartClock != null) OnStartClock();
+        UpdateGUI(currentTime);
 
 
     }
@@ -190,6 +179,7 @@ public class TimeController : MonoBehaviour {
     /// <param name="thisTime"></param>
     void UpdateGUI(float currentSeconds)
     {
+        /*
         //Formatea el Texto y lo presenta.        
         TimeSpan ts = TimeSpan.FromSeconds(currentSeconds);
         //string s = ts.Milliseconds.ToString();
@@ -198,9 +188,10 @@ public class TimeController : MonoBehaviour {
         if (minutesString.Length <= 1) minutesString = "0" + minutesString;
         string secondsString = ts.Seconds.ToString();
         if (secondsString.Length <= 1) secondsString = "0" + Mathf.FloorToInt(currentTime % 60f);
+*/
+        
+        TimerGUI.text = Mathf.FloorToInt(currentSeconds).ToString();
 
-
-        TimerGUI.text = minutesString + ":" + secondsString;// + "." + s;
 
     }
     /// <summary>
@@ -222,7 +213,10 @@ public class TimeController : MonoBehaviour {
         }
         return r;
     }
-
+    /// <summary>
+    /// Devuelve el "Step" por que el que va el reloj
+    /// </summary>
+    /// <returns>INTEGER</returns>
     public int GiveCurrentStep()
     {
         int r = 0;

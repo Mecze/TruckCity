@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 public delegate void ScoreEvent(CargoType cargo);
 public delegate void MoneyEvent(int increment);
 public delegate void CompeletedQuestEvent(float momentInTime);
+public delegate void PauseEvent();
 
 
 public class GameController : MonoBehaviour {
@@ -59,10 +60,14 @@ public class GameController : MonoBehaviour {
     GameObject textGOPrefab;
     public float defaulYFloatingText;
 
+
+    [NonSerialized]
+    public bool Pause = false;
     [Header("Levels")]
     /// <summary>
     /// apunta al nivel actual en la lista "levelconditions"
     /// </summary>
+    [NonSerialized]
     public int level = 0;
     /// <summary>
     /// Lista de niveles.
@@ -91,7 +96,7 @@ public class GameController : MonoBehaviour {
     #region money
 
     [SerializeField]
-    Text MoneyText;
+    UILabel MoneyText;
     [SerializeField]
     private int _money = 0;
     public int money
@@ -112,9 +117,10 @@ public class GameController : MonoBehaviour {
 
 
     #endregion
-    public static event ScoreEvent OnScore;
-    public static event MoneyEvent OnMoneyGain;
-    public static event CompeletedQuestEvent OnCompeletedQuest;
+    public event ScoreEvent OnScore;
+    public event MoneyEvent OnMoneyGain;
+    public event CompeletedQuestEvent OnCompeletedQuest;
+    public event PauseEvent OnPause;
     [Header("GUI")]
     [SerializeField]
     GameObject IntroPanel;
@@ -128,30 +134,246 @@ public class GameController : MonoBehaviour {
     GameObject CounddownOBJ;
     [SerializeField]
     GameObject FinishText;
+    [SerializeField]
+    TweenAlpha GUIPanelAlphaTween;
+    [SerializeField]
+    TweenAlpha IntroPanelAlphaTween;
+    [SerializeField]
+    TweenPosition PauseButtonPosTween;
+    [SerializeField]
+    GameObject QuestGrid;
 
 
     [Header("Prefabs")]
     [SerializeField]
-    GameObject QuestSlatePrefabDelivered;
-    [SerializeField]
+    GameObject QuestSlatePrefab;
+   /* [SerializeField]
     GameObject QuestSlatePrefabMoney;
     [SerializeField]
     GameObject QuestSlatePrefabTimer;
+    */
     [SerializeField]
     GameObject IPQuestSlatePrefab;
 
+    #region StartGame SEQUENCE
+    //En orden
+    //Todo lo ubicado en esta región se ejecuta en orden hasta la
+    //siguiente region
 
-
+    /// <summary>
+    /// La Ejecución del juego empieza AQUI!
+    /// </summary>
     void Awake()
     {
         fillmylevel();
+    }
+    /// <summary>
+    /// Inicia la secuencia al inicio del juego
+    /// </summary>
+    void fillmylevel()
+    {
         
         
-    }   
 
-   
+        //Congela los elementos jubales por ahora
+        FreezeGame(true);
+        
 
-    
+        //GUI Activa el panel de entrada y la GUI detras
+        IntroPanel.SetActive(true);
+        GUIPanel.SetActive(true);        
+        MoneyText.text = _money.ToString();
+
+        //Ajustamos este nivel dependiendo de el sitio en las build settings de su escena
+        level = SceneManager.GetActiveScene().buildIndex - 3;
+        //Clonamos la configuración de este nivel (LevelConditions)
+        if (sProfileManager.instance != null) myLevel = ObjectCloner.Clone<LevelConditions>(sProfileManager.instance.levelconditions.Find(x => x.level == level));
+
+
+
+        //Configuramos el MODO de este Nivel
+        //(Actualmente solo existe TimeAttack)
+        switch (myLevel.mode)
+        {
+            case LevelMode.TimeAttack:
+                //En esta parte se inician los Listeners para los
+                //distintos eventos que pueden ocurrir durante el juego
+                OnScore += TimeAttackOnScoreListener;
+                OnMoneyGain += TimeAttackOnMoneyGainListener;
+                OnCompeletedQuest += TimeAttackOnCompletedQuestListener;
+                //Se inicializa el Timer (no empieza aún, está Freeze)
+                TimeController.s.SetTimer((float)myLevel.startingTimer, TimeAttackEndGameVictoryCheck, true, 0f, false);
+                break;
+            default:
+                break;
+                
+        }
+
+
+                //LINKED QUEST SET UP
+                //---
+                //Repasamos las Quest de este nivel, creamos la LISTA por referencia
+                //de todas las misiones asociadas a otras misiones
+                //Nota este Foreach vale para otra cosa mas(ver mas abajo)
+                int e = 0;
+        foreach (Quest q in myLevel.quests)
+        {
+            q.completed = false;
+            q.LinkedQuest = new List<Quest>();
+
+            if (q.LinkedQuestIndex.Count > 0)
+            {
+                foreach (int i in q.LinkedQuestIndex)
+                {
+                    if (i < e)
+                    {
+                        q.LinkedQuest.Add(myLevel.quests[i]);
+                        q.LinkedQuestEnabled = true;
+                    }
+                }
+
+            }
+            e += 1;
+
+        //---
+        //Creamos los SLATES apropiados (Para UI y para la INTRO)
+            CreateGUISlate(q, e);
+            CreateIPGUISlate(q, e, true);
+        }
+
+        //Tras crear Slates se le indica al Grid que se ajuste
+        //(No es automático)
+        GameObject.FindGameObjectWithTag("QuestGUI").GetComponent<UIGrid>().Reposition();
+        GameObject.FindGameObjectWithTag("IPQuestSlateAnchor").GetComponent<UIGrid>().Reposition();
+        //El juego comienza en Pause, no se deben ver repetidas las Quest:
+        QuestGrid.SetActive(false); //QuestGrid son las quest principales. IP las del Menú
+
+        //Ahora se Activa la Intro
+        //(En la Escena viene ya activada por defecto) FailSafe:
+        IntroPanel.SetActive(true);       
+
+        //NOTA:
+        //Cuando el jugador indica de empezar a jugar se ejecuta
+        //"LaunchCountdownAnimation()" 
+        //y despues del Countdown = "StartGame()" (ver Mas abajo)
+
+
+    }
+
+    /// <summary>
+    /// Es lanzado desde la UI para empezar la partida.
+    /// </summary>
+    public void StartButtonClicked()
+    {
+        if (!Pause)
+        {
+            
+            IntroPanelAlphaTween.PlayForward();
+            //Esto inicializa el Countdown.
+            StartCoroutine(StartButtonAfterFadeOut(GUIPanelAlphaTween.duration+0.1f, true));
+            
+            //Al terminar el Countdown se lanza "StartGame"
+            //Desde el Animator de CountdownAnimator
+        }else
+        {
+            //Si pause es TRUE quiere decir que NO es el inicio del MAPA
+            //Si nó que se hizó pause
+            Pause = false;
+            IntroPanelAlphaTween.PlayForward();            
+            StartCoroutine(StartButtonAfterFadeOut(GUIPanelAlphaTween.duration + 0.1f, false));
+            
+
+        }
+    }
+
+    IEnumerator StartButtonAfterFadeOut(float time, bool launchCountdown)
+    {
+        yield return new WaitForSeconds(time);
+        if (launchCountdown)
+        {
+            IntroPanel.SetActive(false);
+            GUIPanel.SetActive(true);
+            QuestGrid.SetActive(true);
+            CounddownOBJ.SetActive(true);
+            PauseButtonPosTween.PlayForward();
+            CoundownAnimator.SetBool("Start", true);
+        }
+        else
+        {
+            QuestGrid.SetActive(true);
+            IntroPanel.SetActive(false);
+            GUIPanel.SetActive(true);
+            PauseButtonPosTween.PlayForward();
+            FreezeGame(false);
+
+        }
+
+    }
+
+    /// <summary>
+    /// Empieza el juego
+    /// Apaga el Freeze y el Countdown
+    /// </summary>
+    public void StartGame()
+    {        
+        FreezeGame(false);
+        CounddownOBJ.SetActive(false);        
+    }
+
+
+    #region Slate Creation
+    /// <summary>
+    /// Aqui se Crean los Slates de la INTRO del juego que muestran
+    /// las misiones al jugador
+    /// Este metodo crea 1 Slate. Este metodo se ejecuta en un bucle para cada quest
+    /// </summary>
+    /// <param name="q">la Quest</param>
+    /// <param name="position">la posicion (bucle)</param>
+    /// <param name="intro">Si es intro o no</param>
+    void CreateIPGUISlate(Quest q, int position, bool intro)
+    {
+        GameObject go;
+        go = GameObject.Instantiate(QuestSlatePrefab);
+        QuestSlate qs = go.GetComponent<QuestSlate>();
+        qs.position = position;
+        qs.MyCargoDelivered = CargosDelivered.Find(x => x.type == q.CargoType);
+        qs.MyQuest = q;
+        qs.IP = true;
+        go.transform.SetParent(GameObject.FindGameObjectWithTag("IPQuestSlateAnchor").transform);
+        go.transform.localScale = Vector3.one;
+
+
+        //Este Metodo inicializa el Slate
+        qs.SetSlate();
+    }
+
+    /// <summary>
+    /// Aqui se crean los Slates de la Interfaz de Mision (arriba izquierda de la UI)
+    /// Este metodo crea 1 Slate. Este metodo se ejecuta en un bucle para cada quest
+    /// </summary>
+    /// <param name="q">La mision</param>
+    /// <param name="position">La posición (bucle)</param>
+    void CreateGUISlate(Quest q, int position)
+    {
+        GameObject go;
+        go = GameObject.Instantiate(QuestSlatePrefab);
+        QuestSlate qs = go.GetComponent<QuestSlate>();
+        qs.position = position;
+        qs.MyCargoDelivered = CargosDelivered.Find(x => x.type == q.CargoType);
+        qs.MyQuest = q;
+        qs.IP = false;
+        go.transform.SetParent(GameObject.FindGameObjectWithTag("QuestGUI").transform);
+        go.transform.localScale = Vector3.one;
+        
+
+        //Este Metodo inicializa el Slate
+        qs.SetSlate();
+
+    }
+    #endregion
+
+
+    #endregion
 
     #region FloatingTextThing
 
@@ -200,32 +422,51 @@ public class GameController : MonoBehaviour {
     #endregion
 
     #region levelmanagement
-
-    public static void OnScoreCall(CargoType cargo)
+    public void PauseButton()
     {
-        if (OnScore != null) OnScore(cargo);
-    }
-    public void LaunchCountdownAnimation()
-    {
-        IntroPanel.SetActive(false);
-        GUIPanel.SetActive(true);
-        CounddownOBJ.SetActive(true);
-        CoundownAnimator.SetBool("Start", true);
+        PauseGame(true);
     }
 
-
-    public void StartGame()
+    public void PauseGame(bool b=true)
     {
+        if (b)
+        {
+            Pause = true;
+            FreezeGame(true);
+            QuestGrid.SetActive(false);
+            IntroPanel.SetActive(true);
+            PauseButtonPosTween.PlayReverse();
+            IntroPanelAlphaTween.PlayReverse();
+            //Lanzamos el eveto de Pause, esto actualizará los Quest Slates en el menú de inicio
+            if (OnPause != null) OnPause();
 
-        FreezeGame(false);
-        CounddownOBJ.SetActive(false);
 
-
+        }else
+        {
+            StartButtonClicked();
+        }
     }
+
+    public void OnScoreCall(CargoType cargo)
+    {
+        if (OnScore != null) {
+           
+           OnScore(cargo);
+                }
+    }
+    public void AddOnScoreEvent(ScoreEvent a)
+    {
+        OnScore += a;
+    }
+    
+
+
+    
 
     public void RetryLevel()
     {
-        SceneManager.LoadScene(level+3);
+        //SceneManager.UnloadScene(SceneManager.GetActiveScene());
+        LoadingScreenManager.LoadScene(level + 3, true, level + 3);
     }
     public void BackToMenu()
     {
@@ -233,120 +474,16 @@ public class GameController : MonoBehaviour {
     }
 
 
-    void fillmylevel()
-    {
-        FreezeGame(true);
-        IntroPanel.SetActive(true);
-        GUIPanel.SetActive(true);
-        MoneyText.text = _money.ToString();
-        if (sProfileManager.instance != null) myLevel = ObjectCloner.Clone<LevelConditions>(sProfileManager.instance.levelconditions.Find(x => x.level == level));
-        int e = 0;
-        foreach (Quest q in myLevel.quests) {
-            q.completed = false;
-            q.LinkedQuest = new List<Quest>();
-            
-            if (q.LinkedQuestIndex.Count > 0)
-            {                
-                foreach (int i in q.LinkedQuestIndex)
-                {
-                    if (i < e) {
-                        q.LinkedQuest.Add(myLevel.quests[i]);
-                        q.LinkedQuestEnabled = true;
-                    }
-                }
-                
-            }
-            e += 1;
-            CreateGUISlate(q, e);
-            CreateIPGUISlate(q, e, true);
-        }
+    
 
-        GUIPanel.SetActive(false);
-        IntroPanel.SetActive(true);
-        configthislevel();
-    }
-
-    void CreateIPGUISlate(Quest q, int position, bool intro)
-    {
-        GameObject go;
-        go = GameObject.Instantiate(IPQuestSlatePrefab);
-        QuestSlateDeliveryIntro qs = go.GetComponent<QuestSlateDeliveryIntro>();
-        qs.Intro = intro;
-        qs.position = position;
-        qs.MyCargoDelivered = CargosDelivered.Find(x => x.type == q.CargoType);
-        qs.MyQuest = q;
-        qs.AutoAnchor();
-        
-    }
+    
 
 
-    void CreateGUISlate(Quest q, int position)
-    {
-        GameObject go;
-        switch (q.winCondition)
-        {
-            case WinCondition.Delivered:
-                go = GameObject.Instantiate(QuestSlatePrefabDelivered);
-                QuestSlateDelivery qs = go.GetComponent<QuestSlateDelivery>();
-                qs.position = position;
-                qs.MyCargoDelivered = CargosDelivered.Find(x => x.type == q.CargoType);
-                qs.MyQuest = q;
-                break;
-            case WinCondition.Money:
-                go = GameObject.Instantiate(QuestSlatePrefabMoney);
-                QuestSlateDelivery qs1 = go.GetComponent<QuestSlateDelivery>();
-                qs1.position = position;
-                qs1.MyCargoDelivered = CargosDelivered.Find(x => x.type == q.CargoType);
-                qs1.MyQuest = q;
-                break;
-            case WinCondition.Time:
-                go = GameObject.Instantiate(QuestSlatePrefabTimer);
-                QuestSlateDelivery qs2 = go.GetComponent<QuestSlateDelivery>();
-                qs2.position = position;
-                qs2.MyCargoDelivered = CargosDelivered.Find(x => x.type == q.CargoType);
-                qs2.MyQuest = q;
-                break;
-            default:
-                break;
-        }
-        
+    
 
-    }
+    
 
-    void configthislevel()
-    {
-        switch (myLevel.mode)
-        {
-            case LevelMode.TimeAttack:
-                OnScore = TimeAttackOnScoreListener;
-                OnMoneyGain = TimeAttackOnMoneyGainListener;
-                OnCompeletedQuest = TimeAttackOnCompletedQuestListener;
-
-
-
-                TimeController.s.SetTimer((float)myLevel.startingTimer, TimeAttackEndGameVictoryCheck, true, 0f, false);
-                break;
-            default:
-                break;
-        }
-
-
-    }
-
-    IEnumerator EndGameSequence()
-    {
-        yield return new WaitForSeconds(2f);
-        OutroPanel.SetActive(true);
-        GUIPanel.SetActive(false);
-        int e = 0;
-        foreach (Quest q in myLevel.quests)
-        {               
-            e += 1;
-            //CreateGUISlate(q, e);
-            CreateIPGUISlate(q, e,false);
-        }
-
-    }
+    
 
 
     #region levellisteners & endgameCheckers
@@ -367,7 +504,7 @@ public class GameController : MonoBehaviour {
         }
         //Si se cumplió alguna misión lanzamos el evento de misión completada (que tal vez complete otras misiones)
         if (b && OnCompeletedQuest != null) OnCompeletedQuest(TimeController.s.timeSpent);
-        foreach (QuestSlateDelivery qsd in FindObjectsOfType<QuestSlateDelivery>()) qsd.UpdateGUI();
+        //foreach (QuestSlate qsd in FindObjectsOfType<QuestSlate>()) qsd.UpdateGUI();
     }
     void TimeAttackOnMoneyGainListener(int increment)
     {
@@ -382,7 +519,7 @@ public class GameController : MonoBehaviour {
 
 
 
-        foreach (QuestSlateDelivery qsd in FindObjectsOfType<QuestSlateDelivery>()) qsd.UpdateGUI();
+        //foreach (QuestSlate qsd in FindObjectsOfType<QuestSlate>()) qsd.UpdateGUI();
     }
     void TimeAttackOnCompletedQuestListener(float time)
     {        
@@ -397,7 +534,7 @@ public class GameController : MonoBehaviour {
 
 
 
-        foreach (QuestSlateDelivery qsd in FindObjectsOfType<QuestSlateDelivery>()) qsd.UpdateGUI();
+        //foreach (QuestSlate qsd in FindObjectsOfType<QuestSlate>()) qsd.UpdateGUI();
     }
 
     void TimeAttackEndGameVictoryCheck()
@@ -410,6 +547,21 @@ public class GameController : MonoBehaviour {
         StartCoroutine(EndGameSequence());
         
     }
+    IEnumerator EndGameSequence()
+    {
+        yield return new WaitForSeconds(2f);
+        OutroPanel.SetActive(true);
+        GUIPanel.SetActive(false);
+        int e = 0;
+        foreach (Quest q in myLevel.quests)
+        {
+            e += 1;
+            //CreateGUISlate(q, e);
+            CreateIPGUISlate(q, e, false);
+        }
+
+    }
+
     void SaveProfile() {
         bool b = false;
         int stars = myLevel.CheckQuests();
@@ -454,6 +606,8 @@ public class GameController : MonoBehaviour {
     #endregion
 
 
+
+   
 
 
 
@@ -965,7 +1119,7 @@ public class CargoDelivered
         set
         {
             _delivered = value;
-            GameController.OnScoreCall(_type);
+            GameController.s.OnScoreCall(_type);
             
         }
     }
