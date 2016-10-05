@@ -352,9 +352,21 @@ public class UISprite : UIBasicSprite
 
 	public override bool premultipliedAlpha { get { return (mAtlas != null) && mAtlas.premultipliedAlpha; } }
 
+   /* /// <summary>
+    /// This is used for On Finish Notifications in order to change sprite
+    /// </summary>
+    /// <param name="s"></param>
+
+    public void SetName(string s)
+    {
+        spriteName = s;
+    }
+    */
+
 	/// <summary>
 	/// Retrieve the atlas sprite referenced by the spriteName field.
 	/// </summary>
+
 
 	public UISpriteData GetAtlasSprite ()
 	{

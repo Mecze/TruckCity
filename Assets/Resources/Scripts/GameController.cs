@@ -112,6 +112,7 @@ public class GameController : MonoBehaviour {
             _money = value;
             if (OnMoneyGain != null) OnMoneyGain(i);
             MoneyText.text = _money.ToString();
+            
         }
     }
 
@@ -129,7 +130,7 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     GameObject GUIPanel;
     [SerializeField]
-    Animator CoundownAnimator;
+    CountDownSprite CountDownSprite;
     [SerializeField]
     GameObject CounddownOBJ;
     [SerializeField]
@@ -138,10 +139,14 @@ public class GameController : MonoBehaviour {
     TweenAlpha GUIPanelAlphaTween;
     [SerializeField]
     TweenAlpha IntroPanelAlphaTween;
+    //[SerializeField]
+    //TweenAlpha OutroPanelAlphaTween;
     [SerializeField]
     TweenPosition PauseButtonPosTween;
     [SerializeField]
     GameObject QuestGrid;
+    [SerializeField]
+    UILabel IntroMenuMainLabel;
 
 
     [Header("Prefabs")]
@@ -172,27 +177,25 @@ public class GameController : MonoBehaviour {
     /// </summary>
     void fillmylevel()
     {
-        
-        
-
         //Congela los elementos jubales por ahora
         FreezeGame(true);
-        
 
         //GUI Activa el panel de entrada y la GUI detras
         IntroPanel.SetActive(true);
         GUIPanel.SetActive(true);        
-        MoneyText.text = _money.ToString();
 
         //Ajustamos este nivel dependiendo de el sitio en las build settings de su escena
         level = SceneManager.GetActiveScene().buildIndex - 3;
         //Clonamos la configuración de este nivel (LevelConditions)
         if (sProfileManager.instance != null) myLevel = ObjectCloner.Clone<LevelConditions>(sProfileManager.instance.levelconditions.Find(x => x.level == level));
 
-
-
+        //Set Strings
+        MoneyText.text = _money.ToString();
+        IntroMenuMainLabel.text = "Level " + (level + 1).ToString() + " - Menu";
+        
         //Configuramos el MODO de este Nivel
         //(Actualmente solo existe TimeAttack)
+        //TODO: More LevelModes
         switch (myLevel.mode)
         {
             case LevelMode.TimeAttack:
@@ -209,13 +212,14 @@ public class GameController : MonoBehaviour {
                 
         }
 
+        //CONFIG QUEST FOREACH LOOP (FOR en el futuro)
 
-                //LINKED QUEST SET UP
-                //---
-                //Repasamos las Quest de este nivel, creamos la LISTA por referencia
-                //de todas las misiones asociadas a otras misiones
-                //Nota este Foreach vale para otra cosa mas(ver mas abajo)
-                int e = 0;
+        //LINKED QUEST SET UP
+        //---
+        //Repasamos las Quest de este nivel, creamos la LISTA por referencia
+        //de todas las misiones asociadas a otras misiones
+        //Nota este Foreach vale para otra cosa mas(ver mas abajo)
+        int e = 0;
         foreach (Quest q in myLevel.quests)
         {
             q.completed = false;
@@ -286,6 +290,13 @@ public class GameController : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Espera el FadeOut del Menú
+    /// Ver StartButtonClicked()
+    /// </summary>
+    /// <param name="time"></param>
+    /// <param name="launchCountdown"></param>
+    /// <returns></returns>
     IEnumerator StartButtonAfterFadeOut(float time, bool launchCountdown)
     {
         yield return new WaitForSeconds(time);
@@ -296,7 +307,7 @@ public class GameController : MonoBehaviour {
             QuestGrid.SetActive(true);
             CounddownOBJ.SetActive(true);
             PauseButtonPosTween.PlayForward();
-            CoundownAnimator.SetBool("Start", true);
+            CountDownSprite.StartCountDown();
         }
         else
         {
@@ -313,6 +324,7 @@ public class GameController : MonoBehaviour {
     /// <summary>
     /// Empieza el juego
     /// Apaga el Freeze y el Countdown
+    /// (Esto se ejecuta desde el ANIMADOR del CountDown inicial)
     /// </summary>
     public void StartGame()
     {        
@@ -550,16 +562,11 @@ public class GameController : MonoBehaviour {
     IEnumerator EndGameSequence()
     {
         yield return new WaitForSeconds(2f);
+        FinishText.SetActive(false);
         OutroPanel.SetActive(true);
         GUIPanel.SetActive(false);
-        int e = 0;
-        foreach (Quest q in myLevel.quests)
-        {
-            e += 1;
-            //CreateGUISlate(q, e);
-            CreateIPGUISlate(q, e, false);
-        }
-
+        OutroPanelScript ops = OutroPanel.GetComponent<OutroPanelScript>();
+        ops.ShowPanel(level, myLevel.CheckQuests());        
     }
 
     void SaveProfile() {

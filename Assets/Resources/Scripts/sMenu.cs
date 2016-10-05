@@ -29,7 +29,7 @@ public class sMenu : MonoBehaviour {
         }
     }
     #endregion
-#pragma warning disable 0169
+
     public GameObject buttonPrefab;
     //public GameObject currentGamePanel;
     //public GameObject surePanel;
@@ -42,7 +42,7 @@ public class sMenu : MonoBehaviour {
 
     [SerializeField]
     GameObject anchor;
-#pragma warning restore 0169
+
     void Start()
     {
 
