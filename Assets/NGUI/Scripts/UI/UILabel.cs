@@ -18,6 +18,7 @@ public class UILabel : UIWidget
 		Shadow,
 		Outline,
 		Outline8,
+        Both,
 	}
 
 	public enum Overflow
@@ -1822,7 +1823,7 @@ public class UILabel : UIWidget
 
 			ApplyShadow(verts, uvs, cols, offset, end, pos.x, -pos.y);
 
-			if ((effectStyle == Effect.Outline) || (effectStyle == Effect.Outline8))
+			if ((effectStyle == Effect.Outline) || (effectStyle == Effect.Outline8 || (effectStyle == Effect.Both)))
 			{
 				offset = end;
 				end = verts.size;

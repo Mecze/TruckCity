@@ -94,6 +94,9 @@ public class QuestSlate : MonoBehaviour {
     UILabel StarLabel;
     [SerializeField]
     UISprite ShadowIMG;
+    [SerializeField]
+    UILabel QuestLabel;
+
    
     [Header("Animations")]
     [SerializeField]
@@ -119,10 +122,19 @@ public class QuestSlate : MonoBehaviour {
     [SerializeField]
     string TimeName;
 
+    [Header("Quest Text")]
+    [SerializeField]
+    string DeliveryText;
+    [SerializeField]
+    string MoneyText;
+    [SerializeField]
+    string TimeText;
+
+
     #endregion
 
     #region Metodos
-    
+
     #region Animations With Tweens
     //StarCompletion
     void QuestCompletedAnimation()
@@ -179,10 +191,26 @@ public class QuestSlate : MonoBehaviour {
     #region EventListeners
     void OnScoreListener(CargoType cargoDelivered)
     {
-        Debug.Log("Event Cargo Delivered ONScoreListener() QuestSlate");
+
         if (cargoDelivered != _myQuest.CargoType) return;
         if (_myQuest.completed && _myCargoDelivered.delivered > _myQuest.winAmount) return;
         ShowSlate();
+    }
+
+    void OnMoneyGainListener(int moneyGained)
+    {
+        //Si antes de ganar este dinero la misi�n NO estaba cumplida continuamos, sin� RETURN        
+        //Solo se actualizar� el Slate si la misi�n NO est� hecha
+        if ((GameController.s.money - moneyGained) >= _myQuest.winAmount) return;
+        ShowSlate();
+
+    }
+    void OnCompletedQuestListener(float time) {
+        if (_myQuest.completed == true && questCompleted == false)
+        {
+            ShowSlate();
+        }
+        
     }
 
 
@@ -198,14 +226,45 @@ public class QuestSlate : MonoBehaviour {
     {
         //Register EventListeners
         //Si son de INTRO no se registran Eventos
-        if (!IP)
-        {
-            if (_myQuest.winCondition == WinCondition.Delivered)
-            {
-                GameController.s.OnScore += OnScoreListener;
-            }            
+        /*
+        Transform anchor = this.transform;
+        if (IP) anchor = GameObject.FindGameObjectWithTag("IPQuestIntroAnchor").transform;
+        if (!IP) anchor = GameObject.FindGameObjectWithTag("QuestGUIContainer").transform; 
+        UISprite me = this.GetComponent<UISprite>();
+        me.updateAnchors = UIRect.AnchorUpdate.OnStart;
+        me.leftAnchor.target = anchor;
+        me.rightAnchor.target = anchor;
+        me.topAnchor.target = anchor;
+        me.bottomAnchor.target = anchor;
+        me.leftAnchor.relative = 0.01108871f;
+        me.rightAnchor.relative = 0.984879f;
+        me.bottomAnchor.relative = 0.6261683f;
+        me.topAnchor.relative = 0.9299065f;
+        me.UpdateAnchors();
+        
+        if (!IP)GameObject.FindGameObjectWithTag("QuestGUI").GetComponent<UIGrid>().Reposition();
+        if (IP)GameObject.FindGameObjectWithTag("IPQuestSlateAnchor").GetComponent<UIGrid>().Reposition();
+        */
 
-        }else
+        switch (_myQuest.winCondition)
+            {
+                case WinCondition.Delivered:
+                    if (!IP) GameController.s.OnScore += OnScoreListener;
+                    QuestLabel.text = DeliveryText;
+                    break;
+                case WinCondition.Money:
+                    if (!IP) GameController.s.OnMoneyGain += OnMoneyGainListener;
+                    QuestLabel.text = MoneyText;
+                    break;
+                case WinCondition.Time:
+                    if (!IP) GameController.s.OnCompeletedQuest += OnCompletedQuestListener;
+                    QuestLabel.text = TimeText;
+                    break;
+                default:
+                    break;
+            }
+
+        if (IP)
         {
             GameController.s.OnPause += UpdateGUI;
         }
@@ -249,7 +308,8 @@ public class QuestSlate : MonoBehaviour {
     void UpdateGUI()
     {
         //questCompleted = true;
-        if (_myQuest == null || _myCargoDelivered == null) return;
+        if (_myQuest == null) return;
+        if (_myQuest.winCondition == WinCondition.Delivered && _myCargoDelivered == null) return;
 
         
 

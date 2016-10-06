@@ -42,7 +42,49 @@ using UnityEditor;
 [RequireComponent(typeof(Camera))]
 public class UICamera : MonoBehaviour
 {
-	public enum ControlScheme
+    #region Singleton
+    private static UICamera s_singleton = null;
+
+    public static UICamera singleton
+    {
+        get
+        {
+            if (s_singleton == null)
+            {
+                s_singleton = FindObjectOfType<UICamera>();
+            }
+            if (s_singleton == null)
+            {
+                //Esto no deberia pasar nunca!
+                Debug.LogError("No Existe Singleton GameController");
+            }
+            return s_singleton;
+        }
+        set { s_singleton = value; }
+    }
+    public static UICamera s
+    {
+        get
+        {
+            if (s_singleton == null)
+            {
+                s_singleton = FindObjectOfType<UICamera>();
+            }
+            if (s_singleton == null)
+            {
+                //Esto no deberia pasar nunca!
+                Debug.LogError("No Existe Singleton UICamera");
+            }
+            return s_singleton;
+        }
+        set { s_singleton = value; }
+    }
+
+
+
+
+    #endregion
+    public enum ControlScheme
 	{
 		Mouse,
 		Touch,

@@ -5,42 +5,58 @@ using UnityEngine.UI;
 public class FloatingText : MonoBehaviour {
 
     [SerializeField]
-    Text text;
+    UILabel myText;
+    [SerializeField]
+    UISprite mySprite;
+    [SerializeField]
+    TweenPosition myTweenPostion;
+    [SerializeField]
+    TweenAlpha myTweenAlpha;
 
-    public string phrase;
 
-    public Color myColor;
+    /// <summary>
+    /// Distancia para la posici�n final de la Y de final de myTweenPosition
+    /// </summary>
+    public float distanceOfY;
 	
     /// <summary>
     /// Inicia el texto flotante (se suele llamar despues de ser creado el objeto)
     /// </summary>
-	public void WakeMeUp () {
-        //posición de la camara
-        Vector3 v = Camera.main.transform.position;
+	public void WakeMeUp (string phrase, string spriteName, Color textColor, Transform worldPosition, Color cargoColor) {
+
+        //Emparentamos este objeto con su respectivo padre
+        this.transform.SetParent(GameObject.FindGameObjectWithTag("FloatingTextGUIAnchor").transform);
+        this.transform.localScale = Vector3.one;
+
+        //Se ajusta la posici�n de este objeto (de World Position a "Screen" Position) Puesto que es un elemento de UI
+        this.transform.position = NGUIMath.WorldToLocalPoint(worldPosition.position, Camera.main, UICamera.s.gameObject.GetComponent<Camera>(), this.transform);
+
+            //UICamera.s.gameObject.GetComponent<Camera>().WorldToScreenPoint(worldPosition.position);
+            //NGUIMath.OverlayPosition(this.transform, worldPosition);
+            //Camera.main.WorldToScreenPoint(worldPosition);
+
+        //Se cambia el Sprite
+        mySprite.spriteName = spriteName;
+        if (cargoColor != Color.black) mySprite.color = cargoColor;
+
+
+        //Inicializo el texto        
+        myText.text = phrase;
+        myText.color = textColor;
+
+        //Se ajusta la posici�n inicial y final del Tween de Posici�n (varia!)
+        Vector3 v = new Vector3();
+        v = this.transform.position;
+        myTweenPostion.from = v;
+        v.y = v.y + distanceOfY;
+        myTweenPostion.to = v;
         
-        //la x de esa posición será la misma que la mia
-        v.x = this.transform.position.x;        
-
-        //Miro a la camara
-        transform.LookAt(v);
-
-        //Ahora revierto el eje X de mi rotación
-        Quaternion r = this.transform.rotation;
-        r.x = -r.x;
-        this.transform.rotation = r;
-
-        //Inicializo el texto
-        text.enabled = true;
-        text.text = phrase;
-        text.color = myColor;
-        Destroy(this.gameObject, 2f);
+        //Se inician los Tweens animaciones
+        myTweenAlpha.PlayForward();
+        myTweenPostion.PlayForward();
+        Destroy(this.gameObject, myTweenAlpha.duration+0.1f);
 	}
 
-    void Update()
-    {
-
-        this.transform.Translate(Vector3.up * Time.deltaTime);        
-        myColor.a -= (0.5f * Time.deltaTime);
-        text.color = myColor;
-    }
+    
+    
 }

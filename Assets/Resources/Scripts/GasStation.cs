@@ -10,7 +10,7 @@ public class GasStation : MonoBehaviour {
         if (other.tag == "Truck")
         {
             other.GetComponent<TruckEntity>().RefilGas();
-            GameController.s.FloatingTextSpawn(this.transform.position.x, this.transform.position.z, "Refill", enumColor.Green);
+            GameController.s.FloatingTextSpawn(this.transform, "Refill", enumColor.Green, "Gas_Refill",Color.black);
         }
 
     }

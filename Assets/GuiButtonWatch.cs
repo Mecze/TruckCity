@@ -9,6 +9,8 @@ public class GuiButtonWatch : MonoBehaviour {
     GameObject IntroPanel;
     [SerializeField]
     GameObject WatchPanel;
+    [SerializeField]
+    GameObject StaticFloatingTextPanel;
 
 
     public void Click()
@@ -16,6 +18,8 @@ public class GuiButtonWatch : MonoBehaviour {
         GUIPanel.SetActive(!GUIPanel.activeSelf);
         IntroPanel.SetActive(GUIPanel.activeSelf);
         WatchPanel.SetActive(!GUIPanel.activeSelf);
+        StaticFloatingTextPanel.SetActive(!GUIPanel.activeSelf);
     }
+
 
 }

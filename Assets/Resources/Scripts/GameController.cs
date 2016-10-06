@@ -55,6 +55,12 @@ public class GameController : MonoBehaviour {
 
 
     #endregion
+
+    [Header("Menu Version of the GC")]
+    [SerializeField]
+    bool MenuVersion = false;
+
+
     [Header("FloatingTextConfig")]
     [SerializeField]
     GameObject textGOPrefab;
@@ -110,6 +116,7 @@ public class GameController : MonoBehaviour {
         {
             int i = value - _money;
             _money = value;
+            if (MenuVersion) return;
             if (OnMoneyGain != null) OnMoneyGain(i);
             MoneyText.text = _money.ToString();
             
@@ -135,6 +142,8 @@ public class GameController : MonoBehaviour {
     GameObject CounddownOBJ;
     [SerializeField]
     GameObject FinishText;
+    [SerializeField]
+    TweenScale FinishTextScaleTween;
     [SerializeField]
     TweenAlpha GUIPanelAlphaTween;
     [SerializeField]
@@ -176,86 +185,88 @@ public class GameController : MonoBehaviour {
     /// Inicia la secuencia al inicio del juego
     /// </summary>
     void fillmylevel()
-    {
-        //Congela los elementos jubales por ahora
-        FreezeGame(true);
-
-        //GUI Activa el panel de entrada y la GUI detras
-        IntroPanel.SetActive(true);
-        GUIPanel.SetActive(true);        
-
-        //Ajustamos este nivel dependiendo de el sitio en las build settings de su escena
-        level = SceneManager.GetActiveScene().buildIndex - 3;
-        //Clonamos la configuración de este nivel (LevelConditions)
-        if (sProfileManager.instance != null) myLevel = ObjectCloner.Clone<LevelConditions>(sProfileManager.instance.levelconditions.Find(x => x.level == level));
-
-        //Set Strings
-        MoneyText.text = _money.ToString();
-        IntroMenuMainLabel.text = "Level " + (level + 1).ToString() + " - Menu";
-        
-        //Configuramos el MODO de este Nivel
-        //(Actualmente solo existe TimeAttack)
-        //TODO: More LevelModes
-        switch (myLevel.mode)
+    {   
+        if (!MenuVersion)
         {
-            case LevelMode.TimeAttack:
-                //En esta parte se inician los Listeners para los
-                //distintos eventos que pueden ocurrir durante el juego
-                OnScore += TimeAttackOnScoreListener;
-                OnMoneyGain += TimeAttackOnMoneyGainListener;
-                OnCompeletedQuest += TimeAttackOnCompletedQuestListener;
-                //Se inicializa el Timer (no empieza aún, está Freeze)
-                TimeController.s.SetTimer((float)myLevel.startingTimer, TimeAttackEndGameVictoryCheck, true, 0f, false);
-                break;
-            default:
-                break;
-                
-        }
+            //Congela los elementos jubales por ahora
+            FreezeGame(true);
 
-        //CONFIG QUEST FOREACH LOOP (FOR en el futuro)
+            //GUI Activa el panel de entrada y la GUI detras
+            IntroPanel.SetActive(true);
+            GUIPanel.SetActive(true);
 
-        //LINKED QUEST SET UP
-        //---
-        //Repasamos las Quest de este nivel, creamos la LISTA por referencia
-        //de todas las misiones asociadas a otras misiones
-        //Nota este Foreach vale para otra cosa mas(ver mas abajo)
-        int e = 0;
-        foreach (Quest q in myLevel.quests)
-        {
-            q.completed = false;
-            q.LinkedQuest = new List<Quest>();
+            //Ajustamos este nivel dependiendo de el sitio en las build settings de su escena
+            level = SceneManager.GetActiveScene().buildIndex - 3;
+            //Clonamos la configuración de este nivel (LevelConditions)
+            if (sProfileManager.instance != null) myLevel = ObjectCloner.Clone<LevelConditions>(sProfileManager.instance.levelconditions.Find(x => x.level == level));
 
-            if (q.LinkedQuestIndex.Count > 0)
+            //Set Strings
+            MoneyText.text = _money.ToString();
+            IntroMenuMainLabel.text = "Level " + (level + 1).ToString() + " - Menu";
+
+            //Configuramos el MODO de este Nivel
+            //(Actualmente solo existe TimeAttack)
+            //TODO: More LevelModes
+            switch (myLevel.mode)
             {
-                foreach (int i in q.LinkedQuestIndex)
-                {
-                    if (i < e)
-                    {
-                        q.LinkedQuest.Add(myLevel.quests[i]);
-                        q.LinkedQuestEnabled = true;
-                    }
-                }
+                case LevelMode.TimeAttack:
+                    //En esta parte se inician los Listeners para los
+                    //distintos eventos que pueden ocurrir durante el juego
+                    OnScore += TimeAttackOnScoreListener;
+                    OnMoneyGain += TimeAttackOnMoneyGainListener;
+                    OnCompeletedQuest += TimeAttackOnCompletedQuestListener;
+                    //Se inicializa el Timer (no empieza aún, está Freeze)
+                    TimeController.s.SetTimer((float)myLevel.startingTimer, TimeAttackEndGameVictoryCheck, true, 0f, false);
+                    break;
+                default:
+                    break;
 
             }
-            e += 1;
 
-        //---
-        //Creamos los SLATES apropiados (Para UI y para la INTRO)
-            CreateGUISlate(q, e);
-            CreateIPGUISlate(q, e, true);
+            //CONFIG QUEST FOREACH LOOP (FOR en el futuro)
+
+            //LINKED QUEST SET UP
+            //---
+            //Repasamos las Quest de este nivel, creamos la LISTA por referencia
+            //de todas las misiones asociadas a otras misiones
+            //Nota este Foreach vale para otra cosa mas(ver mas abajo)
+            int e = 0;
+            foreach (Quest q in myLevel.quests)
+            {
+                q.completed = false;
+                q.LinkedQuest = new List<Quest>();
+
+                if (q.LinkedQuestIndex.Count > 0)
+                {
+                    foreach (int i in q.LinkedQuestIndex)
+                    {
+                        if (i < e)
+                        {
+                            q.LinkedQuest.Add(myLevel.quests[i]);
+                            q.LinkedQuestEnabled = true;
+                        }
+                    }
+
+                }
+                e += 1;
+
+                //---
+                //Creamos los SLATES apropiados (Para UI y para la INTRO)
+                CreateGUISlate(q, e);
+                CreateIPGUISlate(q, e, true);
+            }
+
+            //Tras crear Slates se le indica al Grid que se ajuste
+            //(No es automático)
+            GameObject.FindGameObjectWithTag("QuestGUI").GetComponent<UIGrid>().Reposition();
+            GameObject.FindGameObjectWithTag("IPQuestSlateAnchor").GetComponent<UIGrid>().Reposition();
+            //El juego comienza en Pause, no se deben ver repetidas las Quest:
+            QuestGrid.SetActive(false); //QuestGrid son las quest principales. IP las del Menú
+
+            //Ahora se Activa la Intro
+            //(En la Escena viene ya activada por defecto) FailSafe:
+            IntroPanel.SetActive(true);
         }
-
-        //Tras crear Slates se le indica al Grid que se ajuste
-        //(No es automático)
-        GameObject.FindGameObjectWithTag("QuestGUI").GetComponent<UIGrid>().Reposition();
-        GameObject.FindGameObjectWithTag("IPQuestSlateAnchor").GetComponent<UIGrid>().Reposition();
-        //El juego comienza en Pause, no se deben ver repetidas las Quest:
-        QuestGrid.SetActive(false); //QuestGrid son las quest principales. IP las del Menú
-
-        //Ahora se Activa la Intro
-        //(En la Escena viene ya activada por defecto) FailSafe:
-        IntroPanel.SetActive(true);       
-
         //NOTA:
         //Cuando el jugador indica de empezar a jugar se ejecuta
         //"LaunchCountdownAnimation()" 
@@ -263,6 +274,15 @@ public class GameController : MonoBehaviour {
 
 
     }
+
+    //no usado por ahora
+    IEnumerator AdjustGrids(bool IP)
+    {
+        yield return new WaitForSeconds(0.1f);
+        if (!IP)GameObject.FindGameObjectWithTag("QuestGUI").GetComponent<UIGrid>().Reposition();
+        if (IP)GameObject.FindGameObjectWithTag("IPQuestSlateAnchor").GetComponent<UIGrid>().Reposition();
+    }
+
 
     /// <summary>
     /// Es lanzado desde la UI para empezar la partida.
@@ -303,8 +323,9 @@ public class GameController : MonoBehaviour {
         if (launchCountdown)
         {
             IntroPanel.SetActive(false);
-            GUIPanel.SetActive(true);
+            GUIPanel.SetActive(true);            
             QuestGrid.SetActive(true);
+            //StartCoroutine(AdjustGrids(false));
             CounddownOBJ.SetActive(true);
             PauseButtonPosTween.PlayForward();
             CountDownSprite.StartCountDown();
@@ -388,49 +409,58 @@ public class GameController : MonoBehaviour {
     #endregion
 
     #region FloatingTextThing
-
+    /*
     /// <summary>
-    /// Genera un Floating text con el texto que le pedimos en la posición indicada
+    /// Genera un Floating Text con los siguientes parametros:
     /// </summary>
-    /// <param name="pos">VECTOR2 (Y equivale a Z) (se usa la Y por defecto)</param>
-    /// <param name="text">texto a mostrar</param>
-    /// <param name="publiccolor">enumColor= Rojo, amarillo, ....</param>
-    public void FloatingTextSpawn(Vector2 pos, string text, enumColor publiccolor)
+    /// <param name="pos">Posición en el mundo (se traducirá a posición en la pantalla)</param>
+    /// <param name="text">Texto a mostrar</param>
+    /// <param name="publiccolor">Color del Texto a mostrar</param>
+    /// <param name="spriteName">El nombre en el Atlas del Sprite a mostrar</param>
+    /// <param name="CargoColor">Color del Sprite a Mostrar (Si se usa Color.Black, se usa el color original del sprite)</param>
+    /// <param name="delay">[Opcional] Tiempo de espera hasta que se Spawnea (por defecto = 0)</param>
+    public void FloatingTextSpawn(Vector2 pos, string text, enumColor publiccolor, string spriteName, Color CargoColor, float delay = 0f)
     {
         Vector3 realPos = new Vector3(pos.x, defaulYFloatingText, pos.y);
-        FloatingTextSpawn(realPos, text, publiccolor);
-
-
+        FloatingTextSpawn(realPos, text, publiccolor, spriteName, CargoColor, delay);
     }
+
     /// <summary>
-    /// Genera un Floating text con el texto que le pedimos en la posición indicada
+    /// Genera un Floating Text con los siguientes parametros:
     /// </summary>
-    /// <param name="x">La X de la posición (se usa la Y por defecto)</param>
-    /// <param name="z">La Z de la posición (se usa la Y por defecto</param>
-    /// <param name="text">texto a mostrar</param>
-    /// <param name="publiccolor">enumColor= Rojo, amarillo, ....</param>
-    public void FloatingTextSpawn(float x, float z, string text, enumColor publiccolor)
+    /// <param name="pos">Posición en el mundo (se traducirá a posición en la pantalla)</param>
+    /// <param name="text">Texto a mostrar</param>
+    /// <param name="publiccolor">Color del Texto a mostrar</param>
+    /// <param name="spriteName">El nombre en el Atlas del Sprite a mostrar</param>
+    /// <param name="CargoColor">Color del Sprite a Mostrar (Si se usa Color.Black, se usa el color original del sprite)</param>
+    /// <param name="delay">[Opcional] Tiempo de espera hasta que se Spawnea (por defecto = 0)</param>
+    public void FloatingTextSpawn(float x, float z, string text, enumColor publiccolor, string spriteName, Color CargoColor, float delay = 0f)
     {
         Vector3 realPos = new Vector3(x, defaulYFloatingText, z);
-        FloatingTextSpawn(realPos, text, publiccolor);
-
-
+        FloatingTextSpawn(realPos, text, publiccolor, spriteName, CargoColor, delay);
     }
-
+    */
     /// <summary>
-    /// Genera un Floating text con el texto que le pedimos en la posición indicada (Y personalizada)
+    /// Genera un Floating Text con los siguientes parametros:
     /// </summary>
-    /// <param name="pos">Posición, se usa la Y indicada (y NO la por defecto)</param>
-    /// <param name="text">texto a mostrar</param>
-    /// <param name="publiccolor">enumColor= Rojo, amarillo, ....</param>
-    public void FloatingTextSpawn(Vector3 pos, string text, enumColor publiccolor)
+    /// <param name="pos">Posición en el mundo (se traducirá a posición en la pantalla)</param>
+    /// <param name="text">Texto a mostrar</param>
+    /// <param name="publiccolor">Color del Texto a mostrar</param>
+    /// <param name="spriteName">El nombre en el Atlas del Sprite a mostrar</param>
+    /// <param name="CargoColor">Color del Sprite a Mostrar (Si se usa Color.Black, se usa el color original del sprite)</param>
+    /// <param name="delay">[Opcional] Tiempo de espera hasta que se Spawnea (por defecto = 0)</param>
+    public void FloatingTextSpawn(Transform pos, string text, enumColor publiccolor, string spriteName, Color CargoColor, float delay = 0f)
     {
-        GameObject go = (GameObject)GameObject.Instantiate(textGOPrefab,pos,Quaternion.identity);
-        go.GetComponent<FloatingText>().phrase = text;
-        go.GetComponent<FloatingText>().myColor = GameConfig.s.publicColors[(int)publiccolor];
-        go.GetComponent<FloatingText>().WakeMeUp();
-
+        StartCoroutine(SpawnFloatingText(pos, text, publiccolor, spriteName, CargoColor, delay));
     }
+    //Aquí se ejecuta el Delay de "FloatingTextSpawn(...)"
+    IEnumerator SpawnFloatingText(Transform pos, string text, enumColor publiccolor, string spriteName, Color CargoColor, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        GameObject go = (GameObject)GameObject.Instantiate(textGOPrefab);
+        go.GetComponent<FloatingText>().WakeMeUp(text, spriteName, GameConfig.s.publicColors[(int)publiccolor], pos, CargoColor);
+    }
+
     #endregion
 
     #region levelmanagement
@@ -555,15 +585,18 @@ public class GameController : MonoBehaviour {
 
         FreezeGame(true);
         FinishText.SetActive(true);
+        FinishTextScaleTween.PlayForward();
         SaveProfile();
         StartCoroutine(EndGameSequence());
         
     }
     IEnumerator EndGameSequence()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(3.5f);
+        FinishTextScaleTween.ResetToBeginning();
         FinishText.SetActive(false);
         OutroPanel.SetActive(true);
+        PauseButtonPosTween.PlayReverse();
         GUIPanel.SetActive(false);
         OutroPanelScript ops = OutroPanel.GetComponent<OutroPanelScript>();
         ops.ShowPanel(level, myLevel.CheckQuests());        
