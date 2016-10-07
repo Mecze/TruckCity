@@ -451,6 +451,7 @@ public class GameController : MonoBehaviour {
     /// <param name="delay">[Opcional] Tiempo de espera hasta que se Spawnea (por defecto = 0)</param>
     public void FloatingTextSpawn(Transform pos, string text, enumColor publiccolor, string spriteName, Color CargoColor, float delay = 0f)
     {
+        if (MenuVersion) return;
         StartCoroutine(SpawnFloatingText(pos, text, publiccolor, spriteName, CargoColor, delay));
     }
     //Aquí se ejecuta el Delay de "FloatingTextSpawn(...)"

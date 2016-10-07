@@ -159,6 +159,7 @@
     <None Include="Assets\PicaVoxel\PicaVoxel\Shaders\PicaVoxel PBR Transparent.shader" />
     <None Include="Assets\PicaVoxel\PicaVoxel\Shaders\PicaVoxel PBR.shader" />
     <None Include="Assets\PicaVoxel\PicaVoxel\Shaders\PicaVoxel Unlit.shader" />
+    <None Include="Assets\Resources\SFX\Music\Dream of Life\Credits.txt" />
     <None Include="Assets\Shaders\Outlined2 2D.shader" />
     <None Include="Assets\Shaders\Outlined2_Shader.shader" />
     <None Include="Assets\Shaders\Outlined3_Shader.shader" />
