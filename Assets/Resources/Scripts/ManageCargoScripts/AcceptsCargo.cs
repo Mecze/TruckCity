@@ -34,11 +34,12 @@ public class AcceptsCargo : CargoManagement
         }
         CD.delivered += 1;
         building.TruckGotUnloaded(cp, cargo);
+        GameController.s.FloatingTextSpawn(building.TriggersTransform[(int)cp], "+1", enumColor.Green, "CargoSpritev2_Load", GameConfig.s.cargoColors[(int)cargo.cargo], 0f);
         cargo.cargo = CargoType.None; //Cargamos el vehiculo
-        GameController.s.money += moneyGained;
-        GameController.s.FloatingTextSpawn(building.myTransform.position, "Cargo Delivered!", enumColor.Green);
-        
-       
+        GameController.s.money += moneyGained;        
+        GameController.s.FloatingTextSpawn(building.TriggersTransform[(int)cp], "+"+ moneyGained.ToString(), enumColor.Green, "Money", Color.black, 1.5f);
+
+
 
     }
 

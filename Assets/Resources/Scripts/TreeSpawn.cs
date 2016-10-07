@@ -2,6 +2,15 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+//////////////////////////////
+/// TRUCK CITY!
+//////////////////////////////
+/// Este Script se usa para poner arboles encima de su cubo.
+/// Desde el inspector ajusta "number of trrees" y "scale"
+/// y los arboles se colocan aleatoriamente
+//////////////////////////////
+
+
 public class TreeSpawn : MonoBehaviour {
     [Header("Lists")]
     [SerializeField]

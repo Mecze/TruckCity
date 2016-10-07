@@ -17,7 +17,7 @@ public class ProducesCargo : CargoManagement
 {
     //All of this goes to Inspector for configuration when 
     //the level is created    
-    
+    public bool infiniteAmount = false;
     public int maxProduced;
     public int startingAmount;
     [SerializeField]
@@ -39,6 +39,8 @@ public class ProducesCargo : CargoManagement
 
 
     #region properties
+    
+
     int _amountOfItems;
     /// <summary>
     /// Inner amount of items, Communicates Changes to its asociated sprites
@@ -103,14 +105,14 @@ public class ProducesCargo : CargoManagement
         if (!direction.Contains(cp))  return; //Si no ha pasado por nuestro lado no hacemos nada        
         if (cargo.cargo != CargoType.None) return; //Si est� lleno no hacemos nada
         if (myCargoSpriteReference == null) return; //FAILSAFE, en caso de que no haya referencia escrita por ManagesCargo        
-        if (amountOfItems == 0) return; //Si no hay items disponibles no hacemos nada        
+        if (infiniteAmount == false && amountOfItems == 0) return; //Si no hay items disponibles no hacemos nada        
         if (myBuilding != building) return;// Check the building
 
         cargo.cargo = CargoType; //Cargamos el vehiculo
         bool startcd = false;
         if (amountOfItems == maxProduced) startcd = true;
 
-        amountOfItems--; //Restamos uno a la cantidad de items que tenemos 
+        if (!infiniteAmount)amountOfItems--; //Restamos uno a la cantidad de items que tenemos 
         if (startcd) StartCooldown();
     }
 
@@ -158,8 +160,15 @@ public class ProducesCargo : CargoManagement
     {
         if (amountOfItems < maxProduced)
         {
-            TimeController.OnStartClock += CooldownTick;
+            TimeController.s.OnStartClock += CooldownTick;
             amountOfItems = amountOfItems;
+        }
+    }
+    void OnDisable()
+    {
+        if (amountOfItems < maxProduced)
+        {
+            TimeController.s.OnStartClock -= CooldownTick;            
         }
     }
 

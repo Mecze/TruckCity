@@ -50,6 +50,10 @@ public class CargoBuilding : MonoBehaviour {
     [SerializeField]
     List<Transform> midBoxes;
 
+    [Header("Triggers Reference")]
+    [SerializeField]
+    public List<Transform> TriggersTransform;
+
     [Header("ArrowsReferences")]
     [SerializeField]
     GameObject arrowPrefab;

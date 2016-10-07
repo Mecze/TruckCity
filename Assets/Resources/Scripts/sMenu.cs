@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
+//using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,27 +29,45 @@ public class sMenu : MonoBehaviour {
         }
     }
     #endregion
+
     public GameObject buttonPrefab;
     //public GameObject currentGamePanel;
     //public GameObject surePanel;
-    int lastSelectedIndex;
+    //int lastSelectedIndex;
     bool promptIsUp = false;
-    [SerializeField]
-    Text StarsText;
 
+    [SerializeField]
+    UILabel StarsText;
+
+
+    [SerializeField]
+    GameObject anchor;
 
     void Start()
     {
+
         Profile profile = sProfileManager.ProfileSingleton;
+        foreach (ProfileLevels PL in profile.profileLevels)
+        {
+            if (profile.stars >= PL.starsToUnlock && PL.locked == true)
+            {
+                PL.locked = false;
+            }
+        }
+
+
         StarsText.text = profile.stars.ToString();
         foreach (ProfileLevels PL in profile.profileLevels)
         {
             GameObject go = (GameObject)GameObject.Instantiate(buttonPrefab);
-            go.GetComponent<sMenuButton>().Set(PL);
-
+            go.GetComponent<MenuLevel>().myProfileLevel = PL;
+            go.transform.SetParent(anchor.transform);
+            go.transform.localScale = Vector3.one;
+            
 
         }
-        StartCoroutine(Unlocks());
+        //anchor.GetComponent<UIGrid>().r
+
     }   
 
     public void OnLevelButtonClick(int levelIndex)
@@ -63,24 +81,8 @@ public class sMenu : MonoBehaviour {
     }
     void NewGameLoadGame(int levelIndex)
     {
-        sProfileManager.ProfileSingleton.newLevelIndex = levelIndex;
-        sProfileManager.ProfileSingleton.startNewLevel = true;
-        SceneManager.LoadScene(levelIndex+2);
+        sProfileManager.instance.ChangeLevel(levelIndex);
     }
-
-    IEnumerator Unlocks()
-    {
-        yield return new WaitForSeconds(2f);
-        Profile profile = sProfileManager.ProfileSingleton;
-        foreach (ProfileLevels PL in profile.profileLevels)
-        {
-            if (profile.stars >= PL.starsToUnlock && PL.locked == true)
-            {
-                FindObjectsOfType<sMenuButton>().ToList<sMenuButton>().Find(x => x.myProfileLevel == PL).UnlockThisLevelAnim();
-            }
-        }
-
-    }
-
+       
 
 }
