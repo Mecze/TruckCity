@@ -288,6 +288,10 @@
     <Compile Include="Assets\Resources\Scripts\RoadEntity.cs" />
     <Compile Include="Assets\Resources\Scripts\Singleton.cs" />
     <Compile Include="Assets\Resources\Scripts\SmokeSystem.cs" />
+    <Compile Include="Assets\Resources\Scripts\SoundFramework\MusicStore.cs" />
+    <Compile Include="Assets\Resources\Scripts\SoundFramework\SoundParity.cs" />
+    <Compile Include="Assets\Resources\Scripts\SoundFramework\SoundStore.cs" />
+    <Compile Include="Assets\Resources\Scripts\SoundFramework\SoundSystem.cs" />
     <Compile Include="Assets\Resources\Scripts\Store.cs" />
     <Compile Include="Assets\Resources\Scripts\TimeController.cs" />
     <Compile Include="Assets\Resources\Scripts\TreeSpawn.cs" />
@@ -307,7 +311,6 @@
     <Compile Include="Assets\Resources\Scripts\sMenuButton.cs" />
     <Compile Include="Assets\Resources\Scripts\sProfileManager.cs" />
     <Compile Include="Assets\Resources\Scripts\sSaveLoad.cs" />
-    <Compile Include="Assets\SoundSystem.cs" />
     <Compile Include="Assets\test.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -362,6 +365,7 @@
     <None Include="Assets\PicaVoxel\PicaVoxel\Shaders\PicaVoxel PBR.shader" />
     <None Include="Assets\PicaVoxel\PicaVoxel\Shaders\PicaVoxel Unlit.shader" />
     <None Include="Assets\Resources\SFX\Music\Dream of Life\Credits.txt" />
+    <None Include="Assets\Resources\SFX\Sound\credits.txt" />
     <None Include="Assets\Shaders\Outlined2 2D.shader" />
     <None Include="Assets\Shaders\Outlined2_Shader.shader" />
     <None Include="Assets\Shaders\Outlined3_Shader.shader" />

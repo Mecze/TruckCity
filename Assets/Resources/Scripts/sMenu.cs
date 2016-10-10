@@ -66,7 +66,7 @@ public class sMenu : MonoBehaviour {
             
 
         }
-        //anchor.GetComponent<UIGrid>().r
+        anchor.GetComponent<UIGrid>().Reposition();
 
     }   
 

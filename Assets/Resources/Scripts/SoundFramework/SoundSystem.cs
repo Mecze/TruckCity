@@ -2,52 +2,124 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System;
+using System.Linq;
 
+//////////////////////////////
+/// TRUCK CITY!
+//////////////////////////////
+/// TRUCK CITY SOUNDSYSTEM FRAMEWORK
+//////////////////////////////
+/// Script principal del sistema de sonido de Truck City.
+/// [Requiere uno o mas Audio Sources]
+//////////////////////////////
+
+[RequireComponent(typeof(AudioSource))]
 public class SoundSystem : Singleton<SoundSystem>
 {
+    #region References
     [Header("Audio Sources Reference")]
-    [SerializeField]
+    //[SerializeField]
     List<AudioSource> AudioSources;
+
+    void Awake()
+    {
+        base.Awake();
+        DoReferences();
+        MusicStore.s.PlayMusicByAlias("Menu", 1.5f, 1f, true, 5f);
+    }
+    void DoReferences()
+    {
+        AudioSources = GetComponents<AudioSource>().ToList<AudioSource>();
+        AudioSources[0].loop = true; //Este es la musica!
+    }
+    #endregion
+
+
+
 
 
     [Header("Location of Files")]
     [SerializeField]
     string MusicPath;
     [SerializeField]
-    string SoundsPath;
+    string SoundsPath;    
 
+    #region public Play
 
-    [Header("List of Songs (Music)")]
-    [SerializeField]
-    List<string> Songs;
-    
-
-    public override void Awake()
+    #region Sounds
+    /// <summary>
+    /// Reproduce el Sonido especificado
+    /// </summary>
+    /// <param name="soundPath">El lugar relativo de la localización de Sonidos de Resources de Truck City</param>
+    /// <param name="delay">(Defecto = 0f)Demora para empezar</param>
+    /// <param name="volume">(Defecto = 1f)Volumen</param>
+    /// <param name="fadein">(Defecto = false)Si se desea "fade in"</param>
+    /// <param name="fadeintime">(Defecto = 0.1f)Duración del "fade in"</param>
+    /// <param name="fadeout">(Defecto = false)Si se desea "fade out" del sonido anterior (solo en caso de Audio Sources llenos)</param>
+    /// <param name="fadeoutTime">(Defecto = 0.1f)Duración del "fade out"</param>
+    public void PlaySound(string soundPath, float delay = 0f, float volume = 1f, bool fadein = false,float fadeintime = 0.1f, bool fadeout = false, float fadeoutTime = 0.1f)
     {
-        base.Awake();
-        StartPlaying(MusicPath, Songs[0], 1.5f, 1f, true, true, 10f);
-        //AudioSources[0].clip = LoadClip(MusicPath, Songs[0]);
-        //AudioSources[0].Play();
+        StartPlaying(SoundsPath, soundPath, delay, volume, false, fadein, fadeintime, fadeout, fadeoutTime);
+    }
+    /// <summary>
+    /// Reproduce el Sonido especificado
+    /// </summary>
+    /// <param name="clip">El AudioClip a reproducir</param>
+    /// <param name="delay">(Defecto = 0f)Demora para empezar</param>
+    /// <param name="volume">(Defecto = 1f)Volumen</param>
+    /// <param name="fadein">(Defecto = false)Si se desea "fade in"</param>
+    /// <param name="fadeintime">(Defecto = 0.1f)Duración del "fade in"</param>
+    /// <param name="fadeout">(Defecto = false)Si se desea "fade out" del sonido anterior (solo en caso de Audio Sources llenos)</param>
+    /// <param name="fadeoutTime">(Defecto = 0.1f)Duración del "fade out"</param>
+    public void PlaySound(AudioClip clip, float delay = 0f, float volume = 1f, bool fadein = false, float fadeintime = 0.1f, bool fadeout = false, float fadeoutTime = 0.1f)
+    {
+        StartPlaying(clip, delay, volume, false, fadein, fadeintime, fadeout, fadeoutTime);
+    }
+    #endregion
+
+    #region Music
+    /// <summary>
+    /// Reproduce el Sonido especificado
+    /// </summary>
+    /// <param name="soundPath">El lugar relativo de la localización de Musica de Resources de Truck City</param>
+    /// <param name="delay">(Defecto = 0f)Demora para empezar</param>
+    /// <param name="volume">(Defecto = 1f)Volumen</param>
+    /// <param name="fadein">(Defecto = false)Si se desea "fade in"</param>
+    /// <param name="fadeintime">(Defecto = 2f)Duración del "fade in"</param>
+    /// <param name="fadeout">(Defecto = false)Si se desea "fade out" de la canción anterior</param>
+    /// <param name="fadeoutTime">(Defecto = 2f)Duración del "fade out"</param>
+    public void PlayMusic(string musicPath, float delay = 0f, float volume = 1f, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeoutTime = 2f)
+    {
+        StartPlaying(MusicPath, musicPath, delay, volume, true, fadein, fadeintime, fadeout, fadeoutTime);
+    }
+
+    /// <summary>
+    /// Reproduce el Sonido especificado
+    /// </summary>
+    /// <param name="soundPath">El lugar relativo de la localización de Musica de Resources de Truck City</param>
+    /// <param name="delay">(Defecto = 0f)Demora para empezar</param>
+    /// <param name="volume">(Defecto = 1f)Volumen</param>
+    /// <param name="fadein">(Defecto = false)Si se desea "fade in"</param>
+    /// <param name="fadeintime">(Defecto = 2f)Duración del "fade in"</param>
+    /// <param name="fadeout">(Defecto = false)Si se desea "fade out" de la canción anterior</param>
+    /// <param name="fadeoutTime">(Defecto = 2f)Duración del "fade out"</param>
+    public void PlayMusic(AudioClip clip, float delay = 0f, float volume = 1f, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeoutTime = 2f)
+    {
+        StartPlaying(clip, delay, volume, true, fadein, fadeintime, fadeout, fadeoutTime);
     }
 
 
 
+    #endregion
 
 
 
 
-    /*
-    public void PlayMusic()
-    {
-        if (AudioSources[0].isPlaying)
-        {
-            AudioSources[0].clip
-        }else
-        {
+    #endregion
 
-        }
-    }
-    */
+    #region StartPlaying
+
+
     /// <summary>
     /// Empieza a sonar un clip. Si se trata de Musica lo hace en SU audiosource
     /// especifico, si no lo es lo hace en uno libre.
@@ -63,9 +135,25 @@ public class SoundSystem : Singleton<SoundSystem>
     /// <param name="fadeouttime">(opcional) Si el clip anterior sale con FadeOut, cuanto tarda en llegar a 0, en segundos (por defecto = 2f)</param>
     void StartPlaying(string path, string name, float delay = 0f, float volume = 1f, bool Music = false, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeouttime = 2f)
     {
-        StartCoroutine(_StartPlaying(path, name, delay, volume, Music, fadein, fadeintime, fadeout, fadeouttime));
+        StartCoroutine(_StartPlaying(LoadClip(path,name), delay, volume, Music, fadein, fadeintime, fadeout, fadeouttime));
     }
-    IEnumerator _StartPlaying(string path, string name, float delay = 0f, float volume = 1f, bool Music = false, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeouttime = 2f)
+    /// <summary>
+    /// Empieza a sonar un clip. Si se trata de Musica lo hace en SU audiosource
+    /// especifico, si no lo es lo hace en uno libre.
+    /// </summary>
+    /// <param name="clip">El Clip a sonar</param>    
+    /// <param name="delay">(opcional)Tiempo de espera hasta iniciar el sonido(por defecto = 0f)</param>
+    /// <param name="volume">(opcional)Volumen (maximo) (por defecto = 1f)</param>
+    /// <param name="Music">(opcional) Si es Musica (por defecto = false)</param>
+    /// <param name="fadein">(opcional) Si el clip entra con fadein (por defecto = false)</param>
+    /// <param name="fadeintime">(opcional) Si el clip entra con fadein, cuanto tarda en llegar al maximo, en segundos (por defecto = 2f)</param>
+    /// <param name="fadeout">(opcinal) Si hubiera un clip anterior sonando en el mismo AudioSource, si queremos que el sonido anterior haga FadeOut(por defecto =false) </param>
+    /// <param name="fadeouttime">(opcional) Si el clip anterior sale con FadeOut, cuanto tarda en llegar a 0, en segundos (por defecto = 2f)</param>
+    void StartPlaying(AudioClip clip, float delay = 0f, float volume = 1f, bool Music = false, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeouttime = 2f)
+    {
+        StartCoroutine(_StartPlaying(clip, delay, volume, Music, fadein, fadeintime, fadeout, fadeouttime));
+    }
+    IEnumerator _StartPlaying(AudioClip clip, float delay = 0f, float volume = 1f, bool Music = false, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeouttime = 2f)
     {
         //Esperamos X segundos
         yield return new WaitForSeconds(delay);
@@ -81,7 +169,7 @@ public class SoundSystem : Singleton<SoundSystem>
             //-----------
             if (fadein) AudioSources[i].volume = 0f;
             if (!fadein) AudioSources[i].volume = volume;
-            AudioSources[i].PlayOneShot(LoadClip(path, name));
+            AudioSources[i].PlayOneShot(clip);
             if (fadein) VolumeFadeIn(i, fadeintime, true, volume);
             //-----------
         }
@@ -101,8 +189,8 @@ public class SoundSystem : Singleton<SoundSystem>
                     //ACTION---
                     if (fadein) AudioSources[i].volume = 0f;
                     if (!fadein) AudioSources[i].volume = volume;
-                    if (i != 0) AudioSources[i].PlayOneShot(LoadClip(path, name));
-                    if (i == 0) { AudioSources[i].clip = LoadClip(path, name); AudioSources[i].Play(); }
+                    if (i != 0) AudioSources[i].PlayOneShot(clip);
+                    if (i == 0) { AudioSources[i].clip = clip; AudioSources[i].Play(); }
                     if (fadein) VolumeFadeIn(i, fadeintime, true, volume);
                     //---ACTION!!
                 });
@@ -115,8 +203,8 @@ public class SoundSystem : Singleton<SoundSystem>
                 AudioSources[i].Stop();
                 if (fadein) AudioSources[i].volume = 0f;
                 if (!fadein) AudioSources[i].volume = volume;
-                if (i != 0) AudioSources[i].PlayOneShot(LoadClip(path, name));
-                if (i == 0) { AudioSources[i].clip = LoadClip(path, name); AudioSources[i].Play(); }
+                if (i != 0) AudioSources[i].PlayOneShot(clip);
+                if (i == 0) { AudioSources[i].clip = clip; AudioSources[i].Play(); }
                 if (fadein) VolumeFadeIn(i, fadeintime, true, volume);
             }
 
@@ -128,14 +216,11 @@ public class SoundSystem : Singleton<SoundSystem>
     }
 
 
-
-
-
-
-
-
+    #endregion
 
     #region VolumeFadeOut & In
+
+
     /// <summary>
     /// Silencia, poco a poco el volumen de un AudioSource
     /// Este metodo presupone que el limite inferior ser� 0.
@@ -151,7 +236,7 @@ public class SoundSystem : Singleton<SoundSystem>
         
     }
     /// <summary>
-    /// Silencia, poco a poco el volumen de un AudioSource
+    /// Aumenta el volumen, poco a poco el de un AudioSource
     /// </summary>
     /// <param name="AudioSourceIndex">El indice del AudioSource de la Lista</param>
     /// <param name="time">El tiempo de fade out</param>
@@ -165,11 +250,15 @@ public class SoundSystem : Singleton<SoundSystem>
         if (fromZero) AudioSources[AudioSourceIndex].volume = 0f;
         StartCoroutine(_VolumeFade(AudioSourceIndex, time, max, step, stopPlaying, OnFinish));
     }
+
+    //Funcion interna de VolumeFadeOut y VolumeFadeIn
     IEnumerator _VolumeFade(int AudioSourceIndex, float time, float toVolume, float step = 0.1f, bool stopPlaying = true, Action OnFinish = null)
     {        
-        float currentTime = 0f;               
+        float currentTime = 0f;     
+                  
         //Desde donde
         float fromVolume = AudioSources[AudioSourceIndex].volume;
+
         //sign indica si es positivo o negativo (suma o resta) despues
         float sign = 1;
         if (fromVolume > toVolume) sign = -1;
@@ -177,29 +266,32 @@ public class SoundSystem : Singleton<SoundSystem>
         //Bucle principal
         while (currentTime < time)
         {
-            //Tardar� "time" tiempo... y se ejecuta cada "step" tiempo
+            //Tardara "time" tiempo... y se ejecuta cada "step" tiempo
             yield return StartCoroutine(Delay(step));
+
+            //Bajar o subir volumen principal. ++///////////////////////////////////////Volumen + (Signo+/-) * ((Diferencia total) * (tiempo total / tiempo desde la ultima ejecución))
             AudioSources[AudioSourceIndex].volume = AudioSources[AudioSourceIndex].volume + ( sign*(Mathf.Abs(fromVolume-toVolume) / (time / step)));
+
+            //Sumamos el tiempo que ha pasado
             currentTime += step;
         }
+        //Cuando termina el bucle ajustamos por ultima vez el volumen, para evitar incomodos valores decimales que puedan quedar al final
         AudioSources[AudioSourceIndex].volume = toVolume;
+
         //Al terminar determina se se apaga el sonido
         if (stopPlaying) AudioSources[AudioSourceIndex].Stop();
+
         //Lanzamos el callback
         if (OnFinish != null) OnFinish();
     }
 
+    //Funcion interna de _VolumeFade
     IEnumerator Delay(float delay)
     {
         yield return new WaitForSeconds(delay);
     }
 
     #endregion
-
-   
-
-
-
 
     #region utils
     /// <summary>
