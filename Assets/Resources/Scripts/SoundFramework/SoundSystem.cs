@@ -17,9 +17,18 @@ using System.Linq;
 public class SoundSystem : Singleton<SoundSystem>
 {
     #region References
-    [Header("Audio Sources Reference")]
-    //[SerializeField]
-    List<AudioSource> AudioSources;
+    List<AudioSource> _audioSources;
+    public List<AudioSource> AudioSources
+    {
+        get
+        {
+            if (_audioSources == null) {
+                DoReferences();
+            }
+
+            return _audioSources;
+        }        
+    }
 
     void Awake()
     {
@@ -29,7 +38,7 @@ public class SoundSystem : Singleton<SoundSystem>
     }
     void DoReferences()
     {
-        AudioSources = GetComponents<AudioSource>().ToList<AudioSource>();
+        _audioSources = GetComponents<AudioSource>().ToList<AudioSource>();
         AudioSources[0].loop = true; //Este es la musica!
     }
     #endregion
@@ -42,7 +51,12 @@ public class SoundSystem : Singleton<SoundSystem>
     [SerializeField]
     string MusicPath;
     [SerializeField]
-    string SoundsPath;    
+    string SoundsPath;
+
+    //Internal
+    bool cancelFadeInMusic = false;
+    bool cancelFadeOutMusic = false;
+    
 
     #region public Play
 
@@ -218,6 +232,30 @@ public class SoundSystem : Singleton<SoundSystem>
 
     #endregion
 
+    #region public Stop (usually Music)
+    /// <summary>
+    /// Fades and Stops Playing the music
+    /// </summary>
+    /// <param name="fadeouttime"></param>
+    public void FadeOutMusic(float fadeouttime = 2f, Action Finish = null)
+    {
+        if (Finish == null)
+        {
+            Finish = () => { cancelFadeInMusic = false; };
+        }else
+        {
+            Finish += () => { cancelFadeInMusic = false; };
+        }
+
+
+
+        cancelFadeInMusic = true;
+        VolumeFadeOut(0, fadeouttime,0.1f,true,Finish);
+    }
+
+
+    #endregion
+
     #region VolumeFadeOut & In
 
 
@@ -264,7 +302,13 @@ public class SoundSystem : Singleton<SoundSystem>
         if (fromVolume > toVolume) sign = -1;
 
         //Bucle principal
-        while (currentTime < time)
+        while (currentTime < time 
+            && 
+            (( AudioSourceIndex != 0  ) 
+                ||
+                (AudioSourceIndex == 0  
+                    && ( sign ==-1 && !cancelFadeOutMusic
+                        || sign == 1 && !cancelFadeInMusic))))
         {
             //Tardara "time" tiempo... y se ejecuta cada "step" tiempo
             yield return StartCoroutine(Delay(step));
@@ -276,7 +320,11 @@ public class SoundSystem : Singleton<SoundSystem>
             currentTime += step;
         }
         //Cuando termina el bucle ajustamos por ultima vez el volumen, para evitar incomodos valores decimales que puedan quedar al final
-        AudioSources[AudioSourceIndex].volume = toVolume;
+        //(Pero solo si el bucle no fue interrumpido!)
+        if ((AudioSourceIndex != 0)||
+                (AudioSourceIndex == 0
+                    && (sign == -1 && !cancelFadeOutMusic
+                        || sign == 1 && !cancelFadeInMusic)))  AudioSources[AudioSourceIndex].volume = toVolume;
 
         //Al terminar determina se se apaga el sonido
         if (stopPlaying) AudioSources[AudioSourceIndex].Stop();
@@ -294,6 +342,17 @@ public class SoundSystem : Singleton<SoundSystem>
     #endregion
 
     #region utils
+
+    /// <summary>
+    /// Devuelve "True" si este clip está soando ahora
+    /// </summary>
+    /// <param name="clip">Este clip</param>
+    /// <returns></returns>
+    public bool ThisClipIsPlaying(AudioClip clip)
+    {
+        return (AudioSources.Find(x => x.isPlaying && x.clip == clip));
+    }
+
     /// <summary>
     /// Devuelve el indice del primer AudioSource libre.
     /// Si estan todos ocupados devuelve el negativo (-1,-2..) del indice

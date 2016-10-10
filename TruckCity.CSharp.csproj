@@ -258,6 +258,7 @@
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Volume.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Voxel.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\VoxelParticleSystem.cs" />
+    <Compile Include="Assets\PlayAliasSound.cs" />
     <Compile Include="Assets\Resources\Scripts\AutoGrid.cs" />
     <Compile Include="Assets\Resources\Scripts\Clickable.cs" />
     <Compile Include="Assets\Resources\Scripts\Extension.cs" />

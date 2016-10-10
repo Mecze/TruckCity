@@ -266,6 +266,14 @@ public class GameController : MonoBehaviour {
             //Ahora se Activa la Intro
             //(En la Escena viene ya activada por defecto) FailSafe:
             IntroPanel.SetActive(true);
+
+            
+
+
+        }else
+        {
+            //En caso de que esto sea el MENU (Menu Versión == true), ponemos musica de menu si es necesario.
+            if (!MusicStore.s.AliasIsPlaying("Menu")) MusicStore.s.PlayMusicByAlias("Menu", 0f, 1f, true, 5f, true, 1f);
         }
         //NOTA:
         //Cuando el jugador indica de empezar a jugar se ejecuta
@@ -295,10 +303,16 @@ public class GameController : MonoBehaviour {
             IntroPanelAlphaTween.PlayForward();
             //Esto inicializa el Countdown.
             StartCoroutine(StartButtonAfterFadeOut(GUIPanelAlphaTween.duration+0.1f, true));
-            
+
             //Al terminar el Countdown se lanza "StartGame"
             //Desde el Animator de CountdownAnimator
-        }else
+
+            //Musica:
+            MusicStore.s.PlayMusicByAlias(myLevel.MusicAlias, 4f, 1f, true, 2f);
+
+
+        }
+        else
         {
             //Si pause es TRUE quiere decir que NO es el inicio del MAPA
             //Si nó que se hizó pause
@@ -783,16 +797,26 @@ public class LevelConditions
             _usingEffects = value;
         }
     }
-
-
-
-
-
-
-
-
     #endregion
-       
+
+    #region MusicUsed
+    [SerializeField]
+    string _musicAlias;
+    public string MusicAlias
+    {
+        get
+        {
+            return _musicAlias;
+        }
+
+        set
+        {
+            _musicAlias = value;
+        }
+    }
+    #endregion
+
+
 
     #region constructor
 

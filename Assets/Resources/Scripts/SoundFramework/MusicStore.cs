@@ -108,4 +108,29 @@ public class MusicStore : MonoBehaviour
         //Reproducimos el sonido
         mySoundSystem.PlayMusic(ac, delay, volume, fadein, fadeintime, fadeout, fadeouttime);
     }
+
+    /// <summary>
+    /// Averigua si algun elemento del Alias está siendo reproducido ahora
+    /// </summary>
+    /// <param name="Alias">El Alias</param>
+    /// <returns></returns>
+    public bool AliasIsPlaying(string Alias)
+    {
+        List<SoundParity> list = Songs.FindAll(x => x.Alias == Alias);
+        List<AudioSource> sources = mySoundSystem.AudioSources;
+        for (int i = 0; i < list.Count; i++)
+        {
+            for (int e = 0; e < sources.Count; e++)
+            {
+                if (sources[e].isPlaying && sources[e].clip == list[i].clip)
+                {
+                    return true;
+                }
+            }
+
+        }
+
+        return false;
+    }
+
 }

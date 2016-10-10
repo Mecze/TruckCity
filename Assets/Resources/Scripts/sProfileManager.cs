@@ -104,10 +104,13 @@ public class sProfileManager : Singleton<sProfileManager> {
 
     public void ChangeLevel(int levelIndex)
     {
-        sProfileManager.ProfileSingleton.newLevelIndex = levelIndex;
-        sProfileManager.ProfileSingleton.ChangingLevel = true;
-        LoadingScreenManager.LoadScene(levelIndex+3);
-        
+        SoundSystem.s.FadeOutMusic(0.5f, () =>
+         {
+
+             sProfileManager.ProfileSingleton.newLevelIndex = levelIndex;
+             sProfileManager.ProfileSingleton.ChangingLevel = true;
+             LoadingScreenManager.LoadScene(levelIndex + 3);
+         });
     }
     
 
