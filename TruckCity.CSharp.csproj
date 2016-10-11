@@ -266,7 +266,6 @@
     <Compile Include="Assets\Resources\Scripts\FloatingText.cs" />
     <Compile Include="Assets\Resources\Scripts\GameConfig.cs" />
     <Compile Include="Assets\Resources\Scripts\GameController.cs" />
-    <Compile Include="Assets\Resources\Scripts\GasMeter.cs" />
     <Compile Include="Assets\Resources\Scripts\GasStation.cs" />
     <Compile Include="Assets\Resources\Scripts\IntroAnimationBehaviour.cs" />
     <Compile Include="Assets\Resources\Scripts\ManageCargoScripts\AcceptsCargo.cs" />
@@ -280,7 +279,6 @@
     <Compile Include="Assets\Resources\Scripts\MapController.cs" />
     <Compile Include="Assets\Resources\Scripts\MouseController.cs" />
     <Compile Include="Assets\Resources\Scripts\ObjectCloner.cs" />
-    <Compile Include="Assets\Resources\Scripts\OtherLaneChecker.cs" />
     <Compile Include="Assets\Resources\Scripts\Profile.cs" />
     <Compile Include="Assets\Resources\Scripts\QuestSlate.cs" />
     <Compile Include="Assets\Resources\Scripts\QuestSlateDeliveryIntro.cs" />
@@ -297,8 +295,10 @@
     <Compile Include="Assets\Resources\Scripts\TimeController.cs" />
     <Compile Include="Assets\Resources\Scripts\TreeSpawn.cs" />
     <Compile Include="Assets\Resources\Scripts\TriggerInvisible.cs" />
-    <Compile Include="Assets\Resources\Scripts\TruckEntity.cs" />
-    <Compile Include="Assets\Resources\Scripts\TruckFrontChecker.cs" />
+    <Compile Include="Assets\Resources\Scripts\Truck\GasMeter.cs" />
+    <Compile Include="Assets\Resources\Scripts\Truck\OtherLaneChecker.cs" />
+    <Compile Include="Assets\Resources\Scripts\Truck\TruckEntity.cs" />
+    <Compile Include="Assets\Resources\Scripts\Truck\TruckFrontChecker.cs" />
     <Compile Include="Assets\Resources\Scripts\Tuple.cs" />
     <Compile Include="Assets\Resources\Scripts\Tuple2.cs" />
     <Compile Include="Assets\Resources\Scripts\Tuple3.cs" />
@@ -312,6 +312,7 @@
     <Compile Include="Assets\Resources\Scripts\sMenuButton.cs" />
     <Compile Include="Assets\Resources\Scripts\sProfileManager.cs" />
     <Compile Include="Assets\Resources\Scripts\sSaveLoad.cs" />
+    <Compile Include="Assets\TweenAnimationController.cs" />
     <Compile Include="Assets\test.cs" />
   </ItemGroup>
   <ItemGroup>

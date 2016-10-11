@@ -1,6 +1,13 @@
 using UnityEngine;
 using System.Collections;
 
+
+//////////////////////////////
+/// TRUCK CITY!
+//////////////////////////////
+/// Este script realiza el Countdown 3,2,1, GO!
+//////////////////////////////
+
 public class CountDownSprite : MonoBehaviour {
     [SerializeField]
     UISprite mySprite;

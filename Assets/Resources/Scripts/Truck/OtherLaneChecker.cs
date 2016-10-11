@@ -1,6 +1,16 @@
 using UnityEngine;
 using System.Collections;
 
+//////////////////////////////
+/// TRUCK CITY!
+//////////////////////////////
+/// Truck Entity
+//////////////////////////////
+/// "Truck" es un agente autonomo que se mueve por el mundo
+///  gracias a sus scripts. 
+///  Maneja los triggers que comprueban que hay camiones en el otro sentido.
+//////////////////////////////
+
 public class OtherLaneChecker : MonoBehaviour {
     [SerializeField]
     TruckEntity myTruckEntity;

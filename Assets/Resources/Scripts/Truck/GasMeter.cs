@@ -1,6 +1,16 @@
 using UnityEngine;
 using System.Collections;
 
+//////////////////////////////
+/// TRUCK CITY!
+//////////////////////////////
+/// Truck Entity
+//////////////////////////////
+/// "Truck" es un agente autonomo que se mueve por el mundo
+///  gracias a sus scripts. 
+///  Este script maneja la gasolina.
+//////////////////////////////
+
 public class GasMeter : MonoBehaviour {
 
     [SerializeField]

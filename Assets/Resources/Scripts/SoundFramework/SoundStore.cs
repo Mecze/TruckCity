@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+using System;
 
 //////////////////////////////
 /// TRUCK CITY!
@@ -89,7 +90,7 @@ public class SoundStore : MonoBehaviour {
     /// <param name="fadeintime">(Por defecto = 0.1f) Duración del "Fade in"</param>
     /// <param name="fadeout">(Por defecto = false) Si deseamos Fade Out del sonido anterior (Solo en caso de que no queden AudioSources libres)</param>
     /// <param name="fadeouttime">(Po defecto = 0.1f) Duración del "Fade out"</param>
-    public void PlaySoundByAlias(string alias, float delay = 0f, float volume = 1f, bool fadein = false, float fadeintime = 0.1f, bool fadeout = false, float fadeouttime = 0.1f)
+    public void PlaySoundByAlias(string alias, float delay = 0f, float volume = 1f, bool fadein = false, float fadeintime = 0.1f, bool fadeout = false, float fadeouttime = 0.1f, Action OnFinish = null)
     {
         if (mySoundSystem == null) DoReferences();
 
@@ -105,7 +106,7 @@ public class SoundStore : MonoBehaviour {
         lastPlayedCLip = ac;
 
         //Reproducimos el sonido
-        mySoundSystem.PlaySound(ac, delay, volume, fadein, fadeintime, fadeout, fadeouttime);
+        mySoundSystem.PlaySound(ac, delay, volume, fadein, fadeintime, fadeout, fadeouttime,OnFinish);
     }
 
 

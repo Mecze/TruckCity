@@ -6,6 +6,18 @@ using System;
 using System.Linq;
 using UnityEngine.SceneManagement;
 
+
+
+//////////////////////////////
+/// TRUCK CITY!
+//////////////////////////////
+/// GAME CONTROLLER
+//////////////////////////////
+/// Este Script inicializa el nivel al entrar
+/// y lleva los computos importantes del nivel.
+//////////////////////////////
+
+
 public delegate void ScoreEvent(CargoType cargo);
 public delegate void MoneyEvent(int increment);
 public delegate void CompeletedQuestEvent(float momentInTime);
@@ -156,6 +168,9 @@ public class GameController : MonoBehaviour {
     GameObject QuestGrid;
     [SerializeField]
     UILabel IntroMenuMainLabel;
+    [SerializeField]
+    TweenAnimationController TimerTweenController;
+
 
 
     [Header("Prefabs")]
@@ -217,6 +232,9 @@ public class GameController : MonoBehaviour {
                     OnCompeletedQuest += TimeAttackOnCompletedQuestListener;
                     //Se inicializa el Timer (no empieza aún, está Freeze)
                     TimeController.s.SetTimer((float)myLevel.startingTimer, TimeAttackEndGameVictoryCheck, true, 0f, false);
+                    TimeController.s.timer.AddAction(10, ActivateLowTimeTimerAnimation);
+                    TimeController.s.timer.AddAction(0, StopLowTimeTimerAnimation);
+
                     break;
                 default:
                     break;
@@ -308,7 +326,7 @@ public class GameController : MonoBehaviour {
             //Desde el Animator de CountdownAnimator
 
             //Musica:
-            MusicStore.s.PlayMusicByAlias(myLevel.MusicAlias, 4f, 1f, true, 2f);
+            if (!MusicStore.s.AliasIsPlaying(myLevel.MusicAlias)) MusicStore.s.PlayMusicByAlias(myLevel.MusicAlias, 4f, 1f, true, 2f,true,2f);
 
 
         }
@@ -531,6 +549,15 @@ public class GameController : MonoBehaviour {
     }
 
 
+    void ActivateLowTimeTimerAnimation()
+    {
+        TimerTweenController.PlayAnimations(true);
+    }
+    void StopLowTimeTimerAnimation()
+    {
+        TimerTweenController.StopAnimations();
+    }
+
     
 
     
@@ -597,7 +624,7 @@ public class GameController : MonoBehaviour {
     void TimeAttackEndGameVictoryCheck()
     {
 
-
+        SoundSystem.s.FadeOutMusic(3f);
         FreezeGame(true);
         FinishText.SetActive(true);
         FinishTextScaleTween.PlayForward();

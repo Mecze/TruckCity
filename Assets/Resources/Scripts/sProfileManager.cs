@@ -4,6 +4,14 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+//////////////////////////////
+/// TRUCK CITY!
+//////////////////////////////
+/// ProfileManager [DONTDESTROYONLOAD] Persistente
+//////////////////////////////
+/// Este script carga o crea nuevo perfil, e inicializa el juego
+//////////////////////////////
+
 public class sProfileManager : Singleton<sProfileManager> {
     
 

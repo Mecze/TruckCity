@@ -71,9 +71,9 @@ public class SoundSystem : Singleton<SoundSystem>
     /// <param name="fadeintime">(Defecto = 0.1f)Duración del "fade in"</param>
     /// <param name="fadeout">(Defecto = false)Si se desea "fade out" del sonido anterior (solo en caso de Audio Sources llenos)</param>
     /// <param name="fadeoutTime">(Defecto = 0.1f)Duración del "fade out"</param>
-    public void PlaySound(string soundPath, float delay = 0f, float volume = 1f, bool fadein = false,float fadeintime = 0.1f, bool fadeout = false, float fadeoutTime = 0.1f)
+    public void PlaySound(string soundPath, float delay = 0f, float volume = 1f, bool fadein = false,float fadeintime = 0.1f, bool fadeout = false, float fadeoutTime = 0.1f, Action OnFinish = null)
     {
-        StartPlaying(SoundsPath, soundPath, delay, volume, false, fadein, fadeintime, fadeout, fadeoutTime);
+        StartPlaying(SoundsPath, soundPath, delay, volume, false, fadein, fadeintime, fadeout, fadeoutTime, OnFinish);
     }
     /// <summary>
     /// Reproduce el Sonido especificado
@@ -85,9 +85,9 @@ public class SoundSystem : Singleton<SoundSystem>
     /// <param name="fadeintime">(Defecto = 0.1f)Duración del "fade in"</param>
     /// <param name="fadeout">(Defecto = false)Si se desea "fade out" del sonido anterior (solo en caso de Audio Sources llenos)</param>
     /// <param name="fadeoutTime">(Defecto = 0.1f)Duración del "fade out"</param>
-    public void PlaySound(AudioClip clip, float delay = 0f, float volume = 1f, bool fadein = false, float fadeintime = 0.1f, bool fadeout = false, float fadeoutTime = 0.1f)
+    public void PlaySound(AudioClip clip, float delay = 0f, float volume = 1f, bool fadein = false, float fadeintime = 0.1f, bool fadeout = false, float fadeoutTime = 0.1f, Action OnFinish = null)
     {
-        StartPlaying(clip, delay, volume, false, fadein, fadeintime, fadeout, fadeoutTime);
+        StartPlaying(clip, delay, volume, false, fadein, fadeintime, fadeout, fadeoutTime,OnFinish);
     }
     #endregion
 
@@ -102,9 +102,9 @@ public class SoundSystem : Singleton<SoundSystem>
     /// <param name="fadeintime">(Defecto = 2f)Duración del "fade in"</param>
     /// <param name="fadeout">(Defecto = false)Si se desea "fade out" de la canción anterior</param>
     /// <param name="fadeoutTime">(Defecto = 2f)Duración del "fade out"</param>
-    public void PlayMusic(string musicPath, float delay = 0f, float volume = 1f, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeoutTime = 2f)
+    public void PlayMusic(string musicPath, float delay = 0f, float volume = 1f, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeoutTime = 2f, Action OnFinish = null)
     {
-        StartPlaying(MusicPath, musicPath, delay, volume, true, fadein, fadeintime, fadeout, fadeoutTime);
+        StartPlaying(MusicPath, musicPath, delay, volume, true, fadein, fadeintime, fadeout, fadeoutTime, OnFinish);
     }
 
     /// <summary>
@@ -117,9 +117,9 @@ public class SoundSystem : Singleton<SoundSystem>
     /// <param name="fadeintime">(Defecto = 2f)Duración del "fade in"</param>
     /// <param name="fadeout">(Defecto = false)Si se desea "fade out" de la canción anterior</param>
     /// <param name="fadeoutTime">(Defecto = 2f)Duración del "fade out"</param>
-    public void PlayMusic(AudioClip clip, float delay = 0f, float volume = 1f, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeoutTime = 2f)
+    public void PlayMusic(AudioClip clip, float delay = 0f, float volume = 1f, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeoutTime = 2f, Action OnFinish = null)
     {
-        StartPlaying(clip, delay, volume, true, fadein, fadeintime, fadeout, fadeoutTime);
+        StartPlaying(clip, delay, volume, true, fadein, fadeintime, fadeout, fadeoutTime,OnFinish);
     }
 
 
@@ -147,9 +147,9 @@ public class SoundSystem : Singleton<SoundSystem>
     /// <param name="fadeintime">(opcional) Si el clip entra con fadein, cuanto tarda en llegar al maximo, en segundos (por defecto = 2f)</param>
     /// <param name="fadeout">(opcinal) Si hubiera un clip anterior sonando en el mismo AudioSource, si queremos que el sonido anterior haga FadeOut(por defecto =false) </param>
     /// <param name="fadeouttime">(opcional) Si el clip anterior sale con FadeOut, cuanto tarda en llegar a 0, en segundos (por defecto = 2f)</param>
-    void StartPlaying(string path, string name, float delay = 0f, float volume = 1f, bool Music = false, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeouttime = 2f)
+    void StartPlaying(string path, string name, float delay = 0f, float volume = 1f, bool Music = false, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeouttime = 2f, Action OnFinish = null)
     {
-        StartCoroutine(_StartPlaying(LoadClip(path,name), delay, volume, Music, fadein, fadeintime, fadeout, fadeouttime));
+        StartCoroutine(_StartPlaying(LoadClip(path,name), delay, volume, Music, fadein, fadeintime, fadeout, fadeouttime, OnFinish));
     }
     /// <summary>
     /// Empieza a sonar un clip. Si se trata de Musica lo hace en SU audiosource
@@ -163,11 +163,11 @@ public class SoundSystem : Singleton<SoundSystem>
     /// <param name="fadeintime">(opcional) Si el clip entra con fadein, cuanto tarda en llegar al maximo, en segundos (por defecto = 2f)</param>
     /// <param name="fadeout">(opcinal) Si hubiera un clip anterior sonando en el mismo AudioSource, si queremos que el sonido anterior haga FadeOut(por defecto =false) </param>
     /// <param name="fadeouttime">(opcional) Si el clip anterior sale con FadeOut, cuanto tarda en llegar a 0, en segundos (por defecto = 2f)</param>
-    void StartPlaying(AudioClip clip, float delay = 0f, float volume = 1f, bool Music = false, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeouttime = 2f)
+    void StartPlaying(AudioClip clip, float delay = 0f, float volume = 1f, bool Music = false, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeouttime = 2f, Action OnFinish = null)
     {
-        StartCoroutine(_StartPlaying(clip, delay, volume, Music, fadein, fadeintime, fadeout, fadeouttime));
+        StartCoroutine(_StartPlaying(clip, delay, volume, Music, fadein, fadeintime, fadeout, fadeouttime, OnFinish));
     }
-    IEnumerator _StartPlaying(AudioClip clip, float delay = 0f, float volume = 1f, bool Music = false, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeouttime = 2f)
+    IEnumerator _StartPlaying(AudioClip clip, float delay = 0f, float volume = 1f, bool Music = false, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeouttime = 2f, Action OnFinish = null)
     {
         //Esperamos X segundos
         yield return new WaitForSeconds(delay);
@@ -227,6 +227,19 @@ public class SoundSystem : Singleton<SoundSystem>
 
 
         }
+
+        //La Action OnFinish
+        if (OnFinish != null)
+        {
+            while (AudioSources[i].isPlaying)
+            {
+                yield return Delay(0.1f);
+            }
+            OnFinish();
+        }
+        
+
+
     }
 
 

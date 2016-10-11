@@ -2,8 +2,18 @@ using UnityEngine;
 using System.Collections;
 using System;
 
-public enum CardinalPoint { None=0,N=1,E=2,W=3,S=4}
+//////////////////////////////
+/// TRUCK CITY!
+//////////////////////////////
+/// Truck Entity
+//////////////////////////////
+/// "Truck" es un agente autonomo que se mueve por el mundo
+///  gracias a sus scripts. Este es el script principal de "Truck"
+//////////////////////////////
 
+
+public enum CardinalPoint { None=0,N=1,E=2,W=3,S=4}
+public enum HonkType { None=0,Single=1,Double=2 }
 public enum Turn { Close, Wide, Reverse }
 
 public class TruckEntity : MonoBehaviour, IFreezable
@@ -31,7 +41,21 @@ public class TruckEntity : MonoBehaviour, IFreezable
     [SerializeField]
     float turnPenalty = 0.5f;
     [HideInInspector]
-    public bool Colliding = false;
+    private bool _colliding = false;
+    public bool Colliding
+    {
+        get
+        {
+            return _colliding;
+        }
+
+        set
+        {
+            _colliding = value;
+            if (value) PlayHonk();
+        }
+    }
+
     //[HideInInspector]
     [SerializeField]
     float _currentSpeed = 0f;
@@ -64,6 +88,14 @@ public class TruckEntity : MonoBehaviour, IFreezable
     int Debug = 0;
 #pragma warning restore 0414
 
+    [Header("Sounds")]
+    [SerializeField]
+    string HonkAlias = "HonkA";
+    [SerializeField]
+    HonkType HonkType = HonkType.Single;
+    [SerializeField]
+    float waitBetweenHonk = 0.2f;
+
 
     public float currentSpeed
     {
@@ -87,6 +119,8 @@ public class TruckEntity : MonoBehaviour, IFreezable
             _currentSpeed = value;
         }
     }
+
+    
 
     #region Constantes de rotación
     [HideInInspector]
@@ -384,7 +418,28 @@ public class TruckEntity : MonoBehaviour, IFreezable
     }
     #endregion
 
+    #region Sounds
 
+    public void PlayHonk()
+    {
+        switch (HonkType)
+        {
+            case HonkType.None:
+                return;
+                
+            case HonkType.Single:
+                SoundStore.s.PlaySoundByAlias(HonkAlias, 0f, 0.3f);
+                break;
+            case HonkType.Double:
+                SoundStore.s.PlaySoundByAlias(HonkAlias, 0f, 0.3f,false,0.1f,false,0.1f,() => { SoundStore.s.PlaySoundByAlias(HonkAlias, waitBetweenHonk, 0.3f); });
+                break;
+            default:
+                break;
+        }
+        
+    }
+
+    #endregion
 
 
 

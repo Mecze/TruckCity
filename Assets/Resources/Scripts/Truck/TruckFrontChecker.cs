@@ -1,6 +1,17 @@
 using UnityEngine;
 using System.Collections;
 
+
+//////////////////////////////
+/// TRUCK CITY!
+//////////////////////////////
+/// Truck Entity
+//////////////////////////////
+/// "Truck" es un agente autonomo que se mueve por el mundo
+///  gracias a sus scripts. 
+///  Este script maneja los triggers por delante del camion.
+//////////////////////////////
+
 public class TruckFrontChecker : MonoBehaviour {
     
     public TruckEntity mytruck;
