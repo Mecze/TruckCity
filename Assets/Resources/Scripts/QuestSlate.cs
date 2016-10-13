@@ -21,6 +21,9 @@ public class QuestSlate : MonoBehaviour {
     public int position = 1;
     public bool IP = false;
 
+    static bool playingMove = false;
+    static bool playingCompleted = false;
+
     #region Properties
 
     Quest _myQuest;
@@ -145,6 +148,14 @@ public class QuestSlate : MonoBehaviour {
         StarAlphaTween.PlayForward();
         CheckAlphaTween.PlayForward();
         CheckScaleTween.PlayForward();
+        SoundStore.s.StopAlias("QuestSlateMove");
+
+        
+        if (playingCompleted == false)
+        {
+            playingCompleted = true;
+            SoundStore.s.PlaySoundByAlias("QuestSlateComplete",0f,GameConfig.s.MuffledSoundVolume,false,0f,false,0f,() => { playingCompleted = false; });
+        }
         myTweenColor.PlayForward();
     }
     void QuestNotCompletedAnimation()
@@ -164,6 +175,11 @@ public class QuestSlate : MonoBehaviour {
         if (IP) return;
         FixY();
         myTweenPosition.PlayForward();
+        if (playingMove == false)
+        {
+            playingMove = true;
+            SoundStore.s.PlaySoundByAlias("QuestSlateMove",0f,GameConfig.s.MuffledSoundVolume,false,0f,false,0f,()=> { playingMove = false; });
+        }
         StartCoroutine(UpdateSlateAfterShow(myTweenPosition.duration + myTweenPosition.duration/2f));
         if (reverse) StartCoroutine(ReverseShowSlate(Wait));
         
@@ -311,8 +327,8 @@ public class QuestSlate : MonoBehaviour {
         if (_myQuest == null) return;
         if (_myQuest.winCondition == WinCondition.Delivered && _myCargoDelivered == null) return;
 
-        
 
+        
         questCompleted = _myQuest.completed;
 
         if (_myQuest.winCondition == WinCondition.Delivered) MainLabel.text = MyCargoDelivered.delivered.ToString()+ "/" + _myQuest.winAmount.ToString();

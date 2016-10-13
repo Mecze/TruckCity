@@ -428,10 +428,10 @@ public class TruckEntity : MonoBehaviour, IFreezable
                 return;
                 
             case HonkType.Single:
-                SoundStore.s.PlaySoundByAlias(HonkAlias, 0f, 0.3f);
+                SoundStore.s.PlaySoundByAlias(HonkAlias, 0f, GameConfig.s.MuffledSoundVolume);
                 break;
             case HonkType.Double:
-                SoundStore.s.PlaySoundByAlias(HonkAlias, 0f, 0.3f,false,0.1f,false,0.1f,() => { SoundStore.s.PlaySoundByAlias(HonkAlias, waitBetweenHonk, 0.3f); });
+                SoundStore.s.PlaySoundByAlias(HonkAlias, 0f, GameConfig.s.MuffledSoundVolume,false,0.1f,false,0.1f,() => { SoundStore.s.PlaySoundByAlias(HonkAlias, waitBetweenHonk, GameConfig.s.MuffledSoundVolume); });
                 break;
             default:
                 break;

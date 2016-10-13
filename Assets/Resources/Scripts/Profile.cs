@@ -37,6 +37,9 @@ public class Profile {
         }
     }
 
+    public bool MusicState;
+    public bool SoundState;
+
 
 
 }

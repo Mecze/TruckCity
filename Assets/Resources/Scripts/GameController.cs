@@ -56,7 +56,7 @@ public class GameController : MonoBehaviour {
             if (s_singleton == null)
             {
                 //Esto no deberia pasar nunca!
-                Debug.LogError("No Existe Singleton GameController");
+                //Debug.LogError("No Existe Singleton GameController");
             }
             return s_singleton;
         }
@@ -291,7 +291,7 @@ public class GameController : MonoBehaviour {
         }else
         {
             //En caso de que esto sea el MENU (Menu Versión == true), ponemos musica de menu si es necesario.
-            if (!MusicStore.s.AliasIsPlaying("Menu")) MusicStore.s.PlayMusicByAlias("Menu", 0f, 1f, true, 5f, true, 1f);
+            if (!MusicStore.s.AliasIsPlaying("Menu")) MusicStore.s.PlayMusicByAlias("Menu", 0f, GameConfig.s.MusicVolume, true, 5f, true, 1f);
         }
         //NOTA:
         //Cuando el jugador indica de empezar a jugar se ejecuta
@@ -326,7 +326,7 @@ public class GameController : MonoBehaviour {
             //Desde el Animator de CountdownAnimator
 
             //Musica:
-            if (!MusicStore.s.AliasIsPlaying(myLevel.MusicAlias)) MusicStore.s.PlayMusicByAlias(myLevel.MusicAlias, 4f, 1f, true, 2f,true,2f);
+            PlayLevelMusic(true);
 
 
         }
@@ -340,6 +340,14 @@ public class GameController : MonoBehaviour {
             
 
         }
+    }
+
+    public void PlayLevelMusic(bool startLevel)
+    {
+        float delay = 0f;
+        if (startLevel) delay = 3f;
+        if (!MenuVersion) if (!MusicStore.s.AliasIsPlaying(myLevel.MusicAlias)) MusicStore.s.PlayMusicByAlias(myLevel.MusicAlias, delay, GameConfig.s.MusicVolume, true, 2f, true, 2f);
+        if (MenuVersion) if (!MusicStore.s.AliasIsPlaying("Menu")) MusicStore.s.PlayMusicByAlias("Menu", 0f, 0f, true, 0f, true, 1f);
     }
 
     /// <summary>

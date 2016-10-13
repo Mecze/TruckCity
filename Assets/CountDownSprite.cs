@@ -21,7 +21,7 @@ public class CountDownSprite : MonoBehaviour {
 
     public void StartCountDown()
     {
-        SoundStore.s.PlaySoundByAlias("CountDown");
+        SoundStore.s.PlaySoundByAlias("CountDown",0f,GameConfig.s.SoundVolume);
         myTweenScale.PlayForward();
         myTweenAlpha.PlayForward();
     }
@@ -57,10 +57,10 @@ public class CountDownSprite : MonoBehaviour {
         }
         if (step == 0)
         {
-            SoundStore.s.PlaySoundByAlias("CountDownGO");
+            SoundStore.s.PlaySoundByAlias("CountDownGO", 0f, GameConfig.s.SoundVolume);
         }else
         {
-            if (step > 0 && step != 3)SoundStore.s.PlaySoundByAlias("CountDown");
+            if (step > 0 && step != 3)SoundStore.s.PlaySoundByAlias("CountDown", 0f, GameConfig.s.SoundVolume);
         }
 
         

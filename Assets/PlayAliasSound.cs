@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+public enum SoundType { Music= 0,Sound=1,MuffledSound =2}
+
 public class PlayAliasSound : MonoBehaviour {
     [Header("Alias To Play")]
     [SerializeField]
@@ -14,8 +16,24 @@ public class PlayAliasSound : MonoBehaviour {
     /// </summary>
     public void Play()
     {
+        float volume=0f;
+        switch (settings.soundType)
+        {
+            case SoundType.Music:
+                volume = GameConfig.s.MusicVolume;
+                break;
+            case SoundType.Sound:
+                volume = GameConfig.s.SoundVolume;
+                break;
+            case SoundType.MuffledSound:
+                volume = GameConfig.s.MuffledSoundVolume;
+                break;
+            default:
+                break;
+        }
 
-        SoundStore.s.PlaySoundByAlias(Alias, settings.Delay, settings.Volume, settings.FadeIn.Enabled, settings.FadeIn.Time, settings.FadeOut.Enabled, settings.FadeOut.Time);
+
+        SoundStore.s.PlaySoundByAlias(Alias, settings.Delay, volume, settings.FadeIn.Enabled, settings.FadeIn.Time, settings.FadeOut.Enabled, settings.FadeOut.Time);
 
     }
 	
@@ -26,7 +44,7 @@ public class PlayAliasSound : MonoBehaviour {
 public class PlaySettings
 {
     public float Delay = 0f;
-    public float Volume = 1f;
+    public SoundType soundType = SoundType.Sound;
     public FadeSettings FadeIn;
     public FadeSettings FadeOut;
 

@@ -80,6 +80,7 @@
     <Compile Include="Assets\LoadingScreenManager.cs" />
     <Compile Include="Assets\MenuLevel.cs" />
     <Compile Include="Assets\Mobile Cartoon GUI 2\Scripts\ButtonAnimationContoller.cs" />
+    <Compile Include="Assets\MusicButton.cs" />
     <Compile Include="Assets\NGUI\Examples\Scripts\InventorySystem\Game\EquipItems.cs" />
     <Compile Include="Assets\NGUI\Examples\Scripts\InventorySystem\Game\EquipRandomItem.cs" />
     <Compile Include="Assets\NGUI\Examples\Scripts\InventorySystem\Game\UICursor.cs" />
@@ -312,6 +313,8 @@
     <Compile Include="Assets\Resources\Scripts\sMenuButton.cs" />
     <Compile Include="Assets\Resources\Scripts\sProfileManager.cs" />
     <Compile Include="Assets\Resources\Scripts\sSaveLoad.cs" />
+    <Compile Include="Assets\SettingsButton.cs" />
+    <Compile Include="Assets\SoundButton.cs" />
     <Compile Include="Assets\TweenAnimationController.cs" />
     <Compile Include="Assets\test.cs" />
   </ItemGroup>

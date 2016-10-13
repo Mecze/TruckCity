@@ -114,8 +114,8 @@ public class SoundStore : MonoBehaviour {
     /// Averigua si algun elemento del Alias está siendo reproducido ahora
     /// </summary>
     /// <param name="Alias">El Alias</param>
-    /// <returns></returns>
-    public bool AliasIsPlaying(string Alias)
+    /// <returns>El Index del Audio Source que lo reproduce</returns>
+    public int AliasIsPlaying(string Alias)
     {
         List<SoundParity> list = Sounds.FindAll(x => x.Alias == Alias);
         List<AudioSource> sources = mySoundSystem.AudioSources;
@@ -125,14 +125,31 @@ public class SoundStore : MonoBehaviour {
             {
                 if (sources[e].isPlaying && sources[e].clip == list[i].clip)
                 {
-                    return true;
+                    return e;
                 }
             }
 
         }
 
-        return false;
+        return -1;
     }
+
+
+
+
+    /// <summary>
+    /// Para de reproducir todos los AudioSources que estén reproduciendo el Alias indicado
+    /// </summary>
+    /// <param name="Alias"></param>
+    public void StopAlias(string Alias)
+    {
+        int i = AliasIsPlaying(Alias);
+        while(i > -1)
+        {
+            mySoundSystem.AudioSources[i].Stop();
+        }
+    }
+
 
 }
 

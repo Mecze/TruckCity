@@ -97,9 +97,13 @@ public class sProfileManager : Singleton<sProfileManager> {
         //Si estabamos jugando:
 
         StartCoroutine(ChangeScene(1)); //Vamos al menu
-        
-        
-        
+        GameConfig.s.MusicState = pf.MusicState;
+        GameConfig.s.SoundState = pf.SoundState;
+
+
+        //if (GameConfig.s.MusicState) MusicStore.s.PlayMusicByAlias("Menu", 1.5f, GameConfig.s.MusicVolume, true, 5f);
+
+
 
 
     }

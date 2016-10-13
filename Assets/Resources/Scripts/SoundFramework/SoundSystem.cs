@@ -34,7 +34,7 @@ public class SoundSystem : Singleton<SoundSystem>
     {
         base.Awake();
         DoReferences();
-        MusicStore.s.PlayMusicByAlias("Menu", 1.5f, 1f, true, 5f);
+        
     }
     void DoReferences()
     {
@@ -56,7 +56,7 @@ public class SoundSystem : Singleton<SoundSystem>
     //Internal
     bool cancelFadeInMusic = false;
     bool cancelFadeOutMusic = false;
-    
+    float targetMusicFade = 1f;
 
     #region public Play
 
@@ -183,13 +183,14 @@ public class SoundSystem : Singleton<SoundSystem>
             //-----------
             if (fadein) AudioSources[i].volume = 0f;
             if (!fadein) AudioSources[i].volume = volume;
-            AudioSources[i].PlayOneShot(clip);
+            AudioSources[i].clip = clip;
+            AudioSources[i].Play();
             if (fadein) VolumeFadeIn(i, fadeintime, true, volume);
             //-----------
         }
         else
         {
-            //Todos los AudioSources estan Ocupados � i == 0 (es Musica)
+            //Todos los AudioSources estan Ocupados o i == 0 (es Musica)
             //-----------
 
             if (i < 0) i = Mathf.Abs(i);//Puesto que i es negativo, sacamos el abs
@@ -203,7 +204,11 @@ public class SoundSystem : Singleton<SoundSystem>
                     //ACTION---
                     if (fadein) AudioSources[i].volume = 0f;
                     if (!fadein) AudioSources[i].volume = volume;
-                    if (i != 0) AudioSources[i].PlayOneShot(clip);
+                    if (i != 0)
+                    {
+                        AudioSources[i].clip = clip;
+                        AudioSources[i].Play();
+                    }
                     if (i == 0) { AudioSources[i].clip = clip; AudioSources[i].Play(); }
                     if (fadein) VolumeFadeIn(i, fadeintime, true, volume);
                     //---ACTION!!
@@ -217,7 +222,11 @@ public class SoundSystem : Singleton<SoundSystem>
                 AudioSources[i].Stop();
                 if (fadein) AudioSources[i].volume = 0f;
                 if (!fadein) AudioSources[i].volume = volume;
-                if (i != 0) AudioSources[i].PlayOneShot(clip);
+                if (i != 0)
+                {
+                    AudioSources[i].clip = clip;
+                    AudioSources[i].Play();
+                }
                 if (i == 0) { AudioSources[i].clip = clip; AudioSources[i].Play(); }
                 if (fadein) VolumeFadeIn(i, fadeintime, true, volume);
             }
@@ -264,6 +273,28 @@ public class SoundSystem : Singleton<SoundSystem>
 
         cancelFadeInMusic = true;
         VolumeFadeOut(0, fadeouttime,0.1f,true,Finish);
+    }
+
+
+    /// <summary>
+    /// Fades and Stops Playing the music
+    /// </summary>
+    /// <param name="fadeintime"></param>
+    public void FadeInMusic(float fadeintime = 2f, Action Finish = null)
+    {
+        if (Finish == null)
+        {
+            Finish = () => { cancelFadeOutMusic = false; };
+        }
+        else
+        {
+            Finish += () => { cancelFadeOutMusic = false; };
+        }
+
+
+
+        cancelFadeOutMusic = true;
+        VolumeFadeIn(0, fadeintime, false, 1f,0.1f,false,Finish);
     }
 
 
@@ -341,6 +372,12 @@ public class SoundSystem : Singleton<SoundSystem>
 
         //Al terminar determina se se apaga el sonido
         if (stopPlaying) AudioSources[AudioSourceIndex].Stop();
+
+        if (AudioSourceIndex == 0)
+        {
+            cancelFadeInMusic = false;
+            cancelFadeOutMusic = false;
+        }
 
         //Lanzamos el callback
         if (OnFinish != null) OnFinish();
@@ -423,6 +460,8 @@ public class SoundSystem : Singleton<SoundSystem>
     {
         return Resources.Load<AudioClip>(path + name);
     }
+
+    
 
     #endregion
 
