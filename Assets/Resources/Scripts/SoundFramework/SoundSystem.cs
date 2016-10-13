@@ -102,9 +102,10 @@ public class SoundSystem : Singleton<SoundSystem>
     /// <param name="fadeintime">(Defecto = 2f)Duración del "fade in"</param>
     /// <param name="fadeout">(Defecto = false)Si se desea "fade out" de la canción anterior</param>
     /// <param name="fadeoutTime">(Defecto = 2f)Duración del "fade out"</param>
-    public void PlayMusic(string musicPath, float delay = 0f, float volume = 1f, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeoutTime = 2f, Action OnFinish = null)
+    public void PlayMusic(string musicPath, float delay = 0f, float volume = 1f, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeoutTime = 2f, Action OnFinish = null, Action OnSongFinish = null, Action OnFadeInFinish = null)
     {
-        StartPlaying(MusicPath, musicPath, delay, volume, true, fadein, fadeintime, fadeout, fadeoutTime, OnFinish);
+        AudioSources[0].pitch = 1f;
+        StartPlaying(MusicPath, musicPath, delay, volume, true, fadein, fadeintime, fadeout, fadeoutTime, OnFinish,OnFadeInFinish);
     }
 
     /// <summary>
@@ -117,9 +118,10 @@ public class SoundSystem : Singleton<SoundSystem>
     /// <param name="fadeintime">(Defecto = 2f)Duración del "fade in"</param>
     /// <param name="fadeout">(Defecto = false)Si se desea "fade out" de la canción anterior</param>
     /// <param name="fadeoutTime">(Defecto = 2f)Duración del "fade out"</param>
-    public void PlayMusic(AudioClip clip, float delay = 0f, float volume = 1f, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeoutTime = 2f, Action OnFinish = null)
+    public void PlayMusic(AudioClip clip, float delay = 0f, float volume = 1f, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeoutTime = 2f, Action OnFinish = null, Action OnFadeInFinish = null)
     {
-        StartPlaying(clip, delay, volume, true, fadein, fadeintime, fadeout, fadeoutTime,OnFinish);
+        AudioSources[0].pitch = 1f;
+        StartPlaying(clip, delay, volume, true, fadein, fadeintime, fadeout, fadeoutTime,OnFinish,OnFadeInFinish);
     }
 
 
@@ -147,9 +149,9 @@ public class SoundSystem : Singleton<SoundSystem>
     /// <param name="fadeintime">(opcional) Si el clip entra con fadein, cuanto tarda en llegar al maximo, en segundos (por defecto = 2f)</param>
     /// <param name="fadeout">(opcinal) Si hubiera un clip anterior sonando en el mismo AudioSource, si queremos que el sonido anterior haga FadeOut(por defecto =false) </param>
     /// <param name="fadeouttime">(opcional) Si el clip anterior sale con FadeOut, cuanto tarda en llegar a 0, en segundos (por defecto = 2f)</param>
-    void StartPlaying(string path, string name, float delay = 0f, float volume = 1f, bool Music = false, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeouttime = 2f, Action OnFinish = null)
+    void StartPlaying(string path, string name, float delay = 0f, float volume = 1f, bool Music = false, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeouttime = 2f, Action OnFinish = null, Action OnFadeInFinish = null)
     {
-        StartCoroutine(_StartPlaying(LoadClip(path,name), delay, volume, Music, fadein, fadeintime, fadeout, fadeouttime, OnFinish));
+        StartCoroutine(_StartPlaying(LoadClip(path,name), delay, volume, Music, fadein, fadeintime, fadeout, fadeouttime, OnFinish,OnFadeInFinish));
     }
     /// <summary>
     /// Empieza a sonar un clip. Si se trata de Musica lo hace en SU audiosource
@@ -163,11 +165,11 @@ public class SoundSystem : Singleton<SoundSystem>
     /// <param name="fadeintime">(opcional) Si el clip entra con fadein, cuanto tarda en llegar al maximo, en segundos (por defecto = 2f)</param>
     /// <param name="fadeout">(opcinal) Si hubiera un clip anterior sonando en el mismo AudioSource, si queremos que el sonido anterior haga FadeOut(por defecto =false) </param>
     /// <param name="fadeouttime">(opcional) Si el clip anterior sale con FadeOut, cuanto tarda en llegar a 0, en segundos (por defecto = 2f)</param>
-    void StartPlaying(AudioClip clip, float delay = 0f, float volume = 1f, bool Music = false, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeouttime = 2f, Action OnFinish = null)
+    void StartPlaying(AudioClip clip, float delay = 0f, float volume = 1f, bool Music = false, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeouttime = 2f, Action OnFinish = null, Action OnFadeInFinish = null)
     {
-        StartCoroutine(_StartPlaying(clip, delay, volume, Music, fadein, fadeintime, fadeout, fadeouttime, OnFinish));
+        StartCoroutine(_StartPlaying(clip, delay, volume, Music, fadein, fadeintime, fadeout, fadeouttime, OnFinish,OnFadeInFinish));
     }
-    IEnumerator _StartPlaying(AudioClip clip, float delay = 0f, float volume = 1f, bool Music = false, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeouttime = 2f, Action OnFinish = null)
+    IEnumerator _StartPlaying(AudioClip clip, float delay = 0f, float volume = 1f, bool Music = false, bool fadein = false, float fadeintime = 2f, bool fadeout = false, float fadeouttime = 2f, Action OnFinish = null, Action OnFadeInFinish = null)
     {
         //Esperamos X segundos
         yield return new WaitForSeconds(delay);
@@ -185,7 +187,7 @@ public class SoundSystem : Singleton<SoundSystem>
             if (!fadein) AudioSources[i].volume = volume;
             AudioSources[i].clip = clip;
             AudioSources[i].Play();
-            if (fadein) VolumeFadeIn(i, fadeintime, true, volume);
+            if (fadein) VolumeFadeIn(i, fadeintime, true, volume,0.1f,false, OnFadeInFinish);
             //-----------
         }
         else
@@ -210,7 +212,7 @@ public class SoundSystem : Singleton<SoundSystem>
                         AudioSources[i].Play();
                     }
                     if (i == 0) { AudioSources[i].clip = clip; AudioSources[i].Play(); }
-                    if (fadein) VolumeFadeIn(i, fadeintime, true, volume);
+                    if (fadein) VolumeFadeIn(i, fadeintime, true, volume,0.1f,false, OnFadeInFinish);
                     //---ACTION!!
                 });
 
@@ -228,7 +230,7 @@ public class SoundSystem : Singleton<SoundSystem>
                     AudioSources[i].Play();
                 }
                 if (i == 0) { AudioSources[i].clip = clip; AudioSources[i].Play(); }
-                if (fadein) VolumeFadeIn(i, fadeintime, true, volume);
+                if (fadein) VolumeFadeIn(i, fadeintime, true, volume,0.1f,false,OnFadeInFinish);
             }
 
 
@@ -273,8 +275,19 @@ public class SoundSystem : Singleton<SoundSystem>
 
         cancelFadeInMusic = true;
         VolumeFadeOut(0, fadeouttime,0.1f,true,Finish);
+        
     }
+    /// <summary>
+    /// Fade Music to custom amount
+    /// </summary>
+    /// <param name="fadeTo"></param>
+    /// <param name="fadeTime"></param>
+    /// <param name="OnFinish"></param>
+    public void FadeToMusic(float fadeTo,float fadeTime = 2f, Action OnFinish=null)
+    {
 
+        StartCoroutine(_VolumeFade(0, fadeTime, fadeTo, 0.1f,false, OnFinish));
+    }
 
     /// <summary>
     /// Fades and Stops Playing the music

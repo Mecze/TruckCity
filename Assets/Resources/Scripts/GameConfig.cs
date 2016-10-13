@@ -127,15 +127,18 @@ public class GameConfig : Singleton<GameConfig> {
             {
                 if (SoundSystem.s.AudioSources[0].isPlaying == false)
                 {
-                    if (GameController.s != null)
-                    {
-                        GameController.s.PlayLevelMusic(false);
-                    }else
-                    {
-                        MusicStore.s.PlayMusicByAlias("Menu", 1.5f, GameConfig.s.MusicVolume, true, 5f);
-                    }
+                    SoundSystem.s.AudioSources[0].Stop();
                 }
-                SoundSystem.s.FadeInMusic(1f, () => { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
+                if (GameController.s != null)
+                {
+                    GameController.s.PlayLevelMusic(false);
+                }else
+                {
+                    MusicStore.s.PlayMusicByAlias("Menu", 1.5f, GameConfig.s.MusicVolume, true,5f,true,0.1f,null,()=> { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
+                    //SoundSystem.s.FadeInMusic(1f, () => { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
+                }
+                
+                //SoundSystem.s.FadeInMusic(1f, () => { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
                 
                 
             }else
