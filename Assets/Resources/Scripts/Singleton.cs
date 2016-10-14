@@ -4,6 +4,7 @@ using System.Collections;
 public class Singleton<Instance> : MonoBehaviour where Instance : Singleton<Instance>
 {
     public static Instance instance;
+    public static Instance s;
     public bool isPersistant;
 
     public virtual void Awake()
@@ -13,6 +14,7 @@ public class Singleton<Instance> : MonoBehaviour where Instance : Singleton<Inst
             if (!instance)
             {
                 instance = this as Instance;
+                s = this as Instance;
             }
             else
             {

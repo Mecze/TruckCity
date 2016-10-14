@@ -4,6 +4,9 @@ using System.Collections;
 
 
 public class Cargo : MonoBehaviour {
+    [SerializeField]
+    TruckEntity myTruck;
+    
     #region Loaded BOOL Property
     [Header("Cargo")]
     /// <summary>
@@ -65,6 +68,7 @@ public class Cargo : MonoBehaviour {
         }else
         {
             _loaded = true;
+            myTruck.PlayHonk();
         }
         Renderer rend = GetComponent<Renderer>();
         rend.material = Resources.Load<Material>(GameConfig.s.materialsPath + GameConfig.s.cargoMaterialFileName + GameConfig.s.cargoSpriteFileName[(int)cargo]);

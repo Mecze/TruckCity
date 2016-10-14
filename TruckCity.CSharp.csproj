@@ -80,6 +80,7 @@
     <Compile Include="Assets\LoadingScreenManager.cs" />
     <Compile Include="Assets\MenuLevel.cs" />
     <Compile Include="Assets\Mobile Cartoon GUI 2\Scripts\ButtonAnimationContoller.cs" />
+    <Compile Include="Assets\MusicButton.cs" />
     <Compile Include="Assets\NGUI\Examples\Scripts\InventorySystem\Game\EquipItems.cs" />
     <Compile Include="Assets\NGUI\Examples\Scripts\InventorySystem\Game\EquipRandomItem.cs" />
     <Compile Include="Assets\NGUI\Examples\Scripts\InventorySystem\Game\UICursor.cs" />
@@ -258,6 +259,7 @@
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Volume.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Voxel.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\VoxelParticleSystem.cs" />
+    <Compile Include="Assets\PlayAliasSound.cs" />
     <Compile Include="Assets\Resources\Scripts\AutoGrid.cs" />
     <Compile Include="Assets\Resources\Scripts\Clickable.cs" />
     <Compile Include="Assets\Resources\Scripts\Extension.cs" />
@@ -265,7 +267,6 @@
     <Compile Include="Assets\Resources\Scripts\FloatingText.cs" />
     <Compile Include="Assets\Resources\Scripts\GameConfig.cs" />
     <Compile Include="Assets\Resources\Scripts\GameController.cs" />
-    <Compile Include="Assets\Resources\Scripts\GasMeter.cs" />
     <Compile Include="Assets\Resources\Scripts\GasStation.cs" />
     <Compile Include="Assets\Resources\Scripts\IntroAnimationBehaviour.cs" />
     <Compile Include="Assets\Resources\Scripts\ManageCargoScripts\AcceptsCargo.cs" />
@@ -279,7 +280,6 @@
     <Compile Include="Assets\Resources\Scripts\MapController.cs" />
     <Compile Include="Assets\Resources\Scripts\MouseController.cs" />
     <Compile Include="Assets\Resources\Scripts\ObjectCloner.cs" />
-    <Compile Include="Assets\Resources\Scripts\OtherLaneChecker.cs" />
     <Compile Include="Assets\Resources\Scripts\Profile.cs" />
     <Compile Include="Assets\Resources\Scripts\QuestSlate.cs" />
     <Compile Include="Assets\Resources\Scripts\QuestSlateDeliveryIntro.cs" />
@@ -288,12 +288,18 @@
     <Compile Include="Assets\Resources\Scripts\RoadEntity.cs" />
     <Compile Include="Assets\Resources\Scripts\Singleton.cs" />
     <Compile Include="Assets\Resources\Scripts\SmokeSystem.cs" />
+    <Compile Include="Assets\Resources\Scripts\SoundFramework\MusicStore.cs" />
+    <Compile Include="Assets\Resources\Scripts\SoundFramework\SoundParity.cs" />
+    <Compile Include="Assets\Resources\Scripts\SoundFramework\SoundStore.cs" />
+    <Compile Include="Assets\Resources\Scripts\SoundFramework\SoundSystem.cs" />
     <Compile Include="Assets\Resources\Scripts\Store.cs" />
     <Compile Include="Assets\Resources\Scripts\TimeController.cs" />
     <Compile Include="Assets\Resources\Scripts\TreeSpawn.cs" />
     <Compile Include="Assets\Resources\Scripts\TriggerInvisible.cs" />
-    <Compile Include="Assets\Resources\Scripts\TruckEntity.cs" />
-    <Compile Include="Assets\Resources\Scripts\TruckFrontChecker.cs" />
+    <Compile Include="Assets\Resources\Scripts\Truck\GasMeter.cs" />
+    <Compile Include="Assets\Resources\Scripts\Truck\OtherLaneChecker.cs" />
+    <Compile Include="Assets\Resources\Scripts\Truck\TruckEntity.cs" />
+    <Compile Include="Assets\Resources\Scripts\Truck\TruckFrontChecker.cs" />
     <Compile Include="Assets\Resources\Scripts\Tuple.cs" />
     <Compile Include="Assets\Resources\Scripts\Tuple2.cs" />
     <Compile Include="Assets\Resources\Scripts\Tuple3.cs" />
@@ -307,6 +313,9 @@
     <Compile Include="Assets\Resources\Scripts\sMenuButton.cs" />
     <Compile Include="Assets\Resources\Scripts\sProfileManager.cs" />
     <Compile Include="Assets\Resources\Scripts\sSaveLoad.cs" />
+    <Compile Include="Assets\SettingsButton.cs" />
+    <Compile Include="Assets\SoundButton.cs" />
+    <Compile Include="Assets\TweenAnimationController.cs" />
     <Compile Include="Assets\test.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -360,6 +369,8 @@
     <None Include="Assets\PicaVoxel\PicaVoxel\Shaders\PicaVoxel PBR Transparent.shader" />
     <None Include="Assets\PicaVoxel\PicaVoxel\Shaders\PicaVoxel PBR.shader" />
     <None Include="Assets\PicaVoxel\PicaVoxel\Shaders\PicaVoxel Unlit.shader" />
+    <None Include="Assets\Resources\SFX\Music\Dream of Life\Credits.txt" />
+    <None Include="Assets\Resources\SFX\Sound\credits.txt" />
     <None Include="Assets\Shaders\Outlined2 2D.shader" />
     <None Include="Assets\Shaders\Outlined2_Shader.shader" />
     <None Include="Assets\Shaders\Outlined3_Shader.shader" />

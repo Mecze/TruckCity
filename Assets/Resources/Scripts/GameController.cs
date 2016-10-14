@@ -6,6 +6,18 @@ using System;
 using System.Linq;
 using UnityEngine.SceneManagement;
 
+
+
+//////////////////////////////
+/// TRUCK CITY!
+//////////////////////////////
+/// GAME CONTROLLER
+//////////////////////////////
+/// Este Script inicializa el nivel al entrar
+/// y lleva los computos importantes del nivel.
+//////////////////////////////
+
+
 public delegate void ScoreEvent(CargoType cargo);
 public delegate void MoneyEvent(int increment);
 public delegate void CompeletedQuestEvent(float momentInTime);
@@ -44,7 +56,7 @@ public class GameController : MonoBehaviour {
             if (s_singleton == null)
             {
                 //Esto no deberia pasar nunca!
-                Debug.LogError("No Existe Singleton GameController");
+                //Debug.LogError("No Existe Singleton GameController");
             }
             return s_singleton;
         }
@@ -156,6 +168,9 @@ public class GameController : MonoBehaviour {
     GameObject QuestGrid;
     [SerializeField]
     UILabel IntroMenuMainLabel;
+    [SerializeField]
+    TweenAnimationController TimerTweenController;
+
 
 
     [Header("Prefabs")]
@@ -217,6 +232,9 @@ public class GameController : MonoBehaviour {
                     OnCompeletedQuest += TimeAttackOnCompletedQuestListener;
                     //Se inicializa el Timer (no empieza aún, está Freeze)
                     TimeController.s.SetTimer((float)myLevel.startingTimer, TimeAttackEndGameVictoryCheck, true, 0f, false);
+                    TimeController.s.timer.AddAction(10, ActivateLowTimeTimerAnimation);
+                    //TimeController.s.timer.AddAction(0, StopLowTimeTimerAnimation);
+
                     break;
                 default:
                     break;
@@ -266,6 +284,14 @@ public class GameController : MonoBehaviour {
             //Ahora se Activa la Intro
             //(En la Escena viene ya activada por defecto) FailSafe:
             IntroPanel.SetActive(true);
+
+            
+
+
+        }else
+        {
+            //En caso de que esto sea el MENU (Menu Versión == true), ponemos musica de menu si es necesario.
+            if (GameConfig.s.MusicState) if (!MusicStore.s.AliasIsPlaying("Menu")) MusicStore.s.PlayMusicByAlias("Menu", 0f, GameConfig.s.MusicVolume, true, 5f, true, 1f);
         }
         //NOTA:
         //Cuando el jugador indica de empezar a jugar se ejecuta
@@ -295,10 +321,16 @@ public class GameController : MonoBehaviour {
             IntroPanelAlphaTween.PlayForward();
             //Esto inicializa el Countdown.
             StartCoroutine(StartButtonAfterFadeOut(GUIPanelAlphaTween.duration+0.1f, true));
-            
+
             //Al terminar el Countdown se lanza "StartGame"
             //Desde el Animator de CountdownAnimator
-        }else
+
+            //Musica:
+            PlayLevelMusic(true);
+
+
+        }
+        else
         {
             //Si pause es TRUE quiere decir que NO es el inicio del MAPA
             //Si nó que se hizó pause
@@ -308,6 +340,14 @@ public class GameController : MonoBehaviour {
             
 
         }
+    }
+
+    public void PlayLevelMusic(bool startLevel)
+    {
+        float delay = 0f;
+        if (startLevel) delay = 3f;
+        if (!MenuVersion) if (!MusicStore.s.AliasIsPlaying(myLevel.MusicAlias)) MusicStore.s.PlayMusicByAlias(myLevel.MusicAlias, delay, GameConfig.s.MusicVolume, true, 2f, true, 2f,null,()=> { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
+        if (MenuVersion) if (!MusicStore.s.AliasIsPlaying("Menu")) MusicStore.s.PlayMusicByAlias("Menu",0f, GameConfig.s.MusicVolume, true, 0f, true, 1f,null,()=> { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
     }
 
     /// <summary>
@@ -451,6 +491,7 @@ public class GameController : MonoBehaviour {
     /// <param name="delay">[Opcional] Tiempo de espera hasta que se Spawnea (por defecto = 0)</param>
     public void FloatingTextSpawn(Transform pos, string text, enumColor publiccolor, string spriteName, Color CargoColor, float delay = 0f)
     {
+        if (MenuVersion) return;
         StartCoroutine(SpawnFloatingText(pos, text, publiccolor, spriteName, CargoColor, delay));
     }
     //Aquí se ejecuta el Delay de "FloatingTextSpawn(...)"
@@ -464,8 +505,11 @@ public class GameController : MonoBehaviour {
     #endregion
 
     #region levelmanagement
+
+
     public void PauseButton()
     {
+        if (CounddownOBJ.activeSelf == false)
         PauseGame(true);
     }
 
@@ -515,6 +559,23 @@ public class GameController : MonoBehaviour {
         SceneManager.LoadScene(1);
     }
 
+
+    void ActivateLowTimeTimerAnimation()
+    {
+        SoundSystem.s.FadeToMusic(0.2f, 0.2f, () => {
+            SoundStore.s.PlaySoundByAlias("TimeRunOut", 0f, GameConfig.s.SoundVolume+0.5f,false,0f,false,0f,()=> {
+                SoundSystem.s.AudioSources[0].pitch = 1.2f;
+                SoundSystem.s.FadeToMusic(1f, 0.2f);
+            }); });
+        
+        
+        TimerTweenController.PlayAnimations(true);
+    }
+    void StopLowTimeTimerAnimation()
+    {
+        SoundSystem.s.AudioSources[0].pitch = 1f;
+        TimerTweenController.StopAnimations();
+    }
 
     
 
@@ -582,7 +643,7 @@ public class GameController : MonoBehaviour {
     void TimeAttackEndGameVictoryCheck()
     {
 
-
+        SoundSystem.s.FadeOutMusic(0.2f,()=> { StopLowTimeTimerAnimation(); MusicStore.s.PlayMusicByAlias("Victory", 0f, 1f); });
         FreezeGame(true);
         FinishText.SetActive(true);
         FinishTextScaleTween.PlayForward();
@@ -782,16 +843,26 @@ public class LevelConditions
             _usingEffects = value;
         }
     }
-
-
-
-
-
-
-
-
     #endregion
-       
+
+    #region MusicUsed
+    [SerializeField]
+    string _musicAlias;
+    public string MusicAlias
+    {
+        get
+        {
+            return _musicAlias;
+        }
+
+        set
+        {
+            _musicAlias = value;
+        }
+    }
+    #endregion
+
+
 
     #region constructor
 

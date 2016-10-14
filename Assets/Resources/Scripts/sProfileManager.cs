@@ -4,6 +4,14 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+//////////////////////////////
+/// TRUCK CITY!
+//////////////////////////////
+/// ProfileManager [DONTDESTROYONLOAD] Persistente
+//////////////////////////////
+/// Este script carga o crea nuevo perfil, e inicializa el juego
+//////////////////////////////
+
 public class sProfileManager : Singleton<sProfileManager> {
     
 
@@ -89,9 +97,13 @@ public class sProfileManager : Singleton<sProfileManager> {
         //Si estabamos jugando:
 
         StartCoroutine(ChangeScene(1)); //Vamos al menu
-        
-        
-        
+        GameConfig.s.MusicState = pf.MusicState;
+        GameConfig.s.SoundState = pf.SoundState;
+
+
+        //if (GameConfig.s.MusicState) MusicStore.s.PlayMusicByAlias("Menu", 1.5f, GameConfig.s.MusicVolume, true, 5f);
+
+
 
 
     }
@@ -104,10 +116,13 @@ public class sProfileManager : Singleton<sProfileManager> {
 
     public void ChangeLevel(int levelIndex)
     {
-        sProfileManager.ProfileSingleton.newLevelIndex = levelIndex;
-        sProfileManager.ProfileSingleton.ChangingLevel = true;
-        LoadingScreenManager.LoadScene(levelIndex+3);
-        
+        SoundSystem.s.FadeOutMusic(0.5f, () =>
+         {
+
+             sProfileManager.ProfileSingleton.newLevelIndex = levelIndex;
+             sProfileManager.ProfileSingleton.ChangingLevel = true;
+             LoadingScreenManager.LoadScene(levelIndex + 3);
+         });
     }
     
 

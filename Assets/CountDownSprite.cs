@@ -1,6 +1,13 @@
 using UnityEngine;
 using System.Collections;
 
+
+//////////////////////////////
+/// TRUCK CITY!
+//////////////////////////////
+/// Este script realiza el Countdown 3,2,1, GO!
+//////////////////////////////
+
 public class CountDownSprite : MonoBehaviour {
     [SerializeField]
     UISprite mySprite;
@@ -14,6 +21,7 @@ public class CountDownSprite : MonoBehaviour {
 
     public void StartCountDown()
     {
+        SoundStore.s.PlaySoundByAlias("CountDown",0f,GameConfig.s.SoundVolume);
         myTweenScale.PlayForward();
         myTweenAlpha.PlayForward();
     }
@@ -32,7 +40,7 @@ public class CountDownSprite : MonoBehaviour {
             mySprite.spriteName = s;
             myTweenScale.PlayForward();
             myTweenAlpha.PlayForward();
-
+            
         }
         else
         {
@@ -43,9 +51,20 @@ public class CountDownSprite : MonoBehaviour {
                 myTweenAlpha.ResetToBeginning();
                 myTweenScale.ResetToBeginning();
                 GameController.s.StartGame();
+                
             }
 
         }
+        if (step == 0)
+        {
+            SoundStore.s.PlaySoundByAlias("CountDownGO", 0f, GameConfig.s.SoundVolume);
+        }else
+        {
+            if (step > 0 && step != 3)SoundStore.s.PlaySoundByAlias("CountDown", 0f, GameConfig.s.SoundVolume);
+        }
+
+        
+
 
     }
 	
