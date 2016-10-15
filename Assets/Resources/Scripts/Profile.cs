@@ -38,7 +38,14 @@ public class Profile {
     }
 
     public bool MusicState;
+
+
     public bool SoundState;
+
+
+
+    public string LanguageSelected;
+
 
 
 
