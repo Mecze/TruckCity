@@ -76,7 +76,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\CountDownSprite.cs" />
+    <Compile Include="Assets\FlagSprite.cs" />
     <Compile Include="Assets\GuiButtonWatch.cs" />
+    <Compile Include="Assets\LevelNumberAwake.cs" />
     <Compile Include="Assets\LoadingScreenManager.cs" />
     <Compile Include="Assets\MenuLevel.cs" />
     <Compile Include="Assets\Mobile Cartoon GUI 2\Scripts\ButtonAnimationContoller.cs" />

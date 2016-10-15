@@ -94,8 +94,12 @@ public class sProfileManager : Singleton<sProfileManager> {
         //Comprueba si hay una partida guardada... estabamos jugando
         //pf.currentlyPlayingLevel = sSaveLoad.CheckIfSavedGame();
 
-        //Si estabamos jugando:
 
+        //Si estabamos jugando:
+        
+        Localization.language = pf.LanguageSelected;
+
+        
         StartCoroutine(ChangeScene(1)); //Vamos al menu
         GameConfig.s.MusicState = pf.MusicState;
         GameConfig.s.SoundState = pf.SoundState;

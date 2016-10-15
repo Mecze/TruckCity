@@ -122,6 +122,8 @@ static public class Localization
 			{
 				mLanguage = value;
 				LoadAndSelect(value);
+                sProfileManager.ProfileSingleton.LanguageSelected = value;
+                sSaveLoad.SaveProfile();
 			}
 		}
 	}

@@ -43,6 +43,12 @@ public class sMenu : MonoBehaviour {
     [SerializeField]
     GameObject anchor;
 
+    [SerializeField]
+    GameObject languageAnchor;
+
+    [SerializeField]
+    GameObject languagePrefab;
+
     void Start()
     {
 
@@ -68,6 +74,27 @@ public class sMenu : MonoBehaviour {
         }
         anchor.GetComponent<UIGrid>().Reposition();
 
+
+        string[] flags = Localization.dictionary["Flag"];
+        for (int i = 0; i < Localization.knownLanguages.Length; i++)
+        {
+            GameObject go = (GameObject)GameObject.Instantiate(languagePrefab);
+            FlagSprite fs = go.GetComponent<FlagSprite>();
+            fs.myLanguage = Localization.knownLanguages[i];
+            fs.myImage = flags[i];
+            if (Localization.language == Localization.knownLanguages[i])
+            {
+                fs.Set = true;
+            }else
+            {
+                fs.Set = false;
+            }
+
+
+            go.transform.SetParent(languageAnchor.transform);
+            go.transform.localScale = Vector3.one;
+        }
+        languageAnchor.GetComponent<UIGrid>().Reposition();
     }   
 
     public void OnLevelButtonClick(int levelIndex)

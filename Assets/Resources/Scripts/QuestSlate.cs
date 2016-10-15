@@ -266,15 +266,15 @@ public class QuestSlate : MonoBehaviour {
             {
                 case WinCondition.Delivered:
                     if (!IP) GameController.s.OnScore += OnScoreListener;
-                    QuestLabel.text = DeliveryText;
+                    QuestLabel.text = Localization.Get(DeliveryText) ;
                     break;
                 case WinCondition.Money:
                     if (!IP) GameController.s.OnMoneyGain += OnMoneyGainListener;
-                    QuestLabel.text = MoneyText;
+                    QuestLabel.text = Localization.Get(MoneyText);
                     break;
                 case WinCondition.Time:
                     if (!IP) GameController.s.OnCompeletedQuest += OnCompletedQuestListener;
-                    QuestLabel.text = TimeText;
+                    QuestLabel.text = Localization.Get(TimeText);
                     break;
                 default:
                     break;
