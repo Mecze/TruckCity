@@ -54,6 +54,7 @@ public class FlagSprite : MonoBehaviour {
         if (Set) return;
 
         Localization.language = myLanguage;
+        //Debug.Log(Localization.Get("Settings"));
         FlagSprite[] array = FindObjectsOfType<FlagSprite>();
         for (int i = 0; i < array.Length; i++)
         {

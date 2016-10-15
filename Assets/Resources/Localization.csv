@@ -1,17 +1,20 @@
-Key,English,Spanish,
-Flag,UKflag,SpanishFlag,
-English,English,Ingles,
-Spanish,Spanish,Español,
-Sound,Sound,Sonido,
-Music,Music,Musica,
-Desc,English Localization,Localizacion en Español,
-Levels,Levels:,Niveles:,
-Settings,Settings:,Configuracion:,
-Language,Language:,Idioma:,
-Level,Level,Nivel,
-Missions,[FF5454FF]M[-]issions,[FF5454FF]M[-]isiones,
-Trucks,[FF5454FF]T[-]rucks,[FF5454FF]C[-]amiones,
-Time!,Time!,¡Tiempo!,
-Level1Hint1,Deliver Cargo Here,Transporta la Carga aqui,
-Level1Hint2,Pick Up Cargo Hera,Recoge la Carga aqui,
-Level1Hint3,Touch Here to Rotate,Toca aqui para girar,
+Key,English,Spanish
+Flag,UKflag,SpanishFlag
+English,English,Inglés
+Spanish,Spanish,Español
+Sound,Sound,Sonido
+Music,Music,Música
+Desc,English Localization,Localización en Español
+Levels,Levels:,Niveles:
+Settings,Settings:,Configuración:
+Language,Language:,Idioma:
+Level,Level,Nivel
+Missions,[FF5454FF]M[-]issions,[FF5454FF]M[-]isiones
+Trucks,[FF5454FF]T[-]rucks,[FF5454FF]C[-]amiones
+Time!,Time!,¡Tiempo!
+QuestDeliver,Deliver,Entrega
+QuestMoney,Get Money,Consigue dinero
+QuiestTime,Complete Before,Antes de
+Level1Hint1,Deliver Cargo Here,Transporta la Carga aquí
+Level1Hint2,Pick Up Cargo Hera,Recoge la Carga aquí
+Level1Hint3,Touch Here to Rotate,Toca aquí para girar
