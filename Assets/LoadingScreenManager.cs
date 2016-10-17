@@ -70,7 +70,7 @@ public class LoadingScreenManager : MonoBehaviour
         
         StartOperation(levelNum);
 
-        float lastProgress = 0f;
+        //float lastProgress = 0f;
 
         // operation does not auto-activate scene, so it's stuck at 0.9
         while (DoneLoading() == false)
@@ -81,7 +81,7 @@ public class LoadingScreenManager : MonoBehaviour
             //{
                 progressBar.value = operation.progress;
                 Debug.Log("Loading " + (operation.progress * 100).ToString()+"%");
-                lastProgress = operation.progress;
+                //lastProgress = operation.progress;
             //}
         }
 
@@ -138,7 +138,7 @@ public class LoadingScreenManager : MonoBehaviour
         //loadingDoneIcon.gameObject.SetActive(false);
 
         progressBar.value = 0f;
-        loadingText.text = "[FF5454FF]L[-]oading";
+        loadingText.text = Localization.Get("Loading");
     }
 
     void ShowCompletionVisuals()
@@ -147,7 +147,7 @@ public class LoadingScreenManager : MonoBehaviour
         //loadingDoneIcon.gameObject.SetActive(true);
 
         progressBar.value = 1f;
-        loadingText.text = "[FF5454FF]L[-]oading [FF5454FF]D[-]one";
+        loadingText.text = Localization.Get("LoadingComplete");
     }
 
 }

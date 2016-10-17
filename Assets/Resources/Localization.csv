@@ -14,7 +14,9 @@ Trucks,[FF5454FF]T[-]rucks,[FF5454FF]C[-]amiones
 Time!,Time!,¡Tiempo!
 QuestDeliver,Deliver,Entrega
 QuestMoney,Get Money,Consigue dinero
-QuiestTime,Complete Before,Antes de
+QuestTime,Complete Before,Antes de
+Loading,[FF5454FF]L[-]oading,[FF5454FF]C[-]argando
+LoadingComplete,[FF5454FF]L[-]oading [FF5454FF]D[-]one,[FF5454FF]C[-]arga [FF5454FF]C[-]ompleta
 Level1Hint1,Deliver Cargo Here,Transporta la Carga aquí
 Level1Hint2,Pick Up Cargo Hera,Recoge la Carga aquí
 Level1Hint3,Touch Here to Rotate,Toca aquí para girar

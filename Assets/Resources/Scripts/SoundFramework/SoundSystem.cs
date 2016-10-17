@@ -30,7 +30,7 @@ public class SoundSystem : Singleton<SoundSystem>
         }        
     }
 
-    void Awake()
+    public override void Awake()
     {
         base.Awake();
         DoReferences();
@@ -56,7 +56,7 @@ public class SoundSystem : Singleton<SoundSystem>
     //Internal
     bool cancelFadeInMusic = false;
     bool cancelFadeOutMusic = false;
-    float targetMusicFade = 1f;
+    //float targetMusicFade = 1f;
 
     #region public Play
 
@@ -429,7 +429,7 @@ public class SoundSystem : Singleton<SoundSystem>
             if (!AudioSources[i].isPlaying)
             {
                 return i;
-                break;
+                //break;
             }
             
         }

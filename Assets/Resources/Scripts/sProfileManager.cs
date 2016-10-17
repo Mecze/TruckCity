@@ -115,7 +115,8 @@ public class sProfileManager : Singleton<sProfileManager> {
     IEnumerator ChangeScene(int i)
     {
         yield return new WaitForSeconds(3f);
-        SceneManager.LoadScene(i);
+        //        SceneManager.LoadScene(i);
+        LoadingScreenManager.LoadScene(i);
     }
 
     public void ChangeLevel(int levelIndex)
