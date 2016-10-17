@@ -1,0 +1,9 @@
+#################
+## Unity
+#################
+
+
+Library/metadata/
+Library/metadata/*
+Library/metadata/**/*
+*.apk
