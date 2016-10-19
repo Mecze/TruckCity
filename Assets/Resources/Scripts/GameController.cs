@@ -194,8 +194,26 @@ public class GameController : MonoBehaviour {
     /// </summary>
     void Awake()
     {
+        SetQuality();
         fillmylevel();
     }
+    /// <summary>
+    /// Ajusta el nivel de detalle de todos los elementos del juego con distintos
+    /// niveles de detalle
+    /// </summary>
+    void SetQuality()
+    {
+        GraphicQualitySettings QS = sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings;
+        QualitySelector[] Qss = GameObject.FindObjectsOfType<QualitySelector>();
+        if (Qss.Length < 1) return; //Failsafe
+
+        for (int i = 0; i < Qss.Length; i++)
+        {
+            Qss[i].Set(QS);
+        }
+    }
+
+
     /// <summary>
     /// Inicia la secuencia al inicio del juego
     /// </summary>

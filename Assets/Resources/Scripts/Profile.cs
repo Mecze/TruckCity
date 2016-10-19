@@ -46,7 +46,7 @@ public class Profile {
 
     public string LanguageSelected;
 
-
+    public GraphicQualitySettings GlobalGraphicQualitySettings;
 
 
 }

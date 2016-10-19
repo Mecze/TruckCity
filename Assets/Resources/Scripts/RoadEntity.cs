@@ -10,8 +10,12 @@ public class RoadEntity : MonoBehaviour, IFreezable {
 
     bool freeze = false;
 
+    //GraphicQualitySettings GlobalQS;
+
     [SerializeField]
     Volume myRoad;
+    [SerializeField]
+    Renderer myRoadLow;
 
     /// <summary>
     /// Posición del tipo "Vector3Int"
@@ -264,6 +268,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     {
         RecalculateSprites();
         RecordPosition();
+        //GlobalQS = sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings;
     }
     
     /// <summary>
@@ -328,15 +333,29 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     /// Cambia el material de la carretera
     /// </summary>
     /// <param name="dir"></param>
-    void ChangeMaterial(RoadDirection dir)
+    public void ChangeMaterial(RoadDirection dir)
     {
-        myRoad.SetFrame((int)dir);
+        switch (sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings)
+        {
+            case GraphicQualitySettings.Low:
+                //Low Quality using old Materials                
+                Material mat = (Material)Resources.Load(GameConfig.s.materialsPath + roadDirToString(dir));
+                myRoadLow.material = mat;
+
+                break;
+            case GraphicQualitySettings.High:
+                //High Quality using PicaVoxel
+                myRoad.SetFrame((int)dir);
+
+                break;
+            default:
+                break;
+        }
+        
 
 
-        /* OLD VERSION! MATERIOAL VERSION
-        Material mat = (Material)Resources.Load(GameConfig.s.materialsPath + roadDirToString(dir));
-        roadRenderer.material = mat;
-        */
+        
+        
         //Material[] currentMats = roadRenderer.materials;
 
     }
