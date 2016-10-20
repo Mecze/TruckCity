@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public enum GraphicQualitySettings { Low = 0, High = 1 }
+public enum GraphicQualitySettings {None=0, Low = 1, High = 2 }
 
 
 public class QualitySelector : MonoBehaviour {
