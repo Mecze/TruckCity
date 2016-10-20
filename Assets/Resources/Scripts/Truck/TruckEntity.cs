@@ -179,7 +179,7 @@ public class TruckEntity : MonoBehaviour, IFreezable
             currentSpeed += acceleration * Time.deltaTime;
             
             if (gasMeter.currentGas <= 0f && currentSpeed > depletedGasThreshold) currentSpeed = depletedGasThreshold;            
-            this.transform.Translate(Vector3.forward * Time.deltaTime * currentSpeed);
+            this.transform.Translate(Vector3.Lerp(this.transform.position,Vector3.forward * Time.deltaTime * currentSpeed,1f));
             ConsumeGas(currentSpeed);
 
         }

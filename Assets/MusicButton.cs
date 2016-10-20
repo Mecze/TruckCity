@@ -85,6 +85,7 @@ public class MusicButton : MonoBehaviour {
 
     public void Click()
     {
+        Debug.Log("ho!");
         if (Clickable)state = !state;
     }
 

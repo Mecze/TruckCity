@@ -14,17 +14,30 @@ using UnityEngine;
 [AddComponentMenu("NGUI/UI/Localize")]
 public class UILocalize : MonoBehaviour
 {
-	/// <summary>
-	/// Localization key.
-	/// </summary>
+    /// <summary>
+    /// Localization key.
+    /// </summary>
+    [SerializeField]
+    private string key;
+    public string Key
+    {
+        get
+        {
+            return key;
+        }
 
-	public string key;
+        set
+        {
+            key = value;
+            OnLocalize();
+        }
+    }
 
-	/// <summary>
-	/// Manually change the value of whatever the localization component is attached to.
-	/// </summary>
+    /// <summary>
+    /// Manually change the value of whatever the localization component is attached to.
+    /// </summary>
 
-	public string value
+    public string value
 	{
 		set
 		{
@@ -60,7 +73,9 @@ public class UILocalize : MonoBehaviour
 		}
 	}
 
-	bool mStarted = false;
+
+
+    bool mStarted = false;
 
 	/// <summary>
 	/// Localize the widget on enable, but only if it has been started already.
@@ -94,13 +109,13 @@ public class UILocalize : MonoBehaviour
 	void OnLocalize ()
 	{
 		// If no localization key has been specified, use the label's text as the key
-		if (string.IsNullOrEmpty(key))
+		if (string.IsNullOrEmpty(Key))
 		{
 			UILabel lbl = GetComponent<UILabel>();
-			if (lbl != null) key = lbl.text;
+			if (lbl != null) Key = lbl.text;
 		}
 
 		// If we still don't have a key, leave the value as blank
-		if (!string.IsNullOrEmpty(key)) value = Localization.Get(key);
+		if (!string.IsNullOrEmpty(Key)) value = Localization.Get(Key);
 	}
 }

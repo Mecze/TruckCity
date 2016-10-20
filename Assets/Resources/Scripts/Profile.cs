@@ -37,16 +37,30 @@ public class Profile {
         }
     }
 
+    /// <summary>
+    /// State of the Music
+    /// </summary>
     public bool MusicState;
 
-
+    /// <summary>
+    /// State of the Sound
+    /// </summary>
     public bool SoundState;
-
-
-
+    
+    /// <summary>
+    /// Current Language Selected
+    /// </summary>
     public string LanguageSelected;
 
+    /// <summary>
+    /// Current QualitySettings detected
+    /// </summary>
     public GraphicQualitySettings GlobalGraphicQualitySettings;
+
+    /// <summary>
+    /// Device's graphicMemory;
+    /// </summary>
+    public float GraphicMemory;
 
 
 }

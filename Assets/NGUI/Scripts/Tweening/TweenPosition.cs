@@ -12,7 +12,13 @@ using UnityEngine;
 [AddComponentMenu("NGUI/Tween/Tween Position")]
 public class TweenPosition : UITweener
 {
-	public Vector3 from;
+    
+    
+    float NativeWidth { get { return GameConfig.s.NativeWidth; } } 
+    float NativeHeight { get { return GameConfig.s.NativeHeight; } }
+
+
+    public Vector3 from;
 	public Vector3 to;
 
 	[HideInInspector]
@@ -51,7 +57,26 @@ public class TweenPosition : UITweener
 		}
 	}
 
-	void Awake () { mRect = GetComponent<UIRect>(); }
+	void Awake () {
+        mRect = GetComponent<UIRect>();
+
+        
+       // CorrectRelativePositions();
+
+    }
+
+    /// <summary>
+    /// Mecze-Ent: Ajusta la posición relativa de los Tweens segun la Resolución Nativa.
+    /// </summary>
+    void CorrectRelativePositions()
+    {
+        UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);
+        if (mRoot == null) return;
+        Debug.Log(mRoot.manualWidth.ToString());
+        Debug.Log(mRoot.manualHeight.ToString());
+
+
+    }
 
 	/// <summary>
 	/// Tween the value.

@@ -47,11 +47,16 @@ public class GameConfig : Singleton<GameConfig> {
     #endregion
     */
 
-
+    [Header("Paths")]
     public string materialsPath;
     public string IMGPath;
 
+    [Header("Native Resolution")]
+    public float NativeWidth = 1920f;
+    public float NativeHeight = 1080f;
 
+
+    [Header("Public Colors")]
     public Color[] publicColors;
 
     #region cargoFILE Path configuration

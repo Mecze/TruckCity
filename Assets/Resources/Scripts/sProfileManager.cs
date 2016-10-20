@@ -18,7 +18,8 @@ public class sProfileManager : Singleton<sProfileManager> {
   
     [SerializeField]
     bool ForceNewProfile;
-    
+    [SerializeField]
+    int RecommendedVideoMemory = 1024;
 
     static Profile _singleton = null;
     public static Profile ProfileSingleton
@@ -67,10 +68,24 @@ public class sProfileManager : Singleton<sProfileManager> {
     static Profile NewProfile()
     {
         Debug.Log("NEW PROFILE!");
-        sSaveLoad.savedProfile = sProfileManager.instance.defaultProfile; ;
+        sSaveLoad.savedProfile = sProfileManager.instance.defaultProfile;
+        sSaveLoad.savedProfile.GlobalGraphicQualitySettings = CheckSystem(out sSaveLoad.savedProfile.GraphicMemory);
         return sSaveLoad.savedProfile;
     }
-    
+
+    static GraphicQualitySettings CheckSystem(out float graphicMemory)
+    {
+        float mem = SystemInfo.graphicsMemorySize;
+        graphicMemory = mem;
+        Debug.Log(mem);
+        if (mem >= sProfileManager.s.RecommendedVideoMemory) {            
+            return GraphicQualitySettings.High;
+        }else
+        {
+            return GraphicQualitySettings.Low;
+        }
+    }
+
 
 
 
