@@ -14,6 +14,7 @@ using System.Collections.Generic;
 public class TreeSpawn : MonoBehaviour {
     [Header("Lists")]
     [SerializeField]
+    #pragma warning disable 0649
     List<GameObject> TreeGOPrefab;
 
     [SerializeField]
@@ -27,7 +28,7 @@ public class TreeSpawn : MonoBehaviour {
     Vector3 Scale;
 
     List<int> nonRepeatIndexList;
-
+#pragma warning restore 0649
 
     void Awake()
     {

@@ -1,24 +1,26 @@
 using UnityEngine;
 using System.Collections;
 
-public enum GraphicQualitySettings {None=0, Low = 1, High = 2 }
+public enum GraphicQualitySettings {None=0, Low = 2, High = 5 }
 
-
+[ExecuteInEditMode]
 public class QualitySelector : MonoBehaviour {
     [SerializeField]
     bool isARoad = false;
-
+    
 
     [SerializeField]
     GameObject LowGO;
     [SerializeField]
     GameObject HighGO;
 
+
     
 
 
-    public void Set(GraphicQualitySettings QS)
+    public void Set(GraphicQualitySettings QS, string materialPath)
     {
+        if (materialPath == "") materialPath = GameConfig.s.materialsPath;
         switch (QS)
         {
             case GraphicQualitySettings.Low:
@@ -32,7 +34,7 @@ public class QualitySelector : MonoBehaviour {
             default:
                 break;
         }
-        if (isARoad) GetComponent<RoadEntity>().ChangeMaterial(GetComponent<RoadEntity>().direction);
+        if (isARoad) GetComponent<RoadEntity>().ChangeMaterial(GetComponent<RoadEntity>().direction, QS, materialPath);
 
 
     }

@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-
+#pragma warning disable 0649
 public class UnlockAnim : MonoBehaviour {
     public bool UnlockMe = false;
     [SerializeField]
@@ -27,3 +27,4 @@ public class UnlockAnim : MonoBehaviour {
 
 
 }
+#pragma warning restore 0649

@@ -195,7 +195,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         set
         {
             _direction = value;
-            ChangeMaterial(_direction);
+            ChangeMaterial(_direction,sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings,GameConfig.s.materialsPath);
         }
     }
 
@@ -333,13 +333,13 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     /// Cambia el material de la carretera
     /// </summary>
     /// <param name="dir"></param>
-    public void ChangeMaterial(RoadDirection dir)
+    public void ChangeMaterial(RoadDirection dir, GraphicQualitySettings GQS, string materialsPath)
     {
-        switch (sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings)
+        switch (GQS)
         {
             case GraphicQualitySettings.Low:
                 //Low Quality using old Materials                
-                Material mat = (Material)Resources.Load(GameConfig.s.materialsPath + roadDirToString(dir));
+                Material mat = (Material)Resources.Load(materialsPath + roadDirToString(dir));
                 myRoadLow.material = mat;
 
                 break;

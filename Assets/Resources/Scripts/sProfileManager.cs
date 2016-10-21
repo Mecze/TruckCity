@@ -42,7 +42,7 @@ public class sProfileManager : Singleton<sProfileManager> {
                     else
                     {
                         _singleton = pf;
-                        sSaveLoad.savedProfile = _singleton;
+                        sSaveLoad.savedProfile = _singleton;                        
                         Debug.Log("Profile Loaded");
                     }
                 }
@@ -113,8 +113,8 @@ public class sProfileManager : Singleton<sProfileManager> {
         //Si estabamos jugando:
         
         Localization.language = pf.LanguageSelected;
+        QualitySettings.SetQualityLevel((int)_singleton.GlobalGraphicQualitySettings);
 
-        
         StartCoroutine(ChangeScene(1)); //Vamos al menu
         GameConfig.s.MusicState = pf.MusicState;
         GameConfig.s.SoundState = pf.SoundState;

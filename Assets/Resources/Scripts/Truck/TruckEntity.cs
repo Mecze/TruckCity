@@ -15,7 +15,7 @@ using System;
 public enum CardinalPoint { None=0,N=1,E=2,W=3,S=4}
 public enum HonkType { None=0,Single=1,Double=2 }
 public enum Turn { Close, Wide, Reverse }
-
+#pragma warning disable 0649
 public class TruckEntity : MonoBehaviour, IFreezable
 {
 
@@ -95,7 +95,7 @@ public class TruckEntity : MonoBehaviour, IFreezable
     HonkType HonkType = HonkType.Single;
     [SerializeField]
     float waitBetweenHonk = 0.2f;
-
+#pragma warning restore 0649
 
     public float currentSpeed
     {

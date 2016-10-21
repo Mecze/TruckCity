@@ -25,6 +25,7 @@ public delegate void PauseEvent();
 
 
 public class GameController : MonoBehaviour {
+#pragma warning disable 0169
     #region Singleton
     private static GameController s_singleton = null;
 
@@ -184,6 +185,8 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     GameObject IPQuestSlatePrefab;
 
+
+
     #region StartGame SEQUENCE
     //En orden
     //Todo lo ubicado en esta región se ejecuta en orden hasta la
@@ -209,7 +212,7 @@ public class GameController : MonoBehaviour {
 
         for (int i = 0; i < Qss.Length; i++)
         {
-            Qss[i].Set(QS);
+            Qss[i].Set(QS,GameConfig.s.materialsPath);
         }
     }
 
@@ -562,10 +565,6 @@ public class GameController : MonoBehaviour {
     {
         OnScore += a;
     }
-    
-
-
-    
 
     public void RetryLevel()
     {
@@ -574,7 +573,7 @@ public class GameController : MonoBehaviour {
     }
     public void BackToMenu()
     {
-        SceneManager.LoadScene(1);
+        LoadingScreenManager.LoadScene(1);
     }
 
 

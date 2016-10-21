@@ -23,7 +23,7 @@ public delegate void OnTruckLoadStationDelegate(CardinalPoint cardinal, Cargo Ca
 public delegate void OnDeliveranceDelegate();
 public delegate void OnProducedDelegate();
 public delegate void OnLoadCargoDelegate();
-
+#pragma warning disable 0169
 public class CargoBuilding : MonoBehaviour {
 
 
@@ -68,7 +68,7 @@ public class CargoBuilding : MonoBehaviour {
     List<GameObject> highlightsGo;
     [SerializeField]
     List<Image> highlights;
-    
+
 
     #endregion
 

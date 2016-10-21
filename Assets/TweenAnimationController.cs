@@ -7,10 +7,10 @@ public enum TweensFrom { Mix = 0, GetComponent = 1, ListOfTweens = 2 }
 
 public class TweenAnimationController : MonoBehaviour {
     public TweensFrom From;
-
+#pragma warning disable 0649
     [SerializeField]
     List<UITweener> ListOfTweens;
-
+#pragma warning restore 0649
     List<UITweener> AllTweens;
 
     

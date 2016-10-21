@@ -21,7 +21,7 @@ using Eppy;
 /// pasandole informaci�n a este script. Al hacerlo, 
 /// este script modifica la UI. 
 //////////////////////////////
-
+#pragma warning disable 0169
 public class CargoSprite : MonoBehaviour {
     [Header("My References")]
     [SerializeField]

@@ -44,6 +44,7 @@ public class GraphicsButton : MonoBehaviour {
             sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings = GQS;
             Set(GQS);
             sSaveLoad.SaveProfile();
+            QualitySettings.SetQualityLevel((int)GQS);
             LoadingScreenManager.LoadScene(1);
             return;
         }
@@ -53,11 +54,12 @@ public class GraphicsButton : MonoBehaviour {
             sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings = GQS;
             Set(GQS);
             sSaveLoad.SaveProfile();
+            QualitySettings.SetQualityLevel((int)GQS);
             LoadingScreenManager.LoadScene(1);
             return;
         }
-
         
+
     }
 
 	

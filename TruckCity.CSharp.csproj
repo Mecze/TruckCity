@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\CountDownSprite.cs" />
+    <Compile Include="Assets\EditorHelper.cs" />
     <Compile Include="Assets\FPSCounter.cs" />
     <Compile Include="Assets\FlagSprite.cs" />
     <Compile Include="Assets\GraphicsButton.cs" />

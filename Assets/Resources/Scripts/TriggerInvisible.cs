@@ -6,7 +6,7 @@ using PicaVoxel;
 //fulfill the "Config parameters" on the inspector (Check "Config Parameters" region below)
 //Also check the part: "Triggers that register Objects" region below.
 
-
+#pragma warning disable 0649
 [RequireComponent(typeof(BoxCollider))]
 public class TriggerInvisible : MonoBehaviour {
     #region Config parameters
@@ -246,3 +246,4 @@ public class TriggerInvisible : MonoBehaviour {
 
 
 }
+#pragma warning restore 0649

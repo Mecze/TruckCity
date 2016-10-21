@@ -2,10 +2,10 @@ using UnityEngine;
 using System.Collections;
 
 public class WanderTruckTracker : MonoBehaviour {
-
+#pragma warning disable 0649
     [SerializeField]
     Wander myAIWander;
-
+#pragma warning restore 0649
 
 
     void OnTriggerEnter(Collider col)
