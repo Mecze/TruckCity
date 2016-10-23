@@ -415,5 +415,5 @@ Shader "PicaVoxel/PicaVoxel PBR Mosaic" {
         }
     }
     FallBack "Diffuse"
-    CustomEditor "ShaderForgeMaterialInspector"
+    //CustomEditor "ShaderForgeMaterialInspector"
 }

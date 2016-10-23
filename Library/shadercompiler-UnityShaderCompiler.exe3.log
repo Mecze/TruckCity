@@ -1,13 +1,2 @@
 Base path: C:/Program Files/Unity/Editor/Data
 Cmd: getPlatforms
-Cmd: disassembleShader
-  api=17 insize=313 outsize=870 ok=1
-Cmd: compileSnippet
-  error: 2 plat 1 at (33): invalid vs_2_0 output semantic 'TANGENT'\nCompiling Vertex program
-Platform defines: UNITY_ENABLE_REFLECTION_BUFFERS UNITY_PBS_USE_BRDF1 UNITY_SPECCUBE_BOX_PROJECTION UNITY_SPECCUBE_BLENDING
-  error: 2 plat 1 at (34): invalid vs_2_0 output semantic 'NORMAL'\nCompiling Vertex program
-Platform defines: UNITY_ENABLE_REFLECTION_BUFFERS UNITY_PBS_USE_BRDF1 UNITY_SPECCUBE_BOX_PROJECTION UNITY_SPECCUBE_BLENDING
-  api=1 type=0 insize=1015 outsize=0 kw= pd=UNITY_ENABLE_REFLECTION_BUFFERS UNITY_PBS_USE_BRDF1 UNITY_SPECCUBE_BOX_PROJECTION UNITY_SPECCUBE_BLENDING ok=0
-Unhandled exception: Protocol error - failed to read correct magic number
-
-Quitting shader compiler process

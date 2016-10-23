@@ -6,7 +6,7 @@ using System.Linq;
 
 
 public enum AIWanderState {WalkingTowards = 0, LookingTrucks = 1, LookingPoint = 2 }
-
+#pragma warning disable 0649
 public class Wander : MonoBehaviour
 {
     [Header("Avalaible Behaviours")]
@@ -201,3 +201,4 @@ public class Wander : MonoBehaviour
     }
 
 }
+#pragma warning restore 0649

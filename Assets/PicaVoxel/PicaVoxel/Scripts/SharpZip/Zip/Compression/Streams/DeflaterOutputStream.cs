@@ -568,14 +568,16 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
 		bool isClosed_;
 		
 		bool isStreamOwner_ = true;
-		#endregion
+        #endregion
 
-		#region Static Fields
+        #region Static Fields
 
 #if !NET_1_1 && !NETCF_2_0 && !UNITY_WINRT
-		// Static to help ensure that multiple files within a zip will get different random salt
-		private static RNGCryptoServiceProvider _aesRnd;
+        // Static to help ensure that multiple files within a zip will get different random salt
+
+        private static RNGCryptoServiceProvider _aesRnd;
+
 #endif
-		#endregion
-	}
+        #endregion
+    }
 }

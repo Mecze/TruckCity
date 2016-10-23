@@ -10,8 +10,12 @@ public class RoadEntity : MonoBehaviour, IFreezable {
 
     bool freeze = false;
 
+    //GraphicQualitySettings GlobalQS;
+
     [SerializeField]
     Volume myRoad;
+    [SerializeField]
+    Renderer myRoadLow;
 
     /// <summary>
     /// Posición del tipo "Vector3Int"
@@ -191,7 +195,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         set
         {
             _direction = value;
-            ChangeMaterial(_direction);
+            ChangeMaterial(_direction,sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings,GameConfig.s.materialsPath);
         }
     }
 
@@ -210,6 +214,8 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     /// </summary>
     [SerializeField]
     GameObject[] sprites;
+    [SerializeField]
+    GameObject ClickableSprite;
 
     /// <summary>
     /// 
@@ -264,6 +270,8 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     {
         RecalculateSprites();
         RecordPosition();
+        if (possibleRotations.Count > 1) ClickableSprite.SetActive(true);
+        //GlobalQS = sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings;
     }
     
     /// <summary>
@@ -328,15 +336,29 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     /// Cambia el material de la carretera
     /// </summary>
     /// <param name="dir"></param>
-    void ChangeMaterial(RoadDirection dir)
+    public void ChangeMaterial(RoadDirection dir, GraphicQualitySettings GQS, string materialsPath)
     {
-        myRoad.SetFrame((int)dir);
+        switch (GQS)
+        {
+            case GraphicQualitySettings.Low:
+                //Low Quality using old Materials                
+                Material mat = (Material)Resources.Load(materialsPath + roadDirToString(dir));
+                myRoadLow.material = mat;
+
+                break;
+            case GraphicQualitySettings.High:
+                //High Quality using PicaVoxel
+                myRoad.SetFrame((int)dir);
+
+                break;
+            default:
+                break;
+        }
+        
 
 
-        /* OLD VERSION! MATERIOAL VERSION
-        Material mat = (Material)Resources.Load(GameConfig.s.materialsPath + roadDirToString(dir));
-        roadRenderer.material = mat;
-        */
+        
+        
         //Material[] currentMats = roadRenderer.materials;
 
     }
@@ -379,7 +401,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         {
             if (dir != CardinalPoint.None && (changed.Contains(dir) == false))
             {
-                TurnOnArrowTrans(dir);
+                //TurnOnArrowTrans(dir);
                 changed.Add(dir);
             }
         }
@@ -422,7 +444,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         GameObject go = sprites[(int)dir - 1];
         SpriteRenderer ren = go.GetComponent<SpriteRenderer>();
         ren.enabled = true;
-        ren.sprite = (Sprite)Resources.Load(GameConfig.s.IMGPath + "Equals",typeof(Sprite));
+        ren.sprite = (Sprite)Resources.Load(GameConfig.s.IMGPath + "ArrowTrans", typeof(Sprite));
         go.GetComponent<Animator>().SetBool("Moving", false);
     }
 

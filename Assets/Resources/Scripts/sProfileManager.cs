@@ -18,7 +18,14 @@ public class sProfileManager : Singleton<sProfileManager> {
   
     [SerializeField]
     bool ForceNewProfile;
-    
+    [SerializeField]
+    bool DebugVersion = false;
+    [SerializeField]
+    int targetFrameRateHigh = 60;
+    [SerializeField]
+    int targetFrameRateLow = 30;
+    [SerializeField]
+    int RecommendedVideoMemory = 1024;
 
     static Profile _singleton = null;
     public static Profile ProfileSingleton
@@ -41,7 +48,7 @@ public class sProfileManager : Singleton<sProfileManager> {
                     else
                     {
                         _singleton = pf;
-                        sSaveLoad.savedProfile = _singleton;
+                        sSaveLoad.savedProfile = _singleton;                        
                         Debug.Log("Profile Loaded");
                     }
                 }
@@ -67,10 +74,24 @@ public class sProfileManager : Singleton<sProfileManager> {
     static Profile NewProfile()
     {
         Debug.Log("NEW PROFILE!");
-        sSaveLoad.savedProfile = sProfileManager.instance.defaultProfile; ;
+        sSaveLoad.savedProfile = sProfileManager.instance.defaultProfile;
+        sSaveLoad.savedProfile.GlobalGraphicQualitySettings = CheckSystem(out sSaveLoad.savedProfile.GraphicMemory);
         return sSaveLoad.savedProfile;
     }
-    
+
+    static GraphicQualitySettings CheckSystem(out float graphicMemory)
+    {
+        float mem = SystemInfo.graphicsMemorySize;
+        graphicMemory = mem;
+        Debug.Log(mem);
+        if (mem >= sProfileManager.s.RecommendedVideoMemory) {            
+            return GraphicQualitySettings.High;
+        }else
+        {
+            return GraphicQualitySettings.Low;
+        }
+    }
+
 
 
 
@@ -99,11 +120,24 @@ public class sProfileManager : Singleton<sProfileManager> {
         
         Localization.language = pf.LanguageSelected;
 
-        
-        StartCoroutine(ChangeScene(1)); //Vamos al menu
+        switch (sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings)
+        {
+            case GraphicQualitySettings.Low:
+                Application.targetFrameRate = targetFrameRateLow;
+                break;
+            case GraphicQualitySettings.High:
+                Application.targetFrameRate = targetFrameRateHigh;
+                break;
+            default:
+                Application.targetFrameRate = targetFrameRateLow;
+                break;
+        }
+
+        //pplication.targetFrameRate = 5;
+        QualitySettings.SetQualityLevel((int)_singleton.GlobalGraphicQualitySettings);
         GameConfig.s.MusicState = pf.MusicState;
         GameConfig.s.SoundState = pf.SoundState;
-
+        if (!DebugVersion)StartCoroutine(ChangeScene(1)); //Vamos al menu
 
         //if (GameConfig.s.MusicState) MusicStore.s.PlayMusicByAlias("Menu", 1.5f, GameConfig.s.MusicVolume, true, 5f);
 
@@ -115,7 +149,8 @@ public class sProfileManager : Singleton<sProfileManager> {
     IEnumerator ChangeScene(int i)
     {
         yield return new WaitForSeconds(3f);
-        SceneManager.LoadScene(i);
+        //        SceneManager.LoadScene(i);
+        LoadingScreenManager.LoadScene(i);
     }
 
     public void ChangeLevel(int levelIndex)

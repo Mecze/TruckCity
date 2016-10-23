@@ -362,5 +362,5 @@ Shader "PicaVoxel/PicaVoxel PBR OneMinus Alpha Emissive" {
         }
     }
     FallBack "PicaVoxel/PicaVoxel Diffuse"
-    CustomEditor "ShaderForgeMaterialInspector"
+    //CustomEditor "ShaderForgeMaterialInspector"
 }

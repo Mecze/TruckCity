@@ -25,6 +25,7 @@ public delegate void PauseEvent();
 
 
 public class GameController : MonoBehaviour {
+#pragma warning disable 0169
     #region Singleton
     private static GameController s_singleton = null;
 
@@ -184,6 +185,8 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     GameObject IPQuestSlatePrefab;
 
+
+
     #region StartGame SEQUENCE
     //En orden
     //Todo lo ubicado en esta región se ejecuta en orden hasta la
@@ -194,8 +197,26 @@ public class GameController : MonoBehaviour {
     /// </summary>
     void Awake()
     {
+        SetQuality();
         fillmylevel();
     }
+    /// <summary>
+    /// Ajusta el nivel de detalle de todos los elementos del juego con distintos
+    /// niveles de detalle
+    /// </summary>
+    void SetQuality()
+    {
+        GraphicQualitySettings QS = sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings;
+        QualitySelector[] Qss = GameObject.FindObjectsOfType<QualitySelector>();
+        if (Qss.Length < 1) return; //Failsafe
+
+        for (int i = 0; i < Qss.Length; i++)
+        {
+            Qss[i].Set(QS,GameConfig.s.materialsPath);
+        }
+    }
+
+
     /// <summary>
     /// Inicia la secuencia al inicio del juego
     /// </summary>
@@ -544,10 +565,6 @@ public class GameController : MonoBehaviour {
     {
         OnScore += a;
     }
-    
-
-
-    
 
     public void RetryLevel()
     {
@@ -556,7 +573,7 @@ public class GameController : MonoBehaviour {
     }
     public void BackToMenu()
     {
-        SceneManager.LoadScene(1);
+        LoadingScreenManager.LoadScene(1);
     }
 
 

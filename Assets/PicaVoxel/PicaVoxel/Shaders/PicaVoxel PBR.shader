@@ -353,5 +353,5 @@ Shader "PicaVoxel/PicaVoxel PBR" {
         }
     }
     FallBack "PicaVoxel/PicaVoxel Diffuse"
-    CustomEditor "ShaderForgeMaterialInspector"
+    //CustomEditor "ShaderForgeMaterialInspector"
 }

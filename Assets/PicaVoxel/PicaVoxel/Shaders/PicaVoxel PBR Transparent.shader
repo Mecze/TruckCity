@@ -364,5 +364,5 @@ Shader "PicaVoxel/PicaVoxel PBR Transparent" {
 	}
 	}
 		FallBack "PicaVoxel/PicaVoxel Diffuse Transparent"
-		CustomEditor "ShaderForgeMaterialInspector"
+		//CustomEditor "ShaderForgeMaterialInspector"
 }

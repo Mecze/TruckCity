@@ -6,15 +6,20 @@ using PicaVoxel;
 //fulfill the "Config parameters" on the inspector (Check "Config Parameters" region below)
 //Also check the part: "Triggers that register Objects" region below.
 
-
+#pragma warning disable 0649
 [RequireComponent(typeof(BoxCollider))]
 public class TriggerInvisible : MonoBehaviour {
     #region Config parameters
 
-    [Header("My Volume")]
+    [Header("My Volume (High)")]
     //Fill this with Volume that you want to turn invisible
     [SerializeField]
     Volume myVolume;
+
+    [Header("My Sprite Renderer (Low)")]
+    //Fill this with SpriteRenderer that you want to turn invisible
+    [SerializeField]
+    SpriteRenderer mySpriteRenderer;
 
     [Header("Colors")]
     //Pick the transparent color on the inspector
@@ -79,24 +84,85 @@ public class TriggerInvisible : MonoBehaviour {
     {
         get
         {
-            if (myMat == null) return Color.white;
-            return myMat.GetColor("_Tint");
+            switch (GlobalQS)
+            {
+                case GraphicQualitySettings.Low:
+                    return mySpriteRenderer.color;                    
+                case GraphicQualitySettings.High:
+                    if (myMat == null) return Color.white;
+                    return myMat.GetColor("_Tint");                    
+                default:
+                    return Color.white;                    
+            }
+
+            
         }
         set
         {
-            if (myMat != null)
+            switch (GlobalQS)
             {
-                myMat.SetColor("_Tint", value);
+               case GraphicQualitySettings.Low:
+                    mySpriteRenderer.color = value;
+                    break;
+                case GraphicQualitySettings.High:
+                    if (myMat != null)myMat.SetColor("_Tint", value);                    
+                    break;
+                default:
+                    break;
             }
-
         }
     }
+
+   
+
+    /// <summary>
+    /// Global Quality Settings
+    /// </summary>
+    GraphicQualitySettings _globalQS = GraphicQualitySettings.None;
+    GraphicQualitySettings GlobalQS
+    {
+        get
+        {
+            if ((int)_globalQS == 0) _globalQS = sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings;
+            if (_globalQS == GraphicQualitySettings.High && myVolume == null) _globalQS = GraphicQualitySettings.Low;
+            if (_globalQS == GraphicQualitySettings.Low && mySpriteRenderer == null) _globalQS = GraphicQualitySettings.High;
+            return _globalQS;
+        }       
+    }
+
+
+
     #endregion
 
     #region Methods
 
     void Awake()
-    {        
+    {
+        switch (GlobalQS)
+        {            
+            case GraphicQualitySettings.Low:
+                SetupLow();
+                break;
+            case GraphicQualitySettings.High:
+                SetupHigh();
+                break;
+            default:
+                break;
+        }
+
+
+       
+
+    }
+
+    void SetupLow()
+    {
+        //Nothing for now;
+        setup = true;
+    }
+
+    void SetupHigh()
+    {
         //Setup
         //We clone our own material and save it on myMat
         myMat = new Material(myVolume.Material);
@@ -108,8 +174,9 @@ public class TriggerInvisible : MonoBehaviour {
         myVolume.UpdateAllChunks();
 
         setup = true; //Setup complete
-
     }
+
+
 
     void Update()
     {
@@ -179,3 +246,4 @@ public class TriggerInvisible : MonoBehaviour {
 
 
 }
+#pragma warning restore 0649

@@ -80,9 +80,16 @@ public class MenuLevel : MonoBehaviour {
     {
         if (!pressed)
         {
-            if (hover) clicked();
+#if UNITY_STANDALONE_WIN 
+            if (hover){
+#endif
+             clicked();
+#if UNITY_STANDALONE_WIN
+            }
+#endif
             //pressed = true;
-        }else
+        }
+        else
         {
             //tween2.PlayReverse();
             //pressed = false;

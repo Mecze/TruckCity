@@ -76,10 +76,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\CountDownSprite.cs" />
+    <Compile Include="Assets\EditorHelper.cs" />
+    <Compile Include="Assets\FPSCounter.cs" />
     <Compile Include="Assets\FlagSprite.cs" />
+    <Compile Include="Assets\GraphicsButton.cs" />
     <Compile Include="Assets\GuiButtonWatch.cs" />
     <Compile Include="Assets\LevelNumberAwake.cs" />
     <Compile Include="Assets\LoadingScreenManager.cs" />
+    <Compile Include="Assets\LookAtCam.cs" />
     <Compile Include="Assets\MenuLevel.cs" />
     <Compile Include="Assets\Mobile Cartoon GUI 2\Scripts\ButtonAnimationContoller.cs" />
     <Compile Include="Assets\MusicButton.cs" />
@@ -262,6 +266,7 @@
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Voxel.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\VoxelParticleSystem.cs" />
     <Compile Include="Assets\PlayAliasSound.cs" />
+    <Compile Include="Assets\QualitySelector.cs" />
     <Compile Include="Assets\Resources\Scripts\AutoGrid.cs" />
     <Compile Include="Assets\Resources\Scripts\Clickable.cs" />
     <Compile Include="Assets\Resources\Scripts\Extension.cs" />

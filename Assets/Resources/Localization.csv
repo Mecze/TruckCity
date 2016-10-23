@@ -1,20 +1,28 @@
-Key,English,Spanish
+﻿Key,English,Spanish
 Flag,UKflag,SpanishFlag
-English,English,Ingl�s
-Spanish,Spanish,Espa�ol
+English,English,Inglés
+Spanish,Spanish,Español
 Sound,Sound,Sonido
-Music,Music,M�sica
-Desc,English Localization,Localizaci�n en Espa�ol
+Music,Music,Música
+Desc,English Localization,Localización Español
 Levels,Levels:,Niveles:
-Settings,Settings:,Configuraci�n:
+Settings,Settings:,Configuración:
 Language,Language:,Idioma:
 Level,Level,Nivel
 Missions,[FF5454FF]M[-]issions,[FF5454FF]M[-]isiones
 Trucks,[FF5454FF]T[-]rucks,[FF5454FF]C[-]amiones
-Time!,Time!,�Tiempo!
+Time!,Time!,¡Tiempo!
 QuestDeliver,Deliver,Entrega
 QuestMoney,Get Money,Consigue dinero
-QuiestTime,Complete Before,Antes de
-Level1Hint1,Deliver Cargo Here,Transporta la Carga aqu�
-Level1Hint2,Pick Up Cargo Hera,Recoge la Carga aqu�
-Level1Hint3,Touch Here to Rotate,Toca aqu� para girar
+QuestTime,Complete Before,Antes de
+Loading,[FF5454FF]L[-]oading,[FF5454FF]C[-]argando
+LoadingComplete,[FF5454FF]L[-]oading [FF5454FF]D[-]one,[FF5454FF]C[-]arga [FF5454FF]C[-]ompleta
+Graphics,Graphics:,Gráficos:
+Low,Low,Bajo
+High,High,Alto
+WhatsNew,What's New?, Novedades
+Version,Version, Versión
+v0.02,- Added low level poly graphics (and Assets) option to the settings for slow devices. \n- Added FPS counter (for testing). \n-Added this box.\n- Moved [i]some[/i] development assets to shrink APK size.\n- Target FPS is 60fps for High and 30fps for Low.\n \n [u]BugFixes:[/u]\n- Fixed odd UI when other resolutions than 1080p.\n- Fixed Localization bugs (UTF-8)\n- Fixing Trucks ignoring colliders.,- Añadido opción de baja calidad gráfica (y modelos) en las opciones para dispositivos lentos.\n- Añadido contador de FPS (para pruebas).\n- Añadido este panel.\n- Se han movido [i]algunos[/i] recursos para adelgazar el APK.\n- El FPS al que se intenta llegar es 60fps en Alto y 30fps en Bajo.\n \n [u]BugFixes:[/u]\n- Arreglado la mala posición de la UI en dispositivos con otra resolución que no sea 1080p.\n- Arreglado errores de localización(UTF-8).\n- Arreglando bug de camiones ignorando colisiones.
+Level1Hint1,Deliver Cargo Here,Transporta la Carga aquí
+Level1Hint2,Pick Up Cargo Hera,Recoge la Carga aquí
+Level1Hint3,Touch Here to Rotate,Toca aquí para girar

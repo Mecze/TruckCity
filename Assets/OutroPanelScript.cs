@@ -9,6 +9,7 @@ public class OutroPanelScript : MonoBehaviour {
 	TweenScale myScale;
     [SerializeField]
     UILabel Title;
+#pragma warning disable 0414
     int Stars;
     [SerializeField]
     List<GameObject> starGOs;
@@ -29,7 +30,7 @@ public class OutroPanelScript : MonoBehaviour {
         Title.text = "Level " + (levelIndex+1).ToString();
         myScale.PlayForward();
         StartCoroutine(StarAnimations(stars));
-
+#pragma warning restore 0414
 
     }
 

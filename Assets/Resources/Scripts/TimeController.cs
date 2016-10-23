@@ -54,9 +54,9 @@ public class TimeController : MonoBehaviour {
 
     #region Declaración de Variables y Propiedades
     [Header("Timer Settings")]
-    [SerializeField]
+    //[SerializeField]
     //Se trata de los minutos por donde empieza el Timer
-    int minutes;
+    //int minutes;
 
     [SerializeField]
     //se trata de los segundos por empieza el Timer
@@ -147,7 +147,7 @@ public class TimeController : MonoBehaviour {
         //debug
         //Esto es para ver como corre el temporizador en el inspector
         //Las dos lineas siguientes son innecesarias.
-        minutes = Mathf.FloorToInt(currentTime) / 60;        
+        //minutes = Mathf.FloorToInt(currentTime) / 60;        
     }
    
     /// <summary>
