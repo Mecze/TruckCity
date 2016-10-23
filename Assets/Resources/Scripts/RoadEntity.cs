@@ -346,6 +346,10 @@ public class RoadEntity : MonoBehaviour, IFreezable {
                 myRoadLow.material = mat;
 
                 break;
+            case GraphicQualitySettings.Medium:
+                Material mat1 = (Material)Resources.Load(materialsPath + roadDirToString(dir));
+                myRoadLow.material = mat1;
+                break;
             case GraphicQualitySettings.High:
                 //High Quality using PicaVoxel
                 myRoad.SetFrame((int)dir);
@@ -360,6 +364,23 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         
         
         //Material[] currentMats = roadRenderer.materials;
+
+    }
+
+    public void UpdateMaterial(string materialsPath)
+    {
+        RoadDirection dir = _direction;
+        if (myRoad.gameObject.activeSelf == true)
+        {
+            myRoad.SetFrame((int)dir);
+        }
+        if (myRoadLow.gameObject.activeSelf == true)
+        {
+            Material mat = (Material)Resources.Load(materialsPath + roadDirToString(dir));
+            myRoadLow.material = mat;
+        }
+
+
 
     }
 

@@ -13,7 +13,7 @@ public class EditorHelper : MonoBehaviour {
 
         for (int i = 0; i < QSs.Length; i++)
         {
-            QSs[i].Set(GQS,materialsPath);
+            QSs[i].Set(GQS,materialsPath, true);
         }
 
 
@@ -23,9 +23,24 @@ public class EditorHelper : MonoBehaviour {
     {
         SetAll(GraphicQualitySettings.Low);
     }
+    public void SetAllMedium()
+    {
+        SetAll(GraphicQualitySettings.Medium);
+    }
+
     public void SetAllHigh()
     {
         SetAll(GraphicQualitySettings.High);
+    }
+
+    public void SetRoads()
+    {
+        QualitySelector[] QSs = GameObject.FindObjectsOfType<QualitySelector>();
+
+        for (int i = 0; i < QSs.Length; i++)
+        {
+            QSs[i].SetRoad(materialsPath);
+        }
     }
 
 

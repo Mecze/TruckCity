@@ -2,28 +2,47 @@ using UnityEngine;
 using System.Collections;
 
 public class GraphicsButton : MonoBehaviour {
+    /*
     [SerializeField]
     UILocalize myLabel;
     [SerializeField]
     UILocalize myLabelShadow;
+    */
+    [SerializeField]
+    Color SelectedColor;
+    [SerializeField]
+    GraphicQualitySettings MyCondition;
 
+
+    //UIButton button;
+    UISprite sprite;
+    bool disabled = false;
 
 
     void Awake()
     {
+        //button = GetComponent<UIButton>();
+        sprite = GetComponent<UISprite>();
         Set(sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings);
     }
 
     public void Set(GraphicQualitySettings GQS)
     {
-        
+        /*
         
         switch (GQS)
         {
             case GraphicQualitySettings.Low:
-                myLabel.Key = "Low";
-                //myLabelShadow.text = myLabel.text;
+                
+
+                
+                
                 break;
+            case GraphicQualitySettings.Medium:
+
+                
+                break;
+
             case GraphicQualitySettings.High:
                 myLabel.Key = "High";
                 break;
@@ -32,32 +51,31 @@ public class GraphicsButton : MonoBehaviour {
         }
         myLabelShadow.Key = myLabel.Key;
         //myLabel
+        */
+        if (MyCondition == GQS) {
+            sprite.color = SelectedColor;
+            disabled = true;
+        }
+
     }
 
     public void OnClick()
     {
-        Debug.Log("hi!");
-        GraphicQualitySettings GQS = sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings;
-        if (GQS == GraphicQualitySettings.Low)
-        {
-            GQS = GraphicQualitySettings.High;
-            sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings = GQS;
-            Set(GQS);
-            sSaveLoad.SaveProfile();
-            QualitySettings.SetQualityLevel((int)GQS);
-            LoadingScreenManager.LoadScene(1);
-            return;
-        }
-        if (GQS== GraphicQualitySettings.High)
-        {
-            GQS = GraphicQualitySettings.Low;
-            sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings = GQS;
-            Set(GQS);
-            sSaveLoad.SaveProfile();
-            QualitySettings.SetQualityLevel((int)GQS);
-            LoadingScreenManager.LoadScene(1);
-            return;
-        }
+        if (disabled) return;
+        
+        
+
+        
+        sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings = MyCondition;
+        Set(MyCondition);
+        sSaveLoad.SaveProfile();
+        QualitySettings.SetQualityLevel((int)MyCondition);
+        LoadingScreenManager.LoadScene(1);
+        return;
+        
+        
+        
+        
         
 
     }

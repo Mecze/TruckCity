@@ -1,4 +1,4 @@
-﻿/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
 // 
 // PicaVoxel - The tiny voxel engine for Unity - http://picavoxel.com
 // By Gareth Williams - @garethiw - http://gareth.pw
@@ -121,7 +121,7 @@ namespace PicaVoxel
         private void Awake()
         {
             Hitbox = transform.FindChild("Hitbox").GetComponent<BoxCollider>();
-
+            if (Hitbox == null) return;
             int startFrame = CurrentFrame;
             if (Application.isPlaying)
             {

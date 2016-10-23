@@ -75,7 +75,7 @@ public class sProfileManager : Singleton<sProfileManager> {
     {
         Debug.Log("NEW PROFILE!");
         sSaveLoad.savedProfile = sProfileManager.instance.defaultProfile;
-        sSaveLoad.savedProfile.GlobalGraphicQualitySettings = CheckSystem(out sSaveLoad.savedProfile.GraphicMemory);
+        //sSaveLoad.savedProfile.GlobalGraphicQualitySettings = CheckSystem(out sSaveLoad.savedProfile.GraphicMemory);
         return sSaveLoad.savedProfile;
     }
 
@@ -124,6 +124,9 @@ public class sProfileManager : Singleton<sProfileManager> {
         {
             case GraphicQualitySettings.Low:
                 Application.targetFrameRate = targetFrameRateLow;
+                break;
+            case GraphicQualitySettings.Medium:
+                Application.targetFrameRate = targetFrameRateHigh;
                 break;
             case GraphicQualitySettings.High:
                 Application.targetFrameRate = targetFrameRateHigh;

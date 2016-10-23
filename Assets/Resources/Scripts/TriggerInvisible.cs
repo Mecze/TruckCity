@@ -87,7 +87,9 @@ public class TriggerInvisible : MonoBehaviour {
             switch (GlobalQS)
             {
                 case GraphicQualitySettings.Low:
-                    return mySpriteRenderer.color;                    
+                    return mySpriteRenderer.color;
+                case GraphicQualitySettings.Medium:
+                    return mySpriteRenderer.color;
                 case GraphicQualitySettings.High:
                     if (myMat == null) return Color.white;
                     return myMat.GetColor("_Tint");                    
@@ -102,6 +104,9 @@ public class TriggerInvisible : MonoBehaviour {
             switch (GlobalQS)
             {
                case GraphicQualitySettings.Low:
+                    mySpriteRenderer.color = value;
+                    break;
+                case GraphicQualitySettings.Medium:
                     mySpriteRenderer.color = value;
                     break;
                 case GraphicQualitySettings.High:
@@ -141,6 +146,9 @@ public class TriggerInvisible : MonoBehaviour {
         switch (GlobalQS)
         {            
             case GraphicQualitySettings.Low:
+                SetupLow();
+                break;
+            case GraphicQualitySettings.Medium:
                 SetupLow();
                 break;
             case GraphicQualitySettings.High:

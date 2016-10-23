@@ -208,6 +208,8 @@ public class GameController : MonoBehaviour {
     {
         GraphicQualitySettings QS = sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings;
         QualitySelector[] Qss = GameObject.FindObjectsOfType<QualitySelector>();
+        QualitySelector.instances = Qss.Length;
+        QualitySelector.finishedinstances = 0;
         if (Qss.Length < 1) return; //Failsafe
 
         for (int i = 0; i < Qss.Length; i++)
