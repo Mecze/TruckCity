@@ -30,6 +30,8 @@ public class RoadEndCollider : MonoBehaviour {
             }
         }
         */
+
+        /*
         if (te.direction == thisDirection)
         {
 
@@ -44,8 +46,14 @@ public class RoadEndCollider : MonoBehaviour {
                 if (direction != CardinalPoint.W) return;
             if (gameObject.name == "RightEndCollider")
                 if (direction != CardinalPoint.E) return;
+            if (gameObject.name == "LeftEndCollider2")
+            {
+                if (direction != CardinalPoint.W) return;
+                Debug.Log("I Debug Here!");
+            }
 
-            if (MapController.s.CheckNextTile(myRoad.position, direction, out NextTile))
+
+                if (MapController.s.CheckNextTile(myRoad.position, direction, out NextTile))
             {
                 bool b = RoadEntity.CheckConnection(myRoad, NextTile);
                 if (!b) te.ChangeDirection(RoadEntity.ReverseDirection(te.direction), Turn.Reverse);
@@ -56,6 +64,7 @@ public class RoadEndCollider : MonoBehaviour {
                 te.ChangeDirection(RoadEntity.ReverseDirection(te.direction), Turn.Reverse);
             }
         }
+        */
     }
 
 

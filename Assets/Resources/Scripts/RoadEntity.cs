@@ -214,6 +214,8 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     /// </summary>
     [SerializeField]
     GameObject[] sprites;
+    [SerializeField]
+    GameObject ClickableSprite;
 
     /// <summary>
     /// 
@@ -268,6 +270,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     {
         RecalculateSprites();
         RecordPosition();
+        if (possibleRotations.Count > 1) ClickableSprite.SetActive(true);
         //GlobalQS = sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings;
     }
     
@@ -398,7 +401,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         {
             if (dir != CardinalPoint.None && (changed.Contains(dir) == false))
             {
-                TurnOnArrowTrans(dir);
+                //TurnOnArrowTrans(dir);
                 changed.Add(dir);
             }
         }
@@ -441,7 +444,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         GameObject go = sprites[(int)dir - 1];
         SpriteRenderer ren = go.GetComponent<SpriteRenderer>();
         ren.enabled = true;
-        ren.sprite = (Sprite)Resources.Load(GameConfig.s.IMGPath + "Equals",typeof(Sprite));
+        ren.sprite = (Sprite)Resources.Load(GameConfig.s.IMGPath + "ArrowTrans", typeof(Sprite));
         go.GetComponent<Animator>().SetBool("Moving", false);
     }
 

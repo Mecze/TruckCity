@@ -27,8 +27,8 @@ public class FPSCounter : MonoBehaviour {
         timer = Time.time + UpdateTime;
         float fps = 1f / Time.deltaTime;
         myLabel.text = fps.ToString("F1") + " fps";
-        if (fps < 30f) myLabel.color = BadColor;
-        if (fps >= 30f && fps < 60f) myLabel.color = MediumColor;
+        if (fps < 24f) myLabel.color = BadColor;
+        if (fps >= 24f && fps < 60f) myLabel.color = MediumColor;
         if (fps >= 60f) myLabel.color = GoodColor;
 
 

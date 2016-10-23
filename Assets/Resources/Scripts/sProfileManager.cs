@@ -19,6 +19,12 @@ public class sProfileManager : Singleton<sProfileManager> {
     [SerializeField]
     bool ForceNewProfile;
     [SerializeField]
+    bool DebugVersion = false;
+    [SerializeField]
+    int targetFrameRateHigh = 60;
+    [SerializeField]
+    int targetFrameRateLow = 30;
+    [SerializeField]
     int RecommendedVideoMemory = 1024;
 
     static Profile _singleton = null;
@@ -113,12 +119,25 @@ public class sProfileManager : Singleton<sProfileManager> {
         //Si estabamos jugando:
         
         Localization.language = pf.LanguageSelected;
-        QualitySettings.SetQualityLevel((int)_singleton.GlobalGraphicQualitySettings);
 
-        StartCoroutine(ChangeScene(1)); //Vamos al menu
+        switch (sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings)
+        {
+            case GraphicQualitySettings.Low:
+                Application.targetFrameRate = targetFrameRateLow;
+                break;
+            case GraphicQualitySettings.High:
+                Application.targetFrameRate = targetFrameRateHigh;
+                break;
+            default:
+                Application.targetFrameRate = targetFrameRateLow;
+                break;
+        }
+
+        //pplication.targetFrameRate = 5;
+        QualitySettings.SetQualityLevel((int)_singleton.GlobalGraphicQualitySettings);
         GameConfig.s.MusicState = pf.MusicState;
         GameConfig.s.SoundState = pf.SoundState;
-
+        if (!DebugVersion)StartCoroutine(ChangeScene(1)); //Vamos al menu
 
         //if (GameConfig.s.MusicState) MusicStore.s.PlayMusicByAlias("Menu", 1.5f, GameConfig.s.MusicVolume, true, 5f);
 

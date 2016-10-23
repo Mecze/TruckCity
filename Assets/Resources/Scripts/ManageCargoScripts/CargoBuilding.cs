@@ -33,6 +33,8 @@ public class CargoBuilding : MonoBehaviour {
     [Header("Config")]
     [SerializeField]
     Color buildingColor;
+    [SerializeField]
+    bool Forbidable = true;
 
     [SerializeField]
     public List<ProducesCargo> producesCargo;
@@ -69,6 +71,10 @@ public class CargoBuilding : MonoBehaviour {
     [SerializeField]
     List<Image> highlights;
 
+    [SerializeField]
+    GameObject ForbidSprite;
+
+    
 
     #endregion
 
@@ -79,6 +85,20 @@ public class CargoBuilding : MonoBehaviour {
         get
         {
             return transform;
+        }
+    }
+    bool _Forbidded = false;
+    public bool Forbidded
+    {
+        get
+        {
+            return _Forbidded;
+        }
+
+        set
+        {
+            _Forbidded = value;
+            ForbidSprite.SetActive(value);
         }
     }
 
@@ -136,7 +156,7 @@ public class CargoBuilding : MonoBehaviour {
 
         if (!flipped)
         {
-            SpawnArrow(cardinalPoint, color, !inner, true);
+           // SpawnArrow(cardinalPoint, color, !inner, true);
         }
 
 
@@ -188,7 +208,7 @@ public class CargoBuilding : MonoBehaviour {
             {
                 GameObject GO = SpawnCargoSprite(cp);
                 CargoSprite cs = GO.GetComponent<CargoSprite>();
-                SpawnArrow(cp, GameConfig.s.cargoColors[(int)ac.CargoType], true);
+                SpawnArrow(cp, GameConfig.s.cargoColors[(int)ac.CargoType],false,true);
                 ac.myCargoSpriteReference.Add(cs);
             }
         }
@@ -222,6 +242,7 @@ public class CargoBuilding : MonoBehaviour {
     /// <param name="cargo"></param>
     public void TruckOnStation(CardinalPoint cp, Cargo cargo)
     {
+        if (Forbidded) return;
         if (OnTruckLoadStation != null) OnTruckLoadStation(cp, cargo, this);
     }
     /// <summary>
@@ -233,6 +254,13 @@ public class CargoBuilding : MonoBehaviour {
     {
         if (OnTruckUnloaded != null) OnTruckUnloaded(cp, cargo, this);
     }
+
+    void OnClick()
+    {
+        Debug.Log("asdf");
+        if (Forbidable) Forbidded = !Forbidded;
+    }
+
 
 
 }

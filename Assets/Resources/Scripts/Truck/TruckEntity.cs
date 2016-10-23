@@ -179,6 +179,10 @@ public class TruckEntity : MonoBehaviour, IFreezable
             currentSpeed += acceleration * Time.deltaTime;
             
             if (gasMeter.currentGas <= 0f && currentSpeed > depletedGasThreshold) currentSpeed = depletedGasThreshold;            
+            //We Check if we are going to pass
+
+
+
             this.transform.Translate(Vector3.Lerp(this.transform.position,Vector3.forward * Time.deltaTime * currentSpeed,1f));
             ConsumeGas(currentSpeed);
 
@@ -328,6 +332,11 @@ public class TruckEntity : MonoBehaviour, IFreezable
             Moving = false;
             return;       
         }
+        if (turn == Turn.Reverse)
+        {
+            UnityEngine.Debug.Log("DebugReverse");
+        }
+
         /*
         if (turn == Turn.Reverse && newdirection == TruckDirection.W && Debug == 1)
         {
