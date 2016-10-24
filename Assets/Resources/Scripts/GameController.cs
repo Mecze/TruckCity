@@ -184,7 +184,12 @@ public class GameController : MonoBehaviour {
     */
     [SerializeField]
     GameObject IPQuestSlatePrefab;
-
+    
+    /// <summary>
+    /// Evita que se reproduzca dos veces el ending.
+    /// </summary>
+    bool gameEnding = false;
+    bool PreeGameEngind = false;
 
 
     #region StartGame SEQUENCE
@@ -365,13 +370,7 @@ public class GameController : MonoBehaviour {
         }
     }
 
-    public void PlayLevelMusic(bool startLevel)
-    {
-        float delay = 0f;
-        if (startLevel) delay = 3f;
-        if (!MenuVersion) if (!MusicStore.s.AliasIsPlaying(myLevel.MusicAlias)) MusicStore.s.PlayMusicByAlias(myLevel.MusicAlias, delay, GameConfig.s.MusicVolume, true, 2f, true, 2f,null,()=> { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
-        if (MenuVersion) if (!MusicStore.s.AliasIsPlaying("Menu")) MusicStore.s.PlayMusicByAlias("Menu",0f, GameConfig.s.MusicVolume, true, 0f, true, 1f,null,()=> { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
-    }
+    
 
     /// <summary>
     /// Espera el FadeOut del Menú
@@ -469,7 +468,331 @@ public class GameController : MonoBehaviour {
     #endregion
 
 
+    #endregion   
+    
+    #region Button Behaviours
+
+    #region Pause Behaviour
+
+    /// <summary>
+    /// Lanzado desde el boton de pause
+    /// </summary>
+    public void PauseButton()
+    {
+        if (CounddownOBJ.activeSelf == false)
+        PauseGame(true);
+    }
+
+    /// <summary>
+    /// Accíón de pausar el juego
+    /// </summary>
+    /// <param name="b"></param>
+    public void PauseGame(bool b=true)
+    {
+        if (b)
+        {
+            Pause = true;
+            FreezeGame(true);
+            QuestGrid.SetActive(false);
+            IntroPanel.SetActive(true);
+            PauseButtonPosTween.PlayReverse();
+            IntroPanelAlphaTween.PlayReverse();
+            //Lanzamos el eveto de Pause, esto actualizará los Quest Slates en el menú de inicio
+            if (OnPause != null) OnPause();
+
+
+        }else
+        {
+
+            StartButtonClicked();
+        }
+    }
+
     #endregion
+
+    /// <summary>
+    /// Se llama desde los botones de Retry.
+    /// </summary>
+    public void RetryLevel()
+    {
+        ResetMusic();
+        //SceneManager.UnloadScene(SceneManager.GetActiveScene());
+        LoadingScreenManager.LoadScene(level + 3, true, level + 3);
+    }
+
+    /// <summary>
+    /// Se llama desde los botones "Back to main menu"
+    /// </summary>
+    public void BackToMenu()
+    {
+        ResetMusic();
+        LoadingScreenManager.LoadScene(1);
+    }
+    #endregion
+
+    #region Animation Controllers
+
+    /// <summary>
+    /// Activa la animación de poco tiempo y reproduce la musica o sonido correspondiente si procede
+    /// </summary>
+    void ActivateLowTimeTimerAnimation()
+    {
+        //Si la musica está activada:
+        if (sProfileManager.ProfileSingleton.MusicState)
+        {
+            SoundSystem.s.FadeToMusic(0.2f, 0.2f, () =>
+            {   
+                //si el sonido está activado
+                if (sProfileManager.ProfileSingleton.SoundState)
+                {
+                    SoundStore.s.PlaySoundByAlias("TimeRunOut", 0f, GameConfig.s.SoundVolume + 0.5f, false, 0f, false, 0f, () =>
+                    {
+                        SoundSystem.s.AudioSources[0].pitch = 1.2f;
+                        if (sProfileManager.ProfileSingleton.MusicState) SoundSystem.s.FadeToMusic(1f, 0.2f);
+                    });
+                }else
+                {
+                    //Si el sonido noe stá activado
+                    SoundSystem.s.AudioSources[0].pitch = 1.2f;
+                }
+            });
+        }
+        //Si la musica no está activada
+        if (!sProfileManager.ProfileSingleton.MusicState)
+        {
+            //Se ejecuta este sonido si los sonidos están activados
+            if (sProfileManager.ProfileSingleton.SoundState) SoundStore.s.PlaySoundByAlias("TimeRunOut", 0f, GameConfig.s.SoundVolume + 0.5f, false, 0f, false, 0f);            
+            
+            //Si todo esta desactivado no se hace nada.
+        }
+
+        //esto se hace siempre:
+        TimerTweenController.PlayAnimations(true);
+    }
+
+    /// <summary>
+    /// Para la animáción de poco tiempo
+    /// </summary>
+    void StopLowTimeTimerAnimation()
+    {
+        SoundSystem.s.AudioSources[0].pitch = 1f;
+        TimerTweenController.StopAnimations();
+    }
+
+
+    #endregion
+    
+    #region levellisteners & endgameCheckers
+
+    #region TimeAttackMode
+
+    /// <summary>
+    /// Listener del evento "OnScore" para el modo TimeAttack
+    /// </summary>
+    /// <param name="cargo"></param>
+    void TimeAttackOnScoreListener(CargoType cargo)
+        {
+        //Checkeamos si se cumplió alguna misión!
+        CargoDelivered CD = _cargosDelivered.Find(x => x.type == cargo);
+        if (CD == null) {
+            Debug.LogError("Cannot Find CargoType: " + cargo.ToString());
+            return;
+        }
+        int cargoamount = CD.delivered;
+        bool b = false;
+        foreach (Quest q in myLevel.quests)
+        {
+            if (q.CheckQuest(cargoamount, WinCondition.Delivered, cargo)) b = true;
+        }
+        //Si se cumplió alguna misión lanzamos el evento de misión completada (que tal vez complete otras misiones)
+        if (b && OnCompeletedQuest != null) OnCompeletedQuest(TimeController.s.timeSpent);
+        //foreach (QuestSlate qsd in FindObjectsOfType<QuestSlate>()) qsd.UpdateGUI();
+    }
+
+    /// <summary>
+    /// Listener del evento "OnMoneyGained" para el modo TimeAttack
+    /// </summary>
+    /// <param name="increment"></param>
+    void TimeAttackOnMoneyGainListener(int increment)
+    {
+        //Checkeamos si se cumplió alguna misión!
+        bool b = false;
+        foreach (Quest q in myLevel.quests) 
+        {
+            if (q.CheckQuest(money, WinCondition.Money)) b = true;
+        }
+        //Si se cumplió alguna misión lanzamos el evento de misión completada (que tal vez complete otras misiones)
+        if (b && OnCompeletedQuest != null) OnCompeletedQuest(TimeController.s.timeSpent);
+
+
+
+        //foreach (QuestSlate qsd in FindObjectsOfType<QuestSlate>()) qsd.UpdateGUI();
+    }
+
+    /// <summary>
+    /// Listener del evento "OnCompletedQuest" para el modo TimeAttack
+    /// </summary>
+    /// <param name="time"></param>
+    void TimeAttackOnCompletedQuestListener(float time)
+    {        
+        //Checkeamos si se cumplió alguna misión!
+        bool b = false;
+        foreach (Quest q in myLevel.quests)
+        {
+            if (q.CheckQuest((int)time, WinCondition.Time, CargoType.None, true)) b = true;
+        }
+        //Si se cumplió alguna misión lanzamos el evento de misión completada (que tal vez complete otras misiones)
+        if (b && OnCompeletedQuest != null) OnCompeletedQuest(TimeController.s.timeSpent);
+        bool c = myLevel.quests.Any(x => x.completed == false);
+        //Si todas las misiones han sido cumplidas:
+        if (!c)
+        {
+            StartCoroutine(PreemtytiveEndingTimeAttack());
+        }
+
+        //foreach (QuestSlate qsd in FindObjectsOfType<QuestSlate>()) qsd.UpdateGUI();
+    }
+
+    /// <summary>
+    /// Inicializa el final del nivel
+    /// </summary>
+    void TimeAttackEndGameVictoryCheck()
+    {
+        if (gameEnding) return;
+        gameEnding = true;
+
+        if (sProfileManager.ProfileSingleton.MusicState)
+        {
+            SoundSystem.s.FadeOutMusic(0.2f, () => { StopLowTimeTimerAnimation(); MusicStore.s.PlayMusicByAlias("Victory", 0f, 1f); });
+        }
+        else
+        {
+            StopLowTimeTimerAnimation();
+        }
+        FreezeGame(true);
+        FinishText.SetActive(true);
+        FinishTextScaleTween.PlayForward();
+        SaveProfile();
+        StartCoroutine(EndGameSequence());
+
+    }
+
+    /// <summary>
+    /// Termina el juego antes de tiempo.
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator PreemtytiveEndingTimeAttack()
+    {
+        //gameEnding = true;
+        yield return new WaitForSeconds(2f);
+        TimeAttackEndGameVictoryCheck();
+    }
+
+    #endregion
+
+    #region Common To all Modes
+
+    /// <summary>
+    /// Este metodo permita a scripts de fuera lanzar el Evento "OnScore"
+    /// </summary>
+    /// <param name="cargo"></param>
+    public void OnScoreCall(CargoType cargo)
+    {
+        if (OnScore != null)
+        {
+
+            OnScore(cargo);
+        }
+    }
+
+
+    /// <summary>
+    /// Corutina llamada desde el Victory Checker
+    /// para iniciar el final del nivel
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator EndGameSequence()
+    {
+        yield return new WaitForSeconds(3.5f);
+        FinishTextScaleTween.ResetToBeginning();
+        FinishText.SetActive(false);
+        OutroPanel.SetActive(true);
+        PauseButtonPosTween.PlayReverse();
+        GUIPanel.SetActive(false);
+        OutroPanelScript ops = OutroPanel.GetComponent<OutroPanelScript>();
+        ops.ShowPanel(level, myLevel.CheckQuests());
+    }
+
+
+
+
+
+
+    #endregion
+
+    #endregion
+    
+    #region Freeze Control
+
+
+    /// <summary>
+    /// freezes all game
+    /// </summary>
+    /// <param name="freeze">True= freezes, false= unfreezes</param>
+    void FreezeGame(bool freeze)
+    {
+        
+        if (freeze)
+        {
+            foreach (TruckEntity te in FindObjectsOfType<TruckEntity>()) te.Freeze();
+            foreach (RoadEntity re in FindObjectsOfType<RoadEntity>()) re.Freeze();
+            if (TimeController.s.timer != null) TimeController.s.timer.StopTimer();
+        }
+        else
+        {
+            foreach (TruckEntity te in FindObjectsOfType<TruckEntity>()) te.Unfreeze();
+            foreach (RoadEntity re in FindObjectsOfType<RoadEntity>()) re.Unfreeze();
+            if (TimeController.s.timer != null) TimeController.s.timer.StartTimer();
+        }
+    }
+    #endregion
+    
+    #region Other Tools
+
+
+    /// <summary>
+    /// Se lanza desde diferentes sitios para lanzar la musica correcta
+    /// </summary>
+    /// <param name="startLevel"></param>
+    public void PlayLevelMusic(bool startLevel)
+    {
+        float delay = 0f;
+        if (startLevel) delay = 3f;
+        if (!MenuVersion) if (!MusicStore.s.AliasIsPlaying(myLevel.MusicAlias)) MusicStore.s.PlayMusicByAlias(myLevel.MusicAlias, delay, GameConfig.s.MusicVolume, true, 2f, true, 2f, null, () => { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
+        if (MenuVersion) if (!MusicStore.s.AliasIsPlaying("Menu")) MusicStore.s.PlayMusicByAlias("Menu", 0f, GameConfig.s.MusicVolume, true, 0f, true, 1f, null, () => { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
+    }
+
+    /// <summary>
+    /// Resetea la Musica a su estado original, si procede
+    /// </summary>
+    void ResetMusic()
+    {
+        if (sProfileManager.ProfileSingleton.MusicState) SoundSystem.s.FadeOutMusic(0.2f, () => { SoundSystem.s.AudioSources[0].pitch = 1f; });
+    }
+
+    /// <summary>
+    /// Guarda el Perfil.
+    /// </summary>
+    void SaveProfile()
+    {
+        bool b = false;
+        int stars = myLevel.CheckQuests();
+        if (stars > 0) { b = true; sProfileManager.ProfileSingleton.profileLevels[level].beated = true; }
+        if (sProfileManager.ProfileSingleton.profileLevels[level].stars < stars) { b = true; sProfileManager.ProfileSingleton.profileLevels[level].stars = stars; }
+        if (b) sSaveLoad.SaveProfile();
+
+
+    }
 
     #region FloatingTextThing
     /*
@@ -527,212 +850,9 @@ public class GameController : MonoBehaviour {
 
     #endregion
 
-    #region levelmanagement
-
-
-    public void PauseButton()
-    {
-        if (CounddownOBJ.activeSelf == false)
-        PauseGame(true);
-    }
-
-    public void PauseGame(bool b=true)
-    {
-        if (b)
-        {
-            Pause = true;
-            FreezeGame(true);
-            QuestGrid.SetActive(false);
-            IntroPanel.SetActive(true);
-            PauseButtonPosTween.PlayReverse();
-            IntroPanelAlphaTween.PlayReverse();
-            //Lanzamos el eveto de Pause, esto actualizará los Quest Slates en el menú de inicio
-            if (OnPause != null) OnPause();
-
-
-        }else
-        {
-            StartButtonClicked();
-        }
-    }
-
-    public void OnScoreCall(CargoType cargo)
-    {
-        if (OnScore != null) {
-           
-           OnScore(cargo);
-                }
-    }
-    public void AddOnScoreEvent(ScoreEvent a)
-    {
-        OnScore += a;
-    }
-
-    public void RetryLevel()
-    {
-        //SceneManager.UnloadScene(SceneManager.GetActiveScene());
-        LoadingScreenManager.LoadScene(level + 3, true, level + 3);
-    }
-    public void BackToMenu()
-    {
-        LoadingScreenManager.LoadScene(1);
-    }
-
-
-    void ActivateLowTimeTimerAnimation()
-    {
-        SoundSystem.s.FadeToMusic(0.2f, 0.2f, () => {
-            SoundStore.s.PlaySoundByAlias("TimeRunOut", 0f, GameConfig.s.SoundVolume+0.5f,false,0f,false,0f,()=> {
-                SoundSystem.s.AudioSources[0].pitch = 1.2f;
-                SoundSystem.s.FadeToMusic(1f, 0.2f);
-            }); });
-        
-        
-        TimerTweenController.PlayAnimations(true);
-    }
-    void StopLowTimeTimerAnimation()
-    {
-        SoundSystem.s.AudioSources[0].pitch = 1f;
-        TimerTweenController.StopAnimations();
-    }
-
-    
-
-    
-
-
-    
-
-    
-
-    
-
-
-    #region levellisteners & endgameCheckers
-    #region TimeAttackMode
-    void TimeAttackOnScoreListener(CargoType cargo)
-        {
-        //Checkeamos si se cumplió alguna misión!
-        CargoDelivered CD = _cargosDelivered.Find(x => x.type == cargo);
-        if (CD == null) {
-            Debug.LogError("Cannot Find CargoType: " + cargo.ToString());
-            return;
-        }
-        int cargoamount = CD.delivered;
-        bool b = false;
-        foreach (Quest q in myLevel.quests)
-        {
-            if (q.CheckQuest(cargoamount, WinCondition.Delivered, cargo)) b = true;
-        }
-        //Si se cumplió alguna misión lanzamos el evento de misión completada (que tal vez complete otras misiones)
-        if (b && OnCompeletedQuest != null) OnCompeletedQuest(TimeController.s.timeSpent);
-        //foreach (QuestSlate qsd in FindObjectsOfType<QuestSlate>()) qsd.UpdateGUI();
-    }
-    void TimeAttackOnMoneyGainListener(int increment)
-    {
-        //Checkeamos si se cumplió alguna misión!
-        bool b = false;
-        foreach (Quest q in myLevel.quests) 
-        {
-            if (q.CheckQuest(money, WinCondition.Money)) b = true;
-        }
-        //Si se cumplió alguna misión lanzamos el evento de misión completada (que tal vez complete otras misiones)
-        if (b && OnCompeletedQuest != null) OnCompeletedQuest(TimeController.s.timeSpent);
-
-
-
-        //foreach (QuestSlate qsd in FindObjectsOfType<QuestSlate>()) qsd.UpdateGUI();
-    }
-    void TimeAttackOnCompletedQuestListener(float time)
-    {        
-        //Checkeamos si se cumplió alguna misión!
-        bool b = false;
-        foreach (Quest q in myLevel.quests)
-        {
-            if (q.CheckQuest((int)time, WinCondition.Time, CargoType.None, true)) b = true;
-        }
-        //Si se cumplió alguna misión lanzamos el evento de misión completada (que tal vez complete otras misiones)
-        if (b && OnCompeletedQuest != null) OnCompeletedQuest(TimeController.s.timeSpent);
-
-
-
-        //foreach (QuestSlate qsd in FindObjectsOfType<QuestSlate>()) qsd.UpdateGUI();
-    }
-
-    void TimeAttackEndGameVictoryCheck()
-    {
-
-        SoundSystem.s.FadeOutMusic(0.2f,()=> { StopLowTimeTimerAnimation(); MusicStore.s.PlayMusicByAlias("Victory", 0f, 1f); });
-        FreezeGame(true);
-        FinishText.SetActive(true);
-        FinishTextScaleTween.PlayForward();
-        SaveProfile();
-        StartCoroutine(EndGameSequence());
-        
-    }
-    IEnumerator EndGameSequence()
-    {
-        yield return new WaitForSeconds(3.5f);
-        FinishTextScaleTween.ResetToBeginning();
-        FinishText.SetActive(false);
-        OutroPanel.SetActive(true);
-        PauseButtonPosTween.PlayReverse();
-        GUIPanel.SetActive(false);
-        OutroPanelScript ops = OutroPanel.GetComponent<OutroPanelScript>();
-        ops.ShowPanel(level, myLevel.CheckQuests());        
-    }
-
-    void SaveProfile() {
-        bool b = false;
-        int stars = myLevel.CheckQuests();
-        if (stars > 0) { b = true; sProfileManager.ProfileSingleton.profileLevels[level].beated = true; }
-        if (sProfileManager.ProfileSingleton.profileLevels[level].stars < stars) { b = true; sProfileManager.ProfileSingleton.profileLevels[level].stars = stars; }
-        if (b) sSaveLoad.SaveProfile();       
-
-
-    }
-    #endregion
-    #endregion
-
-
-
-
-    #region Freeze Control
-
-    
-    /// <summary>
-    /// freezes all game
-    /// </summary>
-    /// <param name="freeze">True= freezes, false= unfreezes</param>
-    void FreezeGame(bool freeze)
-    {
-        
-        if (freeze)
-        {
-            foreach (TruckEntity te in FindObjectsOfType<TruckEntity>()) te.Freeze();
-            foreach (RoadEntity re in FindObjectsOfType<RoadEntity>()) re.Freeze();
-            if (TimeController.s.timer != null) TimeController.s.timer.StopTimer();
-        }
-        else
-        {
-            foreach (TruckEntity te in FindObjectsOfType<TruckEntity>()) te.Unfreeze();
-            foreach (RoadEntity re in FindObjectsOfType<RoadEntity>()) re.Unfreeze();
-            if (TimeController.s.timer != null) TimeController.s.timer.StartTimer();
-        }
-    }
-    #endregion
 
 
     #endregion
-
-
-
-   
-
-
-
-
-
 
 }
 
@@ -1081,7 +1201,7 @@ public class Quest{
 
     public bool CheckQuest(int amountToCheck, WinCondition TypeOfWinChecked, CargoType cargo = CargoType.None, bool Under = true)
     {
-        if (_winCondition != TypeOfWinChecked) return false;
+        if (TypeOfWinChecked != WinCondition.Time) if (_winCondition != TypeOfWinChecked) return false;
         if (_completed) return false;
         if (TypeOfWinChecked == WinCondition.Delivered)
         {
@@ -1090,15 +1210,28 @@ public class Quest{
 
         if (_linkedQuestEnabled)
         {
-            if (!(_linkedQuest.Any(x => x.completed == false)))
-            {//Si no encuentra false (todas las quests enlazadas están true)
-                if (Under) if (amountToCheck <= _winAmount) _completed = true;
-                if (!Under) if (amountToCheck >= _winAmount) _completed = true;
-            }
-
-
+            
+                if (!(_linkedQuest.Any(x => x.completed == false)))
+                {//Si no encuentra false (todas las quests enlazadas están true)
+                    switch (TypeOfWinChecked)
+                    {
+                        case WinCondition.Delivered:
+                            if (amountToCheck >= _winAmount) _completed = true;
+                            break;
+                        case WinCondition.Money:
+                            if (amountToCheck >= _winAmount) _completed = true;
+                            break;
+                        case WinCondition.Time:
+                            if (Under) if (amountToCheck <= _winAmount) _completed = true;
+                            if (!Under) if (amountToCheck >= _winAmount) _completed = true;
+                            break;
+                        default:
+                            break;
+                    }
+                }
         }else
         {
+            if (_winCondition != TypeOfWinChecked) return false;
             if (amountToCheck >= _winAmount) _completed = true;
         }
 

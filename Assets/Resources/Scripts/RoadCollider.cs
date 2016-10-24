@@ -22,7 +22,12 @@ public class RoadCollider : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
+        
         if (other.tag != "Truck") return;
+        if (gameObject.name == "LeftCollider2")
+        {
+           // Debug.Log("Debug");
+        }
         TruckEntity te = other.GetComponent<TruckEntity>();
         //INNER PART
         int numberOfConditions = roadDirectionCondition.Length;
@@ -51,25 +56,23 @@ public class RoadCollider : MonoBehaviour {
 
             CardinalPoint direction = te.direction;
             RoadEntity NextTile;
-            if (gameObject.name == "TopEndCollider")
+            if (gameObject.name == "TopCollider")
                 if (direction != CardinalPoint.N) return;
-            if (gameObject.name == "BottomEndCollider")
+            if (gameObject.name == "BottomCollider")
                 if (direction != CardinalPoint.S) return;
-            if (gameObject.name == "LeftEndCollider")
+            if (gameObject.name == "LeftCollider")
                 if (direction != CardinalPoint.W) return;
-            if (gameObject.name == "RightEndCollider")
+            if (gameObject.name == "RightCollider")
                 if (direction != CardinalPoint.E) return;
-            if (gameObject.name == "LeftEndCollider2")
-            {
-                if (direction != CardinalPoint.W) return;
-                Debug.Log("I Debug Here!");
-            }
-
+            
 
             if (MapController.s.CheckNextTile(myRoadEntity.position, direction, out NextTile))
             {
                 bool b = RoadEntity.CheckConnection(myRoadEntity, NextTile);
-                if (!b) te.ChangeDirection(RoadEntity.ReverseDirection(te.direction), Turn.Reverse);
+                if (!b)
+                {
+                    te.ChangeDirection(RoadEntity.ReverseDirection(te.direction), Turn.Reverse);
+                }
             }
             else
             {

@@ -61,7 +61,21 @@ public class MusicButton : MonoBehaviour {
             SetSprite(value);
         }
     }
-    public bool Clickable = true;
+
+    public bool Clickable
+    {
+        get
+        {
+            return clickable;
+        }
+
+        set
+        {
+            clickable = value;
+        }
+    }
+
+    private bool clickable = true;
 
 
     void SetSprite(bool set)

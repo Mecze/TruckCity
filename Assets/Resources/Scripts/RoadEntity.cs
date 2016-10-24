@@ -241,6 +241,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
 
         }
     }
+    int numberOfComingTrucks = 0;
 
     #endregion
 
@@ -281,7 +282,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     {
         if (gameObject.name == "CubeRoadSE" || gameObject.name == "CubeRoadNS (2)")
         {
-            Debug.Log("asdf");
+         //   Debug.Log("asdf");
         }
         position = new Vector3Int();
         position.x = Mathf.RoundToInt(transform.position.x);
@@ -306,6 +307,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         if (possibleRotations.Count > 1)
         {
             if (NumberOfTruckOnTop > 0) return;
+            if (numberOfComingTrucks > 0) return;
             direction = possibleRotations[0];
             possibleRotations.RemoveAt(0);
             possibleRotations.Add(direction);
@@ -478,15 +480,15 @@ public class RoadEntity : MonoBehaviour, IFreezable {
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Truck")
-        {
-            NumberOfTruckOnTop += 1;
-        }
+        if (other.tag == "Truck") NumberOfTruckOnTop += 1;        
+        if (other.tag == "Truck2") numberOfComingTrucks += 1;
     }
     void OnTriggerExit(Collider other)
     {
         if (other.tag == "Truck") NumberOfTruckOnTop -= 1;
+        if (other.tag == "Truck2") numberOfComingTrucks -= 1; 
         if (NumberOfTruckOnTop < 0) NumberOfTruckOnTop = 0;
+        if (numberOfComingTrucks < 0) numberOfComingTrucks = 0;
     }
 
     #endregion

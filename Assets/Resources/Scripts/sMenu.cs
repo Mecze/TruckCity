@@ -49,6 +49,8 @@ public class sMenu : MonoBehaviour {
     [SerializeField]
     GameObject languagePrefab;
 
+    bool Loading = false;
+
     void Start()
     {
 
@@ -108,7 +110,11 @@ public class sMenu : MonoBehaviour {
     }
     void NewGameLoadGame(int levelIndex)
     {
-        sProfileManager.instance.ChangeLevel(levelIndex);
+        if (Loading == false)
+        {
+            Loading = true;
+            sProfileManager.instance.ChangeLevel(levelIndex);
+        }
     }
        
 

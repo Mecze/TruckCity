@@ -80,7 +80,7 @@ public class LoadingScreenManager : MonoBehaviour
             //if (Mathf.Approximately(operation.progress, lastProgress) == false)
             //{
                 progressBar.value = operation.progress;
-                Debug.Log("Loading " + (operation.progress * 100).ToString()+"%");
+                //Debug.Log("Loading " + (operation.progress * 100).ToString()+"%");
                 //lastProgress = operation.progress;
             //}
         }

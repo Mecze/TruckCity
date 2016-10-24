@@ -334,7 +334,7 @@ public class TruckEntity : MonoBehaviour, IFreezable
         }
         if (turn == Turn.Reverse)
         {
-            UnityEngine.Debug.Log("DebugReverse");
+            //UnityEngine.Debug.Log("DebugReverse");
         }
 
         /*
