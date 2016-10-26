@@ -58,7 +58,8 @@ public class MusicButton : MonoBehaviour {
         {
             _state = value;
             GameConfig.s.MusicState = value;
-            SetSprite(value);
+            SetSprite(_state);
+            
         }
     }
 

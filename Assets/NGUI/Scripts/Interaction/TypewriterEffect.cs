@@ -30,6 +30,11 @@ public class TypewriterEffect : MonoBehaviour
 
 	public int charsPerSecond = 20;
 
+    /// <summary>
+    /// Initial Delay (Mecze)
+    /// </summary>
+    public float initialDelay = 0f;
+
 	/// <summary>
 	/// How long it takes for each character to fade in.
 	/// </summary>
@@ -72,6 +77,7 @@ public class TypewriterEffect : MonoBehaviour
 	float mNextChar = 0f;
 	bool mReset = true;
 	bool mActive = false;
+    bool firstEmptyCharacter = false;
 
 	BetterList<FadeEntry> mFade = new BetterList<FadeEntry>();
 
@@ -92,7 +98,9 @@ public class TypewriterEffect : MonoBehaviour
 		mActive = true;
 		mNextChar = 0f;
 		mCurrentOffset = 0;
-		Update();
+        if (initialDelay == 0f) { firstEmptyCharacter = true; } else { firstEmptyCharacter = false; }
+
+        Update();
 	}
 
 	/// <summary>
@@ -116,7 +124,7 @@ public class TypewriterEffect : MonoBehaviour
 				scrollView.UpdatePosition();
 
 			current = this;
-			EventDelegate.Execute(onFinished);
+			//EventDelegate.Execute(onFinished);
 			current = null;
 		}
 	}
@@ -140,71 +148,79 @@ public class TypewriterEffect : MonoBehaviour
 		}
 
 		if (string.IsNullOrEmpty(mFullText)) return;
+        
+        while (mCurrentOffset < mFullText.Length && mNextChar <= RealTime.time)
+        {
+            if (!firstEmptyCharacter) {
+                mLabel.text = "";
+                firstEmptyCharacter = true;
+                mNextChar = RealTime.time + initialDelay;
+            }
+            else
+            {            
+                int lastOffset = mCurrentOffset;
+                charsPerSecond = Mathf.Max(1, charsPerSecond);
 
-		while (mCurrentOffset < mFullText.Length && mNextChar <= RealTime.time)
-		{
-			int lastOffset = mCurrentOffset;
-			charsPerSecond = Mathf.Max(1, charsPerSecond);
+                // Automatically skip all symbols
+                if (mLabel.supportEncoding)
+                    while (NGUIText.ParseSymbol(mFullText, ref mCurrentOffset)) { }
 
-			// Automatically skip all symbols
-			if (mLabel.supportEncoding)
-				while (NGUIText.ParseSymbol(mFullText, ref mCurrentOffset)) { }
+                ++mCurrentOffset;
 
-			++mCurrentOffset;
+                // Reached the end? We're done.
+                if (mCurrentOffset > mFullText.Length) break;
 
-			// Reached the end? We're done.
-			if (mCurrentOffset > mFullText.Length) break;
+                // Periods and end-of-line characters should pause for a longer time.
+                float delay = 1f / charsPerSecond;
+                char c = (lastOffset < mFullText.Length) ? mFullText[lastOffset] : '\n';
 
-			// Periods and end-of-line characters should pause for a longer time.
-			float delay = 1f / charsPerSecond;
-			char c = (lastOffset < mFullText.Length) ? mFullText[lastOffset] : '\n';
+                if (c == '\n')
+                {
+                    delay += delayOnNewLine;
+                }
+                else if (lastOffset + 1 == mFullText.Length || mFullText[lastOffset + 1] <= ' ')
+                {
+                    if (c == '.')
+                    {
+                        if (lastOffset + 2 < mFullText.Length && mFullText[lastOffset + 1] == '.' && mFullText[lastOffset + 2] == '.')
+                        {
+                            delay += delayOnPeriod * 3f;
+                            lastOffset += 2;
+                        }
+                        else delay += delayOnPeriod;
+                    }
+                    else if (c == '!' || c == '?')
+                    {
+                        delay += delayOnPeriod;
+                    }
+                }
 
-			if (c == '\n')
-			{
-				delay += delayOnNewLine;
-			}
-			else if (lastOffset + 1 == mFullText.Length || mFullText[lastOffset + 1] <= ' ')
-			{
-				if (c == '.')
-				{
-					if (lastOffset + 2 < mFullText.Length && mFullText[lastOffset + 1] == '.' && mFullText[lastOffset + 2] == '.')
-					{
-						delay += delayOnPeriod * 3f;
-						lastOffset += 2;
-					}
-					else delay += delayOnPeriod;
-				}
-				else if (c == '!' || c == '?')
-				{
-					delay += delayOnPeriod;
-				}
-			}
+                if (mNextChar == 0f)
+                {
+                    mNextChar = RealTime.time + delay;
+                }
+                else mNextChar += delay;
 
-			if (mNextChar == 0f)
-			{
-				mNextChar = RealTime.time + delay;
-			}
-			else mNextChar += delay;
+                if (fadeInTime != 0f)
+                {
+                    // There is smooth fading involved
+                    FadeEntry fe = new FadeEntry();
+                    fe.index = lastOffset;
+                    fe.alpha = 0f;
+                    fe.text = mFullText.Substring(lastOffset, mCurrentOffset - lastOffset);
+                    mFade.Add(fe);
+                }
+                else
+                {
+                    // No smooth fading necessary
+                    mLabel.text = keepFullDimensions ?
+                        mFullText.Substring(0, mCurrentOffset) + "[00]" + mFullText.Substring(mCurrentOffset) :
+                        mFullText.Substring(0, mCurrentOffset);
 
-			if (fadeInTime != 0f)
-			{
-				// There is smooth fading involved
-				FadeEntry fe = new FadeEntry();
-				fe.index = lastOffset;
-				fe.alpha = 0f;
-				fe.text = mFullText.Substring(lastOffset, mCurrentOffset - lastOffset);
-				mFade.Add(fe);
-			}
-			else
-			{
-				// No smooth fading necessary
-				mLabel.text = keepFullDimensions ?
-					mFullText.Substring(0, mCurrentOffset) + "[00]" + mFullText.Substring(mCurrentOffset) :
-					mFullText.Substring(0, mCurrentOffset);
-
-				// If a scroll view was specified, update its position
-				if (!keepFullDimensions && scrollView != null) scrollView.UpdatePosition();
-			}
+                    // If a scroll view was specified, update its position
+                    if (!keepFullDimensions && scrollView != null) scrollView.UpdatePosition();
+                }
+            }
 		}
 
 		// Alpha-based fading

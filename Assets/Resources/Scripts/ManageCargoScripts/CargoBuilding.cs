@@ -24,7 +24,7 @@ public delegate void OnDeliveranceDelegate();
 public delegate void OnProducedDelegate();
 public delegate void OnLoadCargoDelegate();
 #pragma warning disable 0169
-public class CargoBuilding : MonoBehaviour {
+public class CargoBuilding : MonoBehaviour, IFreezable {
 
 
     [Header("Spawn? (Do Manual References Below!)")]
@@ -74,6 +74,7 @@ public class CargoBuilding : MonoBehaviour {
     [SerializeField]
     GameObject ForbidSprite;
 
+    bool freeze;
     
 
     #endregion
@@ -135,7 +136,19 @@ public class CargoBuilding : MonoBehaviour {
 
     }
 
+    #region Freeze
 
+    public void Freeze()
+    {
+        freeze = true;
+    }
+    public void Unfreeze()
+    {
+        freeze = false;
+    }
+
+
+    #endregion
     /// <summary>
     /// SpawnsArrows
     /// </summary>
@@ -257,6 +270,7 @@ public class CargoBuilding : MonoBehaviour {
 
     void OnClick()
     {
+        if (freeze) return;
         Debug.Log("asdf");
         if (Forbidable) Forbidded = !Forbidded;
     }

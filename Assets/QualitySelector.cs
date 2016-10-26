@@ -62,6 +62,29 @@ public class QualitySelector : MonoBehaviour {
 
     }
     /// <summary>
+    /// EdidorOnly: Disables all building objects
+    /// </summary>
+    public void DisableBuilding()
+    {
+        if (isARoad) return;
+        for (int i = 0; i < LowGO.Length; i++)
+        {
+            if (LowGO[i].name != "RoadMat")LowGO[i].SetActive(false);
+        }
+        for (int i = 0; i < MediumGO.Length; i++)
+        {
+            if (MediumGO[i].name != "RoadMat") MediumGO[i].SetActive(false);
+        }
+        for (int i = 0; i < HighGO.Length; i++)
+        {
+            if (HighGO[i].name != "RoadMat") HighGO[i].SetActive(false);
+        }
+
+
+
+    }
+
+    /// <summary>
     /// Activa Objetos de esta calidad
     /// </summary>
     /// <param name="gos"></param>

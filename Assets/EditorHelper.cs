@@ -43,5 +43,15 @@ public class EditorHelper : MonoBehaviour {
         }
     }
 
+    public void DisableAllBuildings()
+    {
+        QualitySelector[] QSs = GameObject.FindObjectsOfType<QualitySelector>();
+
+        for (int i = 0; i < QSs.Length; i++)
+        {
+            QSs[i].DisableBuilding();
+        }
+    }
+
 
 }

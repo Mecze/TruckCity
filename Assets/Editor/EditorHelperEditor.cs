@@ -33,6 +33,11 @@ public class EditorHelperEditor : Editor {
         {
             myScript.SetAllLow();
         }
+        EditorGUILayout.TextArea("", GUI.skin.horizontalSlider);
+        if (GUILayout.Button("Disable Buildings"))
+        {
+            myScript.DisableAllBuildings();
+        }
     }
     
 }

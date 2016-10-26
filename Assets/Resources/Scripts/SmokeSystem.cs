@@ -23,6 +23,8 @@ public class SmokeSystem : MonoBehaviour {
 
     float currentTime;
     Volume volume;
+    [SerializeField]
+    Color color = Color.grey;
 
     void Update()
     {
@@ -44,7 +46,7 @@ public class SmokeSystem : MonoBehaviour {
             //Voxel to Spawn
             Voxel v = new Voxel();
 
-            v.Color = Color.gray;
+            v.Color = color;
             int x = 0;
             foreach (Transform trans in LocationsToSpawn)
             {

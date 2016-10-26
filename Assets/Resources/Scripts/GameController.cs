@@ -71,7 +71,7 @@ public class GameController : MonoBehaviour {
 
     [Header("Menu Version of the GC")]
     [SerializeField]
-    bool MenuVersion = false;
+    public bool MenuVersion = false;
 
 
     [Header("FloatingTextConfig")]
@@ -190,7 +190,8 @@ public class GameController : MonoBehaviour {
     /// </summary>
     bool gameEnding = false;
     bool PreeGameEngind = false;
-
+    [System.NonSerialized]
+    public bool MusicPlaying = false;
 
     #region StartGame SEQUENCE
     //En orden
@@ -311,7 +312,16 @@ public class GameController : MonoBehaviour {
 
             //Ahora se Activa la Intro
             //(En la Escena viene ya activada por defecto) FailSafe:
-            IntroPanel.SetActive(true);
+
+
+            //Esta lina activa el tutorial (si es false) 
+            //O va directo al menú de INTRO (si es true)
+            TutorialController.s.hasTutorial = !sProfileManager.ProfileSingleton.profileLevels[level].TutorialDone;
+            TutorialController.ChangeMyState(sProfileManager.ProfileSingleton.profileLevels[level].TutorialDone);
+            if (!sProfileManager.ProfileSingleton.profileLevels[level].TutorialDone) { TutorialController.s.ResetTutorialAndGo(); }else { TutorialController.s.secondTime = true; }
+            
+
+            
 
             
 
@@ -354,6 +364,7 @@ public class GameController : MonoBehaviour {
             //Desde el Animator de CountdownAnimator
 
             //Musica:
+            MusicPlaying = true;
             PlayLevelMusic(true);
 
 
@@ -744,14 +755,36 @@ public class GameController : MonoBehaviour {
         
         if (freeze)
         {
+            /*
             foreach (TruckEntity te in FindObjectsOfType<TruckEntity>()) te.Freeze();
             foreach (RoadEntity re in FindObjectsOfType<RoadEntity>()) re.Freeze();
+            var type = typeof(IFreezable);
+            var types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes()).Where(p => type.IsAssignableFrom(p));
+            foreach(var t in types)
+            {
+                
+                
+            }
+            */
+
+            foreach(IFreezable IF in InterfaceHelper.FindObjects<IFreezable>())
+            {
+                IF.Freeze();
+            }
+
             if (TimeController.s.timer != null) TimeController.s.timer.StopTimer();
+
         }
         else
         {
+            /*
             foreach (TruckEntity te in FindObjectsOfType<TruckEntity>()) te.Unfreeze();
             foreach (RoadEntity re in FindObjectsOfType<RoadEntity>()) re.Unfreeze();
+            */
+            foreach (IFreezable IF in InterfaceHelper.FindObjects<IFreezable>())
+            {
+                IF.Unfreeze();
+            }
             if (TimeController.s.timer != null) TimeController.s.timer.StartTimer();
         }
     }
@@ -783,13 +816,13 @@ public class GameController : MonoBehaviour {
     /// <summary>
     /// Guarda el Perfil.
     /// </summary>
-    void SaveProfile()
+    public void SaveProfile(bool force = false)
     {
         bool b = false;
         int stars = myLevel.CheckQuests();
         if (stars > 0) { b = true; sProfileManager.ProfileSingleton.profileLevels[level].beated = true; }
         if (sProfileManager.ProfileSingleton.profileLevels[level].stars < stars) { b = true; sProfileManager.ProfileSingleton.profileLevels[level].stars = stars; }
-        if (b) sSaveLoad.SaveProfile();
+        if (b || force) sSaveLoad.SaveProfile();
 
 
     }
@@ -810,7 +843,6 @@ public class GameController : MonoBehaviour {
         Vector3 realPos = new Vector3(pos.x, defaulYFloatingText, pos.y);
         FloatingTextSpawn(realPos, text, publiccolor, spriteName, CargoColor, delay);
     }
-
     /// <summary>
     /// Genera un Floating Text con los siguientes parametros:
     /// </summary>

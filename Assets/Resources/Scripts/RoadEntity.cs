@@ -389,7 +389,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     /// <summary>
     /// Selecciona que Sprites deben estar activados en función de si la carretera se puede mover.
     /// </summary>
-    void RecalculateSprites() {
+    public void RecalculateSprites() {
         if (possibleRotations.Count <= 1)
         {
             TurnOffAllSprites();
@@ -435,9 +435,12 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     {
         foreach (GameObject go in sprites)
         {
-            go.GetComponent<SpriteRenderer>().color = GameConfig.s.publicColors[(int)enumColor.Black];
-            go.GetComponent<SpriteRenderer>().enabled = false;
-            go.GetComponent<Animator>().SetBool("Moving", false);
+            if (go.activeSelf && go.transform.parent.gameObject.activeSelf)
+            {
+                go.GetComponent<SpriteRenderer>().color = GameConfig.s.publicColors[(int)enumColor.Black];
+                go.GetComponent<SpriteRenderer>().enabled = false;
+                go.GetComponent<Animator>().SetBool("Moving", false);
+            }
         }
     }
     void TurnOffSprite(CardinalPoint dir)
@@ -449,26 +452,35 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     void TurnOnArrow(CardinalPoint dir)
     {
         GameObject go = sprites[(int)dir-1];
-        SpriteRenderer ren = go.GetComponent<SpriteRenderer>();
-        ren.enabled = true;
-        ren.sprite = (Sprite)Resources.Load(GameConfig.s.IMGPath + "Arrow", typeof(Sprite));
-        go.GetComponent<Animator>().SetBool("Moving", true);
+        if (go.activeSelf && go.transform.parent.gameObject.activeSelf)
+        {
+            SpriteRenderer ren = go.GetComponent<SpriteRenderer>();
+            ren.enabled = true;
+            ren.sprite = (Sprite)Resources.Load(GameConfig.s.IMGPath + "Arrow", typeof(Sprite));
+            go.GetComponent<Animator>().SetBool("Moving", true);
+        }
     }
     void TurnOnArrowTrans(CardinalPoint dir)
     {
         GameObject go = sprites[(int)dir - 1];
-        SpriteRenderer ren = go.GetComponent<SpriteRenderer>();
-        ren.enabled = true;
-        ren.sprite = (Sprite)Resources.Load(GameConfig.s.IMGPath + "ArrowTrans", typeof(Sprite));
-        go.GetComponent<Animator>().SetBool("Moving", false);
+        if (go.activeSelf && go.transform.parent.gameObject.activeSelf)
+        {
+            SpriteRenderer ren = go.GetComponent<SpriteRenderer>();
+            ren.enabled = true;
+            ren.sprite = (Sprite)Resources.Load(GameConfig.s.IMGPath + "ArrowTrans", typeof(Sprite));
+            go.GetComponent<Animator>().SetBool("Moving", false);
+        }
     }
     void TurnOnEquals(CardinalPoint dir)
     {
         GameObject go = sprites[(int)dir - 1];
-        SpriteRenderer ren = go.GetComponent<SpriteRenderer>();
-        ren.enabled = true;
-        ren.sprite = (Sprite)Resources.Load(GameConfig.s.IMGPath + "ArrowTrans", typeof(Sprite));
-        go.GetComponent<Animator>().SetBool("Moving", false);
+        if (go.activeSelf && go.transform.parent.gameObject.activeSelf)
+        {
+            SpriteRenderer ren = go.GetComponent<SpriteRenderer>();
+            ren.enabled = true;
+            ren.sprite = (Sprite)Resources.Load(GameConfig.s.IMGPath + "ArrowTrans", typeof(Sprite));
+            go.GetComponent<Animator>().SetBool("Moving", false);
+        }
     }
 
 
@@ -522,6 +534,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         //CheckAdjacency devuelve "true" y el out en "TruckDirection.None" (en ambos)
         //Si se trata, casualmente, de la misma casilla, devolvemos true automaticamente
         if (from1to2 == CardinalPoint.None || from2to1 == CardinalPoint.None) return true;
+
 
         //Si road1 no posee la dirección hasta road2, se falla el check
         if (!road1.HasDirection(from1to2)) r = false;

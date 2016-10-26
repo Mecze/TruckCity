@@ -18,7 +18,8 @@ public class TypewriterEffectEditor : Editor
 		serializedObject.Update();
 
 		NGUIEditorTools.DrawProperty(serializedObject, "charsPerSecond");
-		NGUIEditorTools.DrawProperty(serializedObject, "fadeInTime");
+        NGUIEditorTools.DrawProperty(serializedObject, "initialDelay");
+        NGUIEditorTools.DrawProperty(serializedObject, "fadeInTime");
 		NGUIEditorTools.DrawProperty(serializedObject, "delayOnPeriod");
 		NGUIEditorTools.DrawProperty(serializedObject, "delayOnNewLine");
 		NGUIEditorTools.DrawProperty(serializedObject, "scrollView");

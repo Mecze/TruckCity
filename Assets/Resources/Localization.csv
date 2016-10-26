@@ -19,10 +19,33 @@ Loading,[FF5454FF]L[-]oading,[FF5454FF]C[-]argando
 LoadingComplete,[FF5454FF]L[-]oading [FF5454FF]D[-]one,[FF5454FF]C[-]arga [FF5454FF]C[-]ompleta
 Graphics,Graphics:,Gráficos:
 Low,Low,Bajo
+Medium,Medium,Medio
 High,High,Alto
 WhatsNew,What's New?, Novedades
 Version,Version, Versión
-v0.02,- Added low level poly graphics (and Assets) option to the settings for slow devices. \n- Added FPS counter (for testing). \n-Added this box.\n- Moved [i]some[/i] development assets to shrink APK size.\n- Target FPS is 60fps for High and 30fps for Low.\n \n [u]BugFixes:[/u]\n- Fixed odd UI when other resolutions than 1080p.\n- Fixed Localization bugs (UTF-8)\n- Fixing Trucks ignoring colliders.,- Añadido opción de baja calidad gráfica (y modelos) en las opciones para dispositivos lentos.\n- Añadido contador de FPS (para pruebas).\n- Añadido este panel.\n- Se han movido [i]algunos[/i] recursos para adelgazar el APK.\n- El FPS al que se intenta llegar es 60fps en Alto y 30fps en Bajo.\n \n [u]BugFixes:[/u]\n- Arreglado la mala posición de la UI en dispositivos con otra resolución que no sea 1080p.\n- Arreglado errores de localización(UTF-8).\n- Arreglando bug de camiones ignorando colisiones.
-Level1Hint1,Deliver Cargo Here,Transporta la Carga aquí
-Level1Hint2,Pick Up Cargo Hera,Recoge la Carga aquí
-Level1Hint3,Touch Here to Rotate,Toca aquí para girar
+VersionNumber,Alpha: 0.03a1,Alfa: 0.03a1
+VersionText,- Added better clicklable roads sprites\n- Reworked Road colliders\n- Added Tutorials\n- Added 2 more levels\n- Added early level finish (if all quests completeted)\n[u]BugFixes:[/u]\n- Fixed several errors with UI.\n- Fixed several errors with Music.,- Mejores sprites clickables de carreteras\n- Rediseñado colisionadores de carretera\n- Añadidos tutoriales\n- Añadidos 2 nivles jugables\n- Ahora el nivel puede terminar antes de tiempo (Si todas las misiones fueron cumplidas)\n[u]BugFixes:[/u]\n- Arreglados diversos errores de interfaz\n- Arreglados diversos errores con la Música.
+Skip,Skip,Saltar
+RepeatTutorial,Repeat Tutorial,Repetir Tutorial
+PressHere, Touch here to continue, Toca aquí para continuar
+PressAnywhere, Touch anywhere to continue, Toca para continuar
+Level1Hint0,Welcome to [FF5454FF]Truck City[-].\nYour Job is to Deliver Cargo from one place to another.\n,Bienvenido a [FF5454FF]Truck City[-].\nTu tarea es llevar carga de un sitio a otro.
+Level1Hint1,For that you will use these [FF5454FF]trucks[-],Usando estos [FF5454FF]camiones[-]
+Level1Hint2,Trucks are stupid. You will have to touch on certain roads to [FF5454FF]rotate[-] them, Los camiones son estupidos. Tendras que [FF5454FF]tocar[-] en ciertas carreteras para rotarlas
+Level1Hint3,Make your trucks pick [FF5454FF]Cargo[-] from here, Haz que tus camiones recogan [FF5454FF]Carga[-] de aquí
+Level1Hint4,And from here,Y de aquí
+Level1Hint5,Deliver the Cargo here,Y lleva la carga aquí
+Level1Hint6,You have 60 seconds!,Tienes 60 segundos!
+Level1Hint7,Complete [FF5454FF]Misions[-] to get stars,Completa [FF5454FF]Misiones[-] para conseguir estrellas
+Level2Hint0,Each Delivery yields different amount of money,Cada envio da una cantidad diferente de dinero
+Level2Hint1,This one only yields 9 $,Este solo da 9 $
+Level2Hint2,But this yields 30 $,Pero este da 30 $
+Level2Hint3,Make a good decision to where send your trucks!,Decide donde deben ir tus camiones!
+Level3Hint0,[FF5454FF]Something's Burning![-],[FF5454FF]Algo está ardiendo![-]
+Level3Hint1,These are [FF5454FF]Road Blocks[-] they block one lane of the Road,Estos son [FF5454FF]Bloqueos[-] y bloquean un carril
+Level3Hint2,Your Trucks will [FF5454FF]Turn Around[-] when encountering a Road Block,Tus camiones [FF5454FF]Daran la vuelta[-] cuando se encuenten con un Bloqueo.
+Level3Hint3,Try to use it on your advantage,Intenta sacar ventaja de ello
+
+
+
+

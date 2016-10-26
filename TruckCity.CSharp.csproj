@@ -80,7 +80,7 @@
     <Compile Include="Assets\FPSCounter.cs" />
     <Compile Include="Assets\FlagSprite.cs" />
     <Compile Include="Assets\GraphicsButton.cs" />
-    <Compile Include="Assets\GuiButtonWatch.cs" />
+    <Compile Include="Assets\GuiTutorialButton.cs" />
     <Compile Include="Assets\LevelNumberAwake.cs" />
     <Compile Include="Assets\LoadingScreenManager.cs" />
     <Compile Include="Assets\LookAtCam.cs" />
@@ -275,6 +275,7 @@
     <Compile Include="Assets\Resources\Scripts\GameConfig.cs" />
     <Compile Include="Assets\Resources\Scripts\GameController.cs" />
     <Compile Include="Assets\Resources\Scripts\GasStation.cs" />
+    <Compile Include="Assets\Resources\Scripts\InterfaceHelper.cs" />
     <Compile Include="Assets\Resources\Scripts\IntroAnimationBehaviour.cs" />
     <Compile Include="Assets\Resources\Scripts\ManageCargoScripts\AcceptsCargo.cs" />
     <Compile Include="Assets\Resources\Scripts\ManageCargoScripts\ArrowCargo.cs" />
@@ -320,8 +321,12 @@
     <Compile Include="Assets\Resources\Scripts\sMenuButton.cs" />
     <Compile Include="Assets\Resources\Scripts\sProfileManager.cs" />
     <Compile Include="Assets\Resources\Scripts\sSaveLoad.cs" />
+    <Compile Include="Assets\RoadBlock.cs" />
+    <Compile Include="Assets\RoadSprites.cs" />
     <Compile Include="Assets\SettingsButton.cs" />
     <Compile Include="Assets\SoundButton.cs" />
+    <Compile Include="Assets\TutorialController.cs" />
+    <Compile Include="Assets\TutorialPanel.cs" />
     <Compile Include="Assets\TweenAnimationController.cs" />
     <Compile Include="Assets\test.cs" />
   </ItemGroup>

@@ -161,8 +161,9 @@ public class ProducesCargo : CargoManagement
         if (amountOfItems < maxProduced)
         {
             TimeController.s.OnStartClock += CooldownTick;
-            amountOfItems = amountOfItems;
+            
         }
+        amountOfItems = amountOfItems;
     }
     void OnDisable()
     {
