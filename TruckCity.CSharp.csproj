@@ -75,18 +75,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\CountDownSprite.cs" />
-    <Compile Include="Assets\EditorHelper.cs" />
-    <Compile Include="Assets\FPSCounter.cs" />
-    <Compile Include="Assets\FlagSprite.cs" />
-    <Compile Include="Assets\GraphicsButton.cs" />
-    <Compile Include="Assets\GuiTutorialButton.cs" />
-    <Compile Include="Assets\LevelNumberAwake.cs" />
-    <Compile Include="Assets\LoadingScreenManager.cs" />
-    <Compile Include="Assets\LookAtCam.cs" />
-    <Compile Include="Assets\MenuLevel.cs" />
     <Compile Include="Assets\Mobile Cartoon GUI 2\Scripts\ButtonAnimationContoller.cs" />
-    <Compile Include="Assets\MusicButton.cs" />
     <Compile Include="Assets\NGUI\Examples\Scripts\InventorySystem\Game\EquipItems.cs" />
     <Compile Include="Assets\NGUI\Examples\Scripts\InventorySystem\Game\EquipRandomItem.cs" />
     <Compile Include="Assets\NGUI\Examples\Scripts\InventorySystem\Game\UICursor.cs" />
@@ -225,7 +214,6 @@
     <Compile Include="Assets\NGUI\Scripts\UI\UITexture.cs" />
     <Compile Include="Assets\NGUI\Scripts\UI\UITooltip.cs" />
     <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
-    <Compile Include="Assets\OutroPanelScript.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\BasicAnimator.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Batch.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Chunk.cs" />
@@ -265,18 +253,25 @@
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Volume.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Voxel.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\VoxelParticleSystem.cs" />
-    <Compile Include="Assets\PlayAliasSound.cs" />
-    <Compile Include="Assets\QualitySelector.cs" />
     <Compile Include="Assets\Resources\Scripts\AutoGrid.cs" />
     <Compile Include="Assets\Resources\Scripts\Clickable.cs" />
+    <Compile Include="Assets\Resources\Scripts\CountDownSprite.cs" />
+    <Compile Include="Assets\Resources\Scripts\EditorHelper.cs" />
     <Compile Include="Assets\Resources\Scripts\Extension.cs" />
     <Compile Include="Assets\Resources\Scripts\Extensions.cs" />
+    <Compile Include="Assets\Resources\Scripts\FPSCounter.cs" />
+    <Compile Include="Assets\Resources\Scripts\FlagSprite.cs" />
     <Compile Include="Assets\Resources\Scripts\FloatingText.cs" />
     <Compile Include="Assets\Resources\Scripts\GameConfig.cs" />
     <Compile Include="Assets\Resources\Scripts\GameController.cs" />
     <Compile Include="Assets\Resources\Scripts\GasStation.cs" />
+    <Compile Include="Assets\Resources\Scripts\GraphicsButton.cs" />
+    <Compile Include="Assets\Resources\Scripts\GuiTutorialButton.cs" />
     <Compile Include="Assets\Resources\Scripts\InterfaceHelper.cs" />
     <Compile Include="Assets\Resources\Scripts\IntroAnimationBehaviour.cs" />
+    <Compile Include="Assets\Resources\Scripts\LevelNumberAwake.cs" />
+    <Compile Include="Assets\Resources\Scripts\LoadingScreenManager.cs" />
+    <Compile Include="Assets\Resources\Scripts\LookAtCam.cs" />
     <Compile Include="Assets\Resources\Scripts\ManageCargoScripts\AcceptsCargo.cs" />
     <Compile Include="Assets\Resources\Scripts\ManageCargoScripts\ArrowCargo.cs" />
     <Compile Include="Assets\Resources\Scripts\ManageCargoScripts\Cargo.cs" />
@@ -286,16 +281,25 @@
     <Compile Include="Assets\Resources\Scripts\ManageCargoScripts\LoadUnload.cs" />
     <Compile Include="Assets\Resources\Scripts\ManageCargoScripts\ProducesCargo.cs" />
     <Compile Include="Assets\Resources\Scripts\MapController.cs" />
+    <Compile Include="Assets\Resources\Scripts\MenuLevel.cs" />
     <Compile Include="Assets\Resources\Scripts\MouseController.cs" />
+    <Compile Include="Assets\Resources\Scripts\MusicButton.cs" />
     <Compile Include="Assets\Resources\Scripts\ObjectCloner.cs" />
+    <Compile Include="Assets\Resources\Scripts\OutroPanelScript.cs" />
+    <Compile Include="Assets\Resources\Scripts\PlayAliasSound.cs" />
     <Compile Include="Assets\Resources\Scripts\Profile.cs" />
+    <Compile Include="Assets\Resources\Scripts\QualitySelector.cs" />
     <Compile Include="Assets\Resources\Scripts\QuestSlate.cs" />
     <Compile Include="Assets\Resources\Scripts\QuestSlateDeliveryIntro.cs" />
+    <Compile Include="Assets\Resources\Scripts\RoadBlock.cs" />
     <Compile Include="Assets\Resources\Scripts\RoadCollider.cs" />
     <Compile Include="Assets\Resources\Scripts\RoadEndCollider.cs" />
     <Compile Include="Assets\Resources\Scripts\RoadEntity.cs" />
+    <Compile Include="Assets\Resources\Scripts\RoadSprites.cs" />
+    <Compile Include="Assets\Resources\Scripts\SettingsButton.cs" />
     <Compile Include="Assets\Resources\Scripts\Singleton.cs" />
     <Compile Include="Assets\Resources\Scripts\SmokeSystem.cs" />
+    <Compile Include="Assets\Resources\Scripts\SoundButton.cs" />
     <Compile Include="Assets\Resources\Scripts\SoundFramework\MusicStore.cs" />
     <Compile Include="Assets\Resources\Scripts\SoundFramework\SoundParity.cs" />
     <Compile Include="Assets\Resources\Scripts\SoundFramework\SoundStore.cs" />
@@ -312,6 +316,9 @@
     <Compile Include="Assets\Resources\Scripts\Tuple2.cs" />
     <Compile Include="Assets\Resources\Scripts\Tuple3.cs" />
     <Compile Include="Assets\Resources\Scripts\Tuple4.cs" />
+    <Compile Include="Assets\Resources\Scripts\TutorialController.cs" />
+    <Compile Include="Assets\Resources\Scripts\TutorialPanel.cs" />
+    <Compile Include="Assets\Resources\Scripts\TweenAnimationController.cs" />
     <Compile Include="Assets\Resources\Scripts\UnlockAnim.cs" />
     <Compile Include="Assets\Resources\Scripts\UnlockedAnimScript.cs" />
     <Compile Include="Assets\Resources\Scripts\Vector3Int.cs" />
@@ -321,14 +328,7 @@
     <Compile Include="Assets\Resources\Scripts\sMenuButton.cs" />
     <Compile Include="Assets\Resources\Scripts\sProfileManager.cs" />
     <Compile Include="Assets\Resources\Scripts\sSaveLoad.cs" />
-    <Compile Include="Assets\RoadBlock.cs" />
-    <Compile Include="Assets\RoadSprites.cs" />
-    <Compile Include="Assets\SettingsButton.cs" />
-    <Compile Include="Assets\SoundButton.cs" />
-    <Compile Include="Assets\TutorialController.cs" />
-    <Compile Include="Assets\TutorialPanel.cs" />
-    <Compile Include="Assets\TweenAnimationController.cs" />
-    <Compile Include="Assets\test.cs" />
+    <Compile Include="Assets\Resources\Scripts\test.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mobile Cartoon GUI 2\Readme.txt" />
