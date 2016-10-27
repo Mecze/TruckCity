@@ -1,5 +1,3 @@
-TruckCity Project v0.03a1
-
-https://mecze-entertainment.com/
+TruckCity Project v0.01
 
 - By David López Meseguer
