@@ -13,6 +13,7 @@ Missions,[FF5454FF]M[-]issions,[FF5454FF]M[-]isiones
 Trucks,[FF5454FF]T[-]rucks,[FF5454FF]C[-]amiones
 Time!,Time!,¡Tiempo!
 QuestDeliver,Deliver,Entrega
+QuestDeliverAny,Deliver (Any), Entrega (Cualquier)
 QuestMoney,Get Money,Consigue dinero
 QuestTime,Complete Before,Antes de
 Loading,[FF5454FF]L[-]oading,[FF5454FF]C[-]argando
@@ -37,7 +38,20 @@ Level1Hint4,And from here,Y de aquí
 Level1Hint5,Deliver the Cargo here,Y lleva la carga aquí
 Level1Hint6,You have 60 seconds!,Tienes 60 segundos!
 Level1Hint7,Complete [FF5454FF]Misions[-] to get stars,Completa [FF5454FF]Misiones[-] para conseguir estrellas
-Level5Hint0,Each Delivery yields different amount of money,Cada envio da una cantidad diferente de dinero
+Level2Hint0,"As you saw before, There are more than one kinds of cargo.\nNow, let's try with [FF5454FF]2 trucks![-]","Como ya vimos antes, hay mas de un tipo de cargamento.\nAhora, vamos a probar con [FF5454FF]2 camiones![-]"
+Level2Hint1,"Remenber, pick cargo from these places","Recuerda, recoge la carga de estos sitios"
+Level2Hint2,"And deliver it to these 2 places","Y entregala en estos 2 sitios"
+Level3Hint0,"On this level, watch carefully how trucks turn","En este nivel, observa con detenimiento como giran los camiones"
+Level3Hint1,"Maybe there's another way","Tal vez exista otro camino"
+Level3Hint2,"Remenber that you can hit the [FF5454FF]?[-] icon of the menu to watch the level stopped, or to repeat the tutorial","Recuerda que puedes tocar el icono de ? del menú para ver el nivel en pausa, o para repetir el tutorial"
+Level3Hint3,"Use it to plan a [FF5454FF]stratergy[-]","Usalo para trazar una [FF5454FF]estrategia[-]"
+Level4Hint0,"[FF5454FF]Time is really important[-] on this one","[FF5454FF]El tiempo es muy importante[-] aquí"
+Level4Hint1,"Factories not always produce infinte amounts of Cargo","Las factorias no siempre producen cargamento infinito"
+Level4Hint2,"Sometimes they store a limited amount of Cargo Items","A veces almacenan una cantidad limitada de Carga"
+Level4Hint3,"And produces [FF5454FF]more[-] cargo every once in a while when it's capacity isn't full","Y producen [FF5454FF]más[-] cargamento de cada cierto tiempo cuando no están llenos"
+Level4Hint4,"Try to synchronize the arrival of your trucks with the production times of the factories","Intenta sincronizar la llegada de tus camiones con la producción de las factorias"
+Level4Hint5,"For that: sometimes it's better to make your Trucks to lose some time","Para ello: a veces es mejor hacer que tus camiones pierdan el tiempo"
+Level5Hint0,Each Delivery yields different amounts of money,Cada envio da una cantidad diferente de dinero
 Level5Hint1,This one only yields 9 $,Este solo da 9 $
 Level5Hint2,But this yields 30 $,Pero este da 30 $
 Level5Hint3,Make a good decision to where send your trucks!,Decide donde deben ir tus camiones!

@@ -93,7 +93,7 @@ public class GameController : MonoBehaviour {
     /// </summary>
 
     public LevelConditions myLevel;
-    [Header("Delivered")]
+    [Header("Delivered (Score)")]
     #region delivered (score)
     [SerializeField]
     List<CargoDelivered> _cargosDelivered;
@@ -263,6 +263,10 @@ public class GameController : MonoBehaviour {
                     TimeController.s.SetTimer((float)myLevel.startingTimer, TimeAttackEndGameVictoryCheck, true, 0f, false);
                     TimeController.s.timer.AddAction(10, ActivateLowTimeTimerAnimation);
                     //TimeController.s.timer.AddAction(0, StopLowTimeTimerAnimation);
+                    foreach (Quest q in myLevel.quests.FindAll(x => x.winCondition == WinCondition.Time))
+                    {
+                        TimeController.s.timer.AddAction((int)((float)myLevel.startingTimer - (float)q.winAmount), () => { q.finished = true; });
+                    }
 
                     break;
                 default:
@@ -602,7 +606,7 @@ public class GameController : MonoBehaviour {
     /// </summary>
     /// <param name="cargo"></param>
     void TimeAttackOnScoreListener(CargoType cargo)
-        {
+    {
         //Checkeamos si se cumplió alguna misión!
         CargoDelivered CD = _cargosDelivered.Find(x => x.type == cargo);
         if (CD == null) {
@@ -654,7 +658,7 @@ public class GameController : MonoBehaviour {
         }
         //Si se cumplió alguna misión lanzamos el evento de misión completada (que tal vez complete otras misiones)
         if (b && OnCompeletedQuest != null) OnCompeletedQuest(TimeController.s.timeSpent);
-        bool c = myLevel.quests.Any(x => x.completed == false);
+        bool c = myLevel.quests.Any(x => x.finished == false);
         //Si todas las misiones han sido cumplidas:
         if (!c)
         {
@@ -1073,8 +1077,12 @@ public class LevelConditions
 
 public enum WinCondition { Delivered = 0, Money = 1, Time = 2 }
 
+public delegate void FailQuestDelegate(Quest thisQuest);
+
+
 [System.Serializable]
 public class Quest{
+    public event FailQuestDelegate OnFailQuest;
     #region completed
     [SerializeField]
     bool _completed;
@@ -1087,13 +1095,39 @@ public class Quest{
 
         set
         {
+            
             _completed = value;
+            if (_completed) _finished = true;
         }
     }
 
 
     #endregion
-    
+
+    #region finished
+    //if Finished is true and completed is false, the quest failed
+    [SerializeField]
+    bool _finished;
+    public bool finished
+    {
+        get
+        {
+            if (_completed)
+            {
+                _finished = true;
+            }
+            return _finished;
+        }
+        set
+        {
+            _finished = value;
+            //Launch the fail event quest.
+            if (_finished == true && _completed == false) if (OnFailQuest != null) OnFailQuest(this);
+        }
+    }
+
+    #endregion
+
     #region LinkedQuest
     [NonSerialized]
     List<Quest> _linkedQuest;
@@ -1237,7 +1271,7 @@ public class Quest{
         if (_completed) return false;
         if (TypeOfWinChecked == WinCondition.Delivered)
         {
-            if (_cargoType != cargo) return false;
+            if (_cargoType != cargo && _cargoType != CargoType.None) return false;
         }
 
         if (_linkedQuestEnabled)
@@ -1266,7 +1300,7 @@ public class Quest{
             if (_winCondition != TypeOfWinChecked) return false;
             if (amountToCheck >= _winAmount) _completed = true;
         }
-
+        if (_completed) _finished = true;
 
         return _completed;
         

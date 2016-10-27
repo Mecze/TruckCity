@@ -32,6 +32,7 @@ public class AcceptsCargo : CargoManagement
             Debug.LogError("UNLOAD: Cannot Find CargoType: " + cargo.ToString());
             return;
         }
+        GameController.s.CargosDelivered[0].delivered += 1; //Cargo of type "none" (all cargo delivered)
         CD.delivered += 1;
         building.TruckGotUnloaded(cp, cargo);
         GameController.s.FloatingTextSpawn(building.TriggersTransform[(int)cp], "+1", enumColor.Green, "CargoSpritev2_Load", GameConfig.s.cargoColors[(int)cargo.cargo], 0f);
