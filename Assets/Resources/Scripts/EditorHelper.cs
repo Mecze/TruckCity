@@ -4,7 +4,7 @@ using System.Collections;
 [ExecuteInEditMode]
 public class EditorHelper : MonoBehaviour {
     [SerializeField]
-    string materialsPath;
+    string LowSpritePath;
 
 
 	void SetAll(GraphicQualitySettings GQS)
@@ -13,7 +13,7 @@ public class EditorHelper : MonoBehaviour {
 
         for (int i = 0; i < QSs.Length; i++)
         {
-            QSs[i].Set(GQS,materialsPath, true);
+            QSs[i].Set(GQS, LowSpritePath, true);
         }
 
 
@@ -39,7 +39,7 @@ public class EditorHelper : MonoBehaviour {
 
         for (int i = 0; i < QSs.Length; i++)
         {
-            QSs[i].SetRoad(materialsPath);
+            QSs[i].SetRoad(LowSpritePath);
         }
     }
 

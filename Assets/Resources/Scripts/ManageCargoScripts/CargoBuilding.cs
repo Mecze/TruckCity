@@ -270,11 +270,17 @@ public class CargoBuilding : MonoBehaviour, IFreezable {
 
     void OnClick()
     {
-        if (freeze) return;
+       /* if (freeze) return;
         Debug.Log("asdf");
         if (Forbidable) Forbidded = !Forbidded;
+        */
     }
-
+    void OnPress(bool isPressed)
+    {
+        if (freeze) return;
+        Debug.Log("ONPRESS");
+        if (Forbidable && isPressed) Forbidded = !Forbidded;
+    }
 
 
 }

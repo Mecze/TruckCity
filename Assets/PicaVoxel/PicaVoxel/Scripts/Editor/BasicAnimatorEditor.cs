@@ -1,4 +1,4 @@
-﻿/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
 // 
 // PicaVoxel - The tiny voxel engine for Unity - http://picavoxel.com
 // By Gareth Williams - @garethiw - http://gareth.pw
@@ -22,6 +22,7 @@ namespace PicaVoxel
     {
 
         private bool playOnAwake;
+        private bool playOnEnable;
         private bool pingPong;
         private bool loop;
         private bool randomStartFrame;
@@ -35,6 +36,7 @@ namespace PicaVoxel
 
             interval = basicAnimator.Interval;
             playOnAwake = basicAnimator.PlayOnAwake;
+            playOnEnable = basicAnimator.PlayOnEnable;
             loop = basicAnimator.Loop;
             pingPong = basicAnimator.PingPong;
             randomStartFrame = basicAnimator.RandomStartFrame;
@@ -58,6 +60,8 @@ namespace PicaVoxel
             if (randomStartFrame != basicAnimator.RandomStartFrame) basicAnimator.RandomStartFrame = randomStartFrame;
             playOnAwake = EditorGUILayout.ToggleLeft(new GUIContent(" Play on Awake"), playOnAwake);
             if (playOnAwake != basicAnimator.PlayOnAwake) basicAnimator.PlayOnAwake = playOnAwake;
+            playOnEnable = EditorGUILayout.ToggleLeft(new GUIContent(" Play on Enable"), playOnEnable);
+            if (playOnEnable != basicAnimator.PlayOnEnable) basicAnimator.PlayOnEnable = playOnEnable;
         }
     }
 }

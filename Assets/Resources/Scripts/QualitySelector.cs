@@ -26,16 +26,21 @@ public class QualitySelector : MonoBehaviour {
         if (finishedinstances >= instances) GC.Collect();
     }
     
-    public void SetRoad(string materialPath)
+    public void SetRoad(string LowSpritePath)
     {
         if (!isARoad) return;
-        if (materialPath == "") materialPath = GameConfig.s.materialsPath;
-        GetComponent<RoadEntity>().UpdateMaterial(materialPath);
+        if (GetComponent<RoadEntity>() == null) return;
+        if (LowSpritePath == "") LowSpritePath = GameConfig.s.LowIMGPath;
+        GetComponent<RoadEntity>().UpdateMaterial(LowSpritePath);
     }
 
-    public void Set(GraphicQualitySettings QS, string materialPath, bool CalledFromEditor = false)
+    public void Set(GraphicQualitySettings QS, string LowSpritePath, bool CalledFromEditor = false)
     {
-        if (materialPath == "") materialPath = GameConfig.s.materialsPath;
+        if (LowSpritePath == "")
+        {
+            if (GameConfig.s == null) return;
+            LowSpritePath = GameConfig.s.LowIMGPath;
+        }
         switch (QS)
         {
             case GraphicQualitySettings.Low:
@@ -56,7 +61,7 @@ public class QualitySelector : MonoBehaviour {
             default:
                 break;
         }
-        if (isARoad) GetComponent<RoadEntity>().ChangeMaterial(GetComponent<RoadEntity>().direction, QS, materialPath);
+        if (isARoad) GetComponent<RoadEntity>().ChangeVisuals(GetComponent<RoadEntity>().direction, QS, LowSpritePath);
         QualitySelector.InstaceFinished();
 
 

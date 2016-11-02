@@ -220,7 +220,7 @@ public class GameController : MonoBehaviour {
 
         for (int i = 0; i < Qss.Length; i++)
         {
-            Qss[i].Set(QS,GameConfig.s.materialsPath);
+            Qss[i].Set(QS,GameConfig.s.LowIMGPath);
         }
     }
 

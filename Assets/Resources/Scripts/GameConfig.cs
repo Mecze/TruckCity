@@ -50,6 +50,7 @@ public class GameConfig : Singleton<GameConfig> {
     [Header("Paths")]
     public string materialsPath;
     public string IMGPath;
+    public string LowIMGPath;
 
     [Header("Native Resolution")]
     public float NativeWidth = 1920f;

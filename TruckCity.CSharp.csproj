@@ -256,6 +256,7 @@
     <Compile Include="Assets\Resources\Scripts\AutoGrid.cs" />
     <Compile Include="Assets\Resources\Scripts\Clickable.cs" />
     <Compile Include="Assets\Resources\Scripts\CountDownSprite.cs" />
+    <Compile Include="Assets\Resources\Scripts\CountryFlagPicker.cs" />
     <Compile Include="Assets\Resources\Scripts\EditorHelper.cs" />
     <Compile Include="Assets\Resources\Scripts\Extension.cs" />
     <Compile Include="Assets\Resources\Scripts\Extensions.cs" />

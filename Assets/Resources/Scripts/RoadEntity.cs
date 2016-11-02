@@ -13,13 +13,17 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     //GraphicQualitySettings GlobalQS;
 
     [SerializeField]
+    bool PermanentVisuals = false;
+
+    [SerializeField]
     Volume myRoad;
     [SerializeField]
-    Renderer myRoadLow;
+    SpriteRenderer myRoadLow;
 
     /// <summary>
     /// Posición del tipo "Vector3Int"
     /// </summary>
+    [System.NonSerialized]
     public Vector3Int position;
 
     #region Propiedades HAS<Direction>
@@ -195,7 +199,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         set
         {
             _direction = value;
-            ChangeMaterial(_direction,sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings,GameConfig.s.materialsPath);
+            ChangeVisuals(_direction,sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings,GameConfig.s.LowIMGPath);
         }
     }
 
@@ -220,7 +224,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     /// <summary>
     /// 
     /// </summary>
-    [SerializeField]
+    [System.NonSerialized]
     int numberOfTruckOnTop = 0;
     public int NumberOfTruckOnTop
     {
@@ -300,10 +304,11 @@ public class RoadEntity : MonoBehaviour, IFreezable {
 
     #region OnClick!
 
-    void OnClick()
+    void OnPress(bool isPressed)
     {
 
         if (freeze) return;
+        if (!isPressed) return;
         if (possibleRotations.Count > 1)
         {
             if (NumberOfTruckOnTop > 0) return;
@@ -338,19 +343,20 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     /// Cambia el material de la carretera
     /// </summary>
     /// <param name="dir"></param>
-    public void ChangeMaterial(RoadDirection dir, GraphicQualitySettings GQS, string materialsPath)
+    public void ChangeVisuals(RoadDirection dir, GraphicQualitySettings GQS, string LowIMGPath)
     {
+        if (PermanentVisuals) return;
         switch (GQS)
         {
             case GraphicQualitySettings.Low:
                 //Low Quality using old Materials                
-                Material mat = (Material)Resources.Load(materialsPath + roadDirToString(dir));
-                myRoadLow.material = mat;
+                Sprite sprite = (Sprite)Resources.Load<Sprite>(LowIMGPath + "sprite_"+ roadDirToString(dir));
+                myRoadLow.sprite = sprite;
 
                 break;
             case GraphicQualitySettings.Medium:
-                Material mat1 = (Material)Resources.Load(materialsPath + roadDirToString(dir));
-                myRoadLow.material = mat1;
+                Sprite sprite1 = (Sprite)Resources.Load<Sprite>(LowIMGPath + "sprite_" + roadDirToString(dir));
+                myRoadLow.sprite = sprite1;
                 break;
             case GraphicQualitySettings.High:
                 //High Quality using PicaVoxel
@@ -369,8 +375,9 @@ public class RoadEntity : MonoBehaviour, IFreezable {
 
     }
 
-    public void UpdateMaterial(string materialsPath)
+    public void UpdateMaterial(string LowIMGPath)
     {
+        if (PermanentVisuals) return;
         RoadDirection dir = _direction;
         if (myRoad.gameObject.activeSelf == true)
         {
@@ -378,8 +385,9 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         }
         if (myRoadLow.gameObject.activeSelf == true)
         {
-            Material mat = (Material)Resources.Load(materialsPath + roadDirToString(dir));
-            myRoadLow.material = mat;
+            string s = (string)LowIMGPath + "sprite_" + (string)roadDirToString(dir);
+            Sprite sp = Resources.Load<Sprite>(s);
+            myRoadLow.sprite = sp;
         }
 
 
@@ -445,7 +453,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     }
     void TurnOffSprite(CardinalPoint dir)
     {
-        GameObject go = sprites[(int)dir-1];
+        GameObject go = sprites[((int)dir)-1];
         go.GetComponent<SpriteRenderer>().enabled = false;
         go.GetComponent<Animator>().SetBool("Moving", false);
     }

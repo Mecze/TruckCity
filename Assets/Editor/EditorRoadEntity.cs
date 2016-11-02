@@ -17,7 +17,7 @@ public class EditorRoadEntity : Editor
         RoadEntity myScript = (RoadEntity)target;
         if (GUILayout.Button("Update Road"))
         {
-            myScript.UpdateMaterial("Materials\\");
+            myScript.UpdateMaterial("IMG\\LowIMGs\\");
         }
 
     }
