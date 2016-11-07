@@ -97,6 +97,8 @@ public class ProfileLevels
 
     public int starsToUnlock = 1;
 
+    public bool TutorialDone = false;
+
 
 
 

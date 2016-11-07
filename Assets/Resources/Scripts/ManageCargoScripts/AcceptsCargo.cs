@@ -32,6 +32,7 @@ public class AcceptsCargo : CargoManagement
             Debug.LogError("UNLOAD: Cannot Find CargoType: " + cargo.ToString());
             return;
         }
+        GameController.s.CargosDelivered[0].delivered += 1; //Cargo of type "none" (all cargo delivered)
         CD.delivered += 1;
         building.TruckGotUnloaded(cp, cargo);
         GameController.s.FloatingTextSpawn(building.TriggersTransform[(int)cp], "+1", enumColor.Green, "CargoSpritev2_Load", GameConfig.s.cargoColors[(int)cargo.cargo], 0f);
@@ -51,7 +52,13 @@ public class AcceptsCargo : CargoManagement
             //cs.cargoType = CargoType;
             cs.produced = false;
             cs.moneyOnDelivery = moneyGained;
-            cs.SetColor(GameConfig.s.cargoColors[(int)CargoType], GameConfig.s.cargoTextColors[(int)CargoType]);
+            if (GameConfig.s != null)
+            {
+                cs.SetColor(GameConfig.s.cargoColors[(int)CargoType], GameConfig.s.cargoTextColors[(int)CargoType]);
+            }else
+            {
+                cs.SetColor(Color.white, Color.black);
+            }
             
         }
     }

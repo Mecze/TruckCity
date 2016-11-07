@@ -146,7 +146,14 @@ public class ProducesCargo : CargoManagement
             cs.timeToProduce = (int)timeToProduce;
             //cs.cargoType = CargoType;
             cs.produced = true;
-            cs.SetColor(GameConfig.s.cargoColors[(int)CargoType], GameConfig.s.cargoTextColors[(int)CargoType]);
+            cs.Infinite = infiniteAmount;
+            if (GameConfig.s != null)
+            {
+                cs.SetColor(GameConfig.s.cargoColors[(int)CargoType], GameConfig.s.cargoTextColors[(int)CargoType]);
+            }else
+            {
+                cs.SetColor(Color.white, Color.black);
+            }
         }
     }
 
@@ -161,8 +168,9 @@ public class ProducesCargo : CargoManagement
         if (amountOfItems < maxProduced)
         {
             TimeController.s.OnStartClock += CooldownTick;
-            amountOfItems = amountOfItems;
+            
         }
+        amountOfItems = amountOfItems;
     }
     void OnDisable()
     {

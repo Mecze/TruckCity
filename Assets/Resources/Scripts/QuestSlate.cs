@@ -81,6 +81,27 @@ public class QuestSlate : MonoBehaviour {
             }
         }
     }
+    bool _questFinished = false;
+    public bool questFinished
+    {
+        get
+        {
+            return _questFinished;
+        }
+        set
+        {
+            if (value != _questFinished)
+            {
+                _questFinished = value;
+                if (value && !_questCompleted)
+                {
+                    QuestFailAnimation();
+                }
+
+            }
+        }
+    }
+
 
 
 
@@ -99,6 +120,8 @@ public class QuestSlate : MonoBehaviour {
     UISprite ShadowIMG;
     [SerializeField]
     UILabel QuestLabel;
+    
+
 
    
     [Header("Animations")]
@@ -110,6 +133,10 @@ public class QuestSlate : MonoBehaviour {
     TweenScale CheckScaleTween;
     [SerializeField]
     TweenAlpha CheckAlphaTween;
+    [SerializeField]
+    TweenAlpha CrossAlphaTween;
+    [SerializeField]
+    TweenScale CrossScaleTween;
 
     [Header("My Own Tweens")]
     [SerializeField]
@@ -128,6 +155,8 @@ public class QuestSlate : MonoBehaviour {
     [Header("Quest Text")]
     [SerializeField]
     string DeliveryText;
+    [SerializeField]
+    string DeliveryTextAny;
     [SerializeField]
     string MoneyText;
     [SerializeField]
@@ -168,6 +197,20 @@ public class QuestSlate : MonoBehaviour {
         CheckScaleTween.PlayReverse();
         myTweenColor.PlayForward();
     }
+    void QuestFailAnimation()
+    {
+        myTweenColor.ResetToBeginning();
+        CrossAlphaTween.PlayForward();
+        CrossScaleTween.PlayForward();
+        SoundStore.s.StopAlias("QuestSlateMove");
+
+        if (playingCompleted == false)
+        {
+            playingCompleted = true;
+            SoundStore.s.PlaySoundByAlias("QuestSlateFail", 0f, GameConfig.s.MuffledSoundVolume, false, 0f, false, 0f, () => { playingCompleted = false; });
+        }
+    }
+
 
     //Show Slate
     void ShowSlate(bool reverse = true, float Wait = 2f)
@@ -228,6 +271,11 @@ public class QuestSlate : MonoBehaviour {
         }
         
     }
+    void OnFailQuestListener(Quest calledQuest)
+    {
+        if (_myQuest != calledQuest) return;
+        ShowSlate();
+    }
 
 
     #endregion
@@ -266,7 +314,14 @@ public class QuestSlate : MonoBehaviour {
             {
                 case WinCondition.Delivered:
                     if (!IP) GameController.s.OnScore += OnScoreListener;
-                    QuestLabel.text = Localization.Get(DeliveryText) ;
+                    if (_myQuest.CargoType == CargoType.None)
+                    {
+                        QuestLabel.text = Localization.Get(DeliveryTextAny);
+                    }
+                    else {
+                        QuestLabel.text = Localization.Get(DeliveryText);
+                    }
+                    
                     break;
                 case WinCondition.Money:
                     if (!IP) GameController.s.OnMoneyGain += OnMoneyGainListener;
@@ -291,7 +346,7 @@ public class QuestSlate : MonoBehaviour {
         switch (_myQuest.winCondition)
         {
             case WinCondition.Delivered:
-                MainIMG.color = GameConfig.s.cargoColors[(int)_myQuest.CargoType];
+                if (GameConfig.s != null)MainIMG.color = GameConfig.s.cargoColors[(int)_myQuest.CargoType];
                 MainLabel.text = "0/" + _myQuest.winAmount.ToString();
                 MainIMG.spriteName = DeliveryName;
                 ShadowIMG.gameObject.SetActive(true);
@@ -305,7 +360,7 @@ public class QuestSlate : MonoBehaviour {
                 MainLabel.text = _myQuest.winAmount.ToString();
                 MainIMG.spriteName = TimeName;
                 ShadowIMG.gameObject.SetActive(false);
-
+                _myQuest.OnFailQuest += OnFailQuestListener;
                 break;
             default:
                 break;
@@ -330,6 +385,7 @@ public class QuestSlate : MonoBehaviour {
 
         
         questCompleted = _myQuest.completed;
+        questFinished = _myQuest.finished;
 
         if (_myQuest.winCondition == WinCondition.Delivered) MainLabel.text = MyCargoDelivered.delivered.ToString()+ "/" + _myQuest.winAmount.ToString();
         

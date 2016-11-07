@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public enum enumColor { Red = 0, Green = 1, Yellow = 2, Blue = 3, Black = 4 }
-public enum CargoType { None = 0, Pink = 1, Brown = 2 }
+public enum CargoType { None = 0, Pink = 1, Brown = 2, Orange = 3 }
 
 public class GameConfig : Singleton<GameConfig> {
     /*Old Singleton
@@ -50,6 +50,7 @@ public class GameConfig : Singleton<GameConfig> {
     [Header("Paths")]
     public string materialsPath;
     public string IMGPath;
+    public string LowIMGPath;
 
     [Header("Native Resolution")]
     public float NativeWidth = 1920f;
@@ -71,6 +72,9 @@ public class GameConfig : Singleton<GameConfig> {
     public Color[] cargoTextColors;
 
     #endregion
+
+    [Header("Clickable Roads Colors")]
+    public Color[] clickableRoadColors;
 
     #region strings for Quest Slate
     public string[] playerOrdersQuestSlate;
@@ -125,35 +129,47 @@ public class GameConfig : Singleton<GameConfig> {
         set
         {
             _musicState = value;
-            if (MusicButton.s != null)MusicButton.s.Clickable = false;
+            SetMusicButton(false);
             sProfileManager.ProfileSingleton.MusicState = value;
             sSaveLoad.SaveProfile();
-            if (value)
-            {
-                if (SoundSystem.s.AudioSources[0].isPlaying == false)
-                {
-                    SoundSystem.s.AudioSources[0].Stop();
-                }
-                if (GameController.s != null)
-                {
-                    GameController.s.PlayLevelMusic(false);
-                }else
-                {
-                    MusicStore.s.PlayMusicByAlias("Menu", 1.5f, GameConfig.s.MusicVolume, true,5f,true,0.1f,null,()=> { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
-                    //SoundSystem.s.FadeInMusic(1f, () => { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
-                }
-                
-                //SoundSystem.s.FadeInMusic(1f, () => { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
-                
-                
-            }else
-            {
-                SoundSystem.s.FadeOutMusic(1f, () => { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
-            }
+            if (GameController.s == null) { PlayDefaultMusic(value); SetMusicButton(true); return; }
+            if (GameController.s.MenuVersion || GameController.s.MusicPlaying) { PlayDefaultMusic(value); SetMusicButton(true); return; }
+            SetMusicButton(true);
+
         }
     }
 
-    
+    void SetMusicButton(bool b)
+    {
+        if (MusicButton.s != null) MusicButton.s.Clickable = b;
+    }
+    void PlayDefaultMusic(bool value)
+    {
+        if (value)
+        {
+            if (SoundSystem.s.AudioSources[0].isPlaying == false)
+            {
+                SoundSystem.s.AudioSources[0].Stop();
+            }
+            if (GameController.s != null)
+            {
+                GameController.s.PlayLevelMusic(false);
+            }
+            else
+            {
+                MusicStore.s.PlayMusicByAlias("Menu", 1.5f, GameConfig.s.MusicVolume, true, 5f, true, 0.1f, null, () => { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
+                //SoundSystem.s.FadeInMusic(1f, () => { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
+            }
+
+            //SoundSystem.s.FadeInMusic(1f, () => { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
+
+
+        }
+        else
+        {
+            SoundSystem.s.FadeOutMusic(1f, () => { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
+        }
+    }
 
     [HideInInspector]
     private bool soundState = true;
@@ -177,10 +193,21 @@ public class GameConfig : Singleton<GameConfig> {
     public string MusicSprite;
     public string NoMusicSprite;
 
-    
+    [Header("Menu Levels Font and Shadow Colors")]
+    public FontShadowColors[] MenuLevelFontShadowColors;
+
 
 
 
 
     #endregion
+}
+
+[System.Serializable]
+public class FontShadowColors
+{
+    public Color fontColor;
+    public Color OutlineColor;
+    public Color shadowColor;
+    
 }

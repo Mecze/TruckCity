@@ -4,8 +4,8 @@ using PicaVoxel;
 
 public class SmokeSystem : MonoBehaviour {
     [Header("The Volume")]
-    [SerializeField]
-    Volume volume;
+    //[SerializeField]
+    //float VoxelSize = 0.033f;
     [Header("Every So Often Spawn")]
     [SerializeField]
     float spawnCD = 0.2f;
@@ -22,7 +22,9 @@ public class SmokeSystem : MonoBehaviour {
     List<Transform> LocationsToSpawn;
 
     float currentTime;
-
+    Volume volume;
+    [SerializeField]
+    Color color = Color.grey;
 
     void Update()
     {
@@ -32,13 +34,19 @@ public class SmokeSystem : MonoBehaviour {
             if (LocationsToSpawn == null || LocationsToSpawn.Count == 0) return;
             //ResetTimer
             currentTime = spawnCD;
+            if (volume == null)
+            {
+                volume = GetComponent<Volume>();
+            }
+            
+
 
             //Create Batch
             Batch batch = new Batch(volume);            
             //Voxel to Spawn
             Voxel v = new Voxel();
 
-            v.Color = Color.gray;
+            v.Color = color;
             int x = 0;
             foreach (Transform trans in LocationsToSpawn)
             {

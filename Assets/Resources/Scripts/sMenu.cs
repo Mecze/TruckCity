@@ -49,6 +49,8 @@ public class sMenu : MonoBehaviour {
     [SerializeField]
     GameObject languagePrefab;
 
+    bool Loading = false;
+
     void Start()
     {
 
@@ -69,10 +71,9 @@ public class sMenu : MonoBehaviour {
             go.GetComponent<MenuLevel>().myProfileLevel = PL;
             go.transform.SetParent(anchor.transform);
             go.transform.localScale = Vector3.one;
-            
-
         }
         anchor.GetComponent<UIGrid>().Reposition();
+        
 
 
         string[] flags = Localization.dictionary["Flag"];
@@ -95,6 +96,7 @@ public class sMenu : MonoBehaviour {
             go.transform.localScale = Vector3.one;
         }
         languageAnchor.GetComponent<UIGrid>().Reposition();
+        languageAnchor.GetComponent<UIGrid>().repositionNow = true;
     }   
 
     public void OnLevelButtonClick(int levelIndex)
@@ -108,7 +110,11 @@ public class sMenu : MonoBehaviour {
     }
     void NewGameLoadGame(int levelIndex)
     {
-        sProfileManager.instance.ChangeLevel(levelIndex);
+        if (Loading == false)
+        {
+            Loading = true;
+            sProfileManager.instance.ChangeLevel(levelIndex);
+        }
     }
        
 

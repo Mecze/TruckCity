@@ -83,6 +83,12 @@ public class CargoSprite : MonoBehaviour {
     float _timer = 0f;
 
     /// <summary>
+    /// If the cargo attached is produced infinitely
+    /// </summary>
+    bool _infinite = false;
+
+
+    /// <summary>
     /// The Cargo Type of this object    
     /// </summary>
 //    public CargoType cargoType;
@@ -193,6 +199,7 @@ public class CargoSprite : MonoBehaviour {
             
             _timer = value;
             SetTimerSteps();
+            
         }
     }
 
@@ -241,9 +248,6 @@ public class CargoSprite : MonoBehaviour {
 
         set
         {
-            //En caso de que estemos a TOPE de storage de Cargo y restemos uno, iniciamos el CD
-            //if (_amountOfItems == _maxAmountOfItems && value < _amountOfItems) StartCooldown();
-
             //Ocurre el SET
             _amountOfItems = value;
 
@@ -260,10 +264,35 @@ public class CargoSprite : MonoBehaviour {
                 myText.text = "0";
             }
             if (_amountOfItems != 0) myImage.fillAmount = 1f;
+            if (_infinite)
+            {
+                myImage.fillAmount = 1f;
+                myText.text = "";
+                myTimer.fillAmount = 0f;
+            }
         }
     }
 
-    
+
+    public bool Infinite
+    {
+        get
+        {
+            return _infinite;
+        }
+
+        set
+        {
+            //Set
+            _infinite = value;
+
+            if (_infinite) amountOfItems = 0;
+        }
+    }
+
+
+
+
 
 
     #endregion
@@ -312,6 +341,7 @@ public class CargoSprite : MonoBehaviour {
     {       
         myTimer.fillAmount = timerSteps[timerSteps.GetClosestIndex(_timer)];
         if (_amountOfItems == maxAmountOfItems) myTimer.fillAmount = 0f;
+        if (_infinite) myTimer.fillAmount = 0f;
     }
     /*
     public void Initialize()

@@ -10,6 +10,7 @@ public class MouseController : MonoBehaviour {
 
     void Update()
     {
+        /*
         //Lanzarrayos!
         if (Input.GetMouseButtonDown(0))
         {
@@ -28,6 +29,7 @@ public class MouseController : MonoBehaviour {
 
 
         }
+        */
     }
 
 	
