@@ -24,8 +24,8 @@ Medium,Medium,Medio
 High,High,Alto
 WhatsNew,What's New?, Novedades
 Version,Version, Versión
-VersionNumber,Alpha: 0.03a2,Alfa: 0.03a2
-VersionText,[u]0.03a2[/u]\n- Better Tutorial Framework!\n[u]0.03a1[/u]\n- Added better clicklable roads sprites\n- Reworked Road colliders\n- Added Tutorials\n- Added 2 more levels\n- Added early level finish (if all quests completeted)\n[u]BugFixes:[/u]\n- Fixed several errors with UI.\n- Fixed several errors with Music.,[u]0.03a2[/u]\n- Sistema de tutoriales mejorado!\n[u]0.03a1[/u]\n- Mejores sprites clickables de carreteras\n- Rediseñado colisionadores de carretera\n- Añadidos tutoriales\n- Añadidos 2 nivles jugables\n- Ahora el nivel puede terminar antes de tiempo (Si todas las misiones fueron cumplidas)\n[u]BugFixes:[/u]\n- Arreglados diversos errores de interfaz\n- Arreglados diversos errores con la Música.
+VersionNumber,Beta: 0.1,Beta: 0.1
+VersionText,"[u]0.1[/u]\n- Google Play Beta Launch","[u]0.1[/u]\n- Lanzamiento a Google Play Beta"
 Skip,Skip,Saltar
 RepeatTutorial,Repeat Tutorial,Repetir Tutorial
 PressHere, Touch here to continue, Toca aquí para continuar

@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 public enum enumColor { Red = 0, Green = 1, Yellow = 2, Blue = 3, Black = 4 }
 public enum CargoType { None = 0, Pink = 1, Brown = 2, Orange = 3 }
@@ -192,16 +194,39 @@ public class GameConfig : Singleton<GameConfig> {
     public string NoSoundSprite;
     public string MusicSprite;
     public string NoMusicSprite;
+    #endregion
+
 
     [Header("Menu Levels Font and Shadow Colors")]
     public FontShadowColors[] MenuLevelFontShadowColors;
 
+    [Header("BETA URL configs")]
+    public List<LanguageLinks> languageLinks;
+
+    /// <summary>
+    /// Gets Correct URL's for chosen language
+    /// </summary>
+    /// <param name="Language">(optional) the language. If empty, will chose system's current language</param>
+    /// <returns>A class with correct URLs</returns>
+    public LanguageLinks GetBETAURLs(string Language = "")
+    {
+        if (Language == "") Language = Localization.language;
+        return languageLinks.Find(x => x.Language == Language);
+    }
 
 
-
-
-    #endregion
+    
 }
+
+[System.Serializable]
+public class LanguageLinks
+{
+    public string Language;
+    public string BugURL;
+    public string SuggestionURL;
+    public string SurveyURL;
+}
+
 
 [System.Serializable]
 public class FontShadowColors
