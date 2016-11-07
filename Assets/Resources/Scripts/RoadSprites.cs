@@ -7,7 +7,7 @@ public class RoadSprites : MonoBehaviour {
     //When Sprites were enables anothter way (maybe cinematic)
     void OnEnable()
     {
-        GetComponentInParent<RoadEntity>().RecalculateSprites();
+        GetComponentInParent<RoadEntity>().ReEnableSprites();
 
     }
 }

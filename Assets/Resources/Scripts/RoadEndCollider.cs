@@ -15,7 +15,7 @@ public class RoadEndCollider : MonoBehaviour {
     void OnTriggerEnter(Collider other)
     {
         if (other.tag != "Truck") return;
-        TruckEntity te = other.GetComponent<TruckEntity>();
+        //TruckEntity te = other.GetComponent<TruckEntity>();
 
 
 

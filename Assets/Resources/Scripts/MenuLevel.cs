@@ -14,7 +14,11 @@ using System.Collections.Generic;
 public class MenuLevel : MonoBehaviour {
     [Header("References")]
     [SerializeField]
-    UISprite image;
+    UILabel levelLabel;
+    [SerializeField]
+    UILabel shadowLabel;
+    //[SerializeField]
+    //UISprite image;
     [SerializeField]
     GameObject lockPanel;
     [SerializeField]
@@ -51,7 +55,21 @@ public class MenuLevel : MonoBehaviour {
 
     public void UpdateGUI()
     {
-        image.spriteName = "Level_" + _myProfileLevel.index.ToString();
+        FontShadowColors fsc;
+        if (_myProfileLevel.index >= GameConfig.s.MenuLevelFontShadowColors.Length)
+        {
+            fsc = GameConfig.s.MenuLevelFontShadowColors[0];
+        }
+        else
+        {
+            fsc = GameConfig.s.MenuLevelFontShadowColors[_myProfileLevel.index];
+        }
+        levelLabel.text = (_myProfileLevel.index+1).ToString();
+        shadowLabel.text = levelLabel.text;
+        levelLabel.color = fsc.fontColor;
+        levelLabel.effectColor = fsc.OutlineColor;
+        shadowLabel.color = fsc.shadowColor;
+        shadowLabel.effectColor = fsc.shadowColor;
         if (!myProfileLevel.locked)
         {
             lockPanel.SetActive(false);
@@ -124,3 +142,6 @@ public class MenuLevel : MonoBehaviour {
     }
 
 }
+
+
+

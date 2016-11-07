@@ -191,7 +191,14 @@ public class CargoBuilding : MonoBehaviour, IFreezable {
             {
                 GameObject GO = SpawnCargoSprite(cp);
                 CargoSprite cs = GO.GetComponent<CargoSprite>();
-                SpawnArrow(cp, GameConfig.s.cargoColors[(int)pc.CargoType], false);
+                if (GameConfig.s != null)
+                {
+                    SpawnArrow(cp, GameConfig.s.cargoColors[(int)pc.CargoType], false);
+                }else
+                {
+                    SpawnArrow(cp, Color.white, false);
+                }
+
                 pc.myCargoSpriteReference.Add(cs);
             }
             
@@ -221,7 +228,13 @@ public class CargoBuilding : MonoBehaviour, IFreezable {
             {
                 GameObject GO = SpawnCargoSprite(cp);
                 CargoSprite cs = GO.GetComponent<CargoSprite>();
-                SpawnArrow(cp, GameConfig.s.cargoColors[(int)ac.CargoType],false,true);
+                if (GameConfig.s != null)
+                {
+                    SpawnArrow(cp, GameConfig.s.cargoColors[(int)ac.CargoType], false, true);
+                }else
+                {
+                    SpawnArrow(cp, Color.white, false, true);
+                }
                 ac.myCargoSpriteReference.Add(cs);
             }
         }

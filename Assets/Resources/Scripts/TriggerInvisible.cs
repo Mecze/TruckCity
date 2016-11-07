@@ -87,30 +87,32 @@ public class TriggerInvisible : MonoBehaviour {
             switch (GlobalQS)
             {
                 case GraphicQualitySettings.Low:
-                    return mySpriteRenderer.color;
+                    if (mySpriteRenderer != null) return mySpriteRenderer.color;
+                    break;
                 case GraphicQualitySettings.Medium:
-                    return mySpriteRenderer.color;
+                    if (mySpriteRenderer != null) return mySpriteRenderer.color;
+                    break;
                 case GraphicQualitySettings.High:
-                    if (myMat == null) return Color.white;
-                    return myMat.GetColor("_Tint");                    
+                    if (myMat != null) return myMat.GetColor("_Tint");
+                    break;
                 default:
                     return Color.white;                    
             }
+            return Color.white;
 
-            
         }
         set
         {
             switch (GlobalQS)
             {
                case GraphicQualitySettings.Low:
-                    mySpriteRenderer.color = value;
+                    if (mySpriteRenderer != null) mySpriteRenderer.color = value;
                     break;
                 case GraphicQualitySettings.Medium:
-                    mySpriteRenderer.color = value;
+                    if (mySpriteRenderer != null) mySpriteRenderer.color = value;
                     break;
                 case GraphicQualitySettings.High:
-                    if (myMat != null)myMat.SetColor("_Tint", value);                    
+                    if (myMat != null) myMat.SetColor("_Tint", value);                    
                     break;
                 default:
                     break;
@@ -128,6 +130,7 @@ public class TriggerInvisible : MonoBehaviour {
     {
         get
         {
+            if (sProfileManager.ProfileSingleton == null) return GraphicQualitySettings.Medium;
             if ((int)_globalQS == 0) _globalQS = sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings;
             if (_globalQS == GraphicQualitySettings.High && myVolume == null) _globalQS = GraphicQualitySettings.Low;
             if (_globalQS == GraphicQualitySettings.Low && mySpriteRenderer == null) _globalQS = GraphicQualitySettings.High;

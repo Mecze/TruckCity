@@ -4,8 +4,8 @@ using PicaVoxel;
 
 public class SmokeSystem : MonoBehaviour {
     [Header("The Volume")]
-    [SerializeField]
-    float VoxelSize = 0.033f;
+    //[SerializeField]
+    //float VoxelSize = 0.033f;
     [Header("Every So Often Spawn")]
     [SerializeField]
     float spawnCD = 0.2f;

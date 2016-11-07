@@ -214,6 +214,7 @@
     <Compile Include="Assets\NGUI\Scripts\UI\UITexture.cs" />
     <Compile Include="Assets\NGUI\Scripts\UI\UITooltip.cs" />
     <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
+    <Compile Include="Assets\NinetyDegreesState.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\BasicAnimator.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Batch.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Chunk.cs" />
@@ -330,6 +331,7 @@
     <Compile Include="Assets\Resources\Scripts\sProfileManager.cs" />
     <Compile Include="Assets\Resources\Scripts\sSaveLoad.cs" />
     <Compile Include="Assets\Resources\Scripts\test.cs" />
+    <Compile Include="Assets\resetTypewriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mobile Cartoon GUI 2\Readme.txt" />

@@ -71,7 +71,15 @@ public class Cargo : MonoBehaviour {
             myTruck.PlayHonk();
         }
         Renderer rend = GetComponent<Renderer>();
-        rend.material = Resources.Load<Material>(GameConfig.s.materialsPath + GameConfig.s.cargoMaterialFileName + GameConfig.s.cargoSpriteFileName[(int)cargo]);
+        if (GameConfig.s != null)
+        {
+            rend.material = Resources.Load<Material>(GameConfig.s.materialsPath + GameConfig.s.cargoMaterialFileName + GameConfig.s.cargoSpriteFileName[(int)cargo]);
+        }
+        else
+        {
+            rend.material = Resources.Load<Material>("Materials\\Cargo_None");
+            
+        }
         
         
 

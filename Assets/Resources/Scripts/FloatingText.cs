@@ -29,7 +29,9 @@ public class FloatingText : MonoBehaviour {
         this.transform.localScale = Vector3.one;
 
         //Se ajusta la posici�n de este objeto (de World Position a "Screen" Position) Puesto que es un elemento de UI
-        this.transform.position = NGUIMath.WorldToLocalPoint(worldPosition.position, Camera.main, UICamera.s.gameObject.GetComponent<Camera>(), this.transform);
+        //Camera 
+        
+        this.transform.position = NGUIMath.WorldToLocalPoint(worldPosition.position, Camera.main, GameController.s.UICamera, this.transform);
 
             //UICamera.s.gameObject.GetComponent<Camera>().WorldToScreenPoint(worldPosition.position);
             //NGUIMath.OverlayPosition(this.transform, worldPosition);

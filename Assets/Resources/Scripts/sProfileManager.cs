@@ -34,6 +34,7 @@ public class sProfileManager : Singleton<sProfileManager> {
         {
             if (_singleton == null)
             {
+                if (sProfileManager.instance == null) return null;
                 if (sProfileManager.instance.ForceNewProfile)
                 {
                     _singleton = NewProfile();
@@ -74,7 +75,9 @@ public class sProfileManager : Singleton<sProfileManager> {
     static Profile NewProfile()
     {
         Debug.Log("NEW PROFILE!");
+        
         sSaveLoad.savedProfile = sProfileManager.instance.defaultProfile;
+        sSaveLoad.savedProfile.LanguageSelected = ChooseLanguage();
         //sSaveLoad.savedProfile.GlobalGraphicQualitySettings = CheckSystem(out sSaveLoad.savedProfile.GraphicMemory);
         return sSaveLoad.savedProfile;
     }
@@ -92,7 +95,20 @@ public class sProfileManager : Singleton<sProfileManager> {
         }
     }
 
-
+    static string ChooseLanguage()
+    {
+        string s = "English";
+        switch (Application.systemLanguage)
+        {           
+            case SystemLanguage.Spanish:
+                s = "Spanish";
+                break;           
+            default:
+                s = "English";
+                break;
+        }
+        return s;
+    }
 
 
     void Start()

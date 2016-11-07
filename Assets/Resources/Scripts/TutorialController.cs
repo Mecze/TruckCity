@@ -57,8 +57,24 @@ public class TutorialController : MonoBehaviour {
     [SerializeField]
     GameObject RepeatTutorialButton;
     bool readyToClick = false;
-    public bool secondTime = false;
+    private bool _secondTime = false;
+    public bool secondTime
+    {
+        get
+        {
+            return _secondTime;
+        }
+
+        set
+        {
+            _secondTime = value;
+            if (secondTime) ShowExtras();
+        }
+    }
     int TutoIndex = 0;
+    [SerializeField]
+    TypewriterEffect TypewriterEffectTemplate;
+    resetTypewriter CurrentTypeWritter;
 
     #region custom properties
     //All these custom properties tries to find the Tutorial panel
@@ -130,6 +146,8 @@ public class TutorialController : MonoBehaviour {
         
     }
 
+    
+
     #endregion
 
 
@@ -138,8 +156,12 @@ public class TutorialController : MonoBehaviour {
 
     public void Awake()
     {
+        EventDelegate ed = new EventDelegate();
+        ed.Set(this, "SetReadyToClick");
+        TypewriterEffectTemplate.onFinished.Add(ed);
         _staticFloatingTextPanel = GameObject.FindGameObjectWithTag("TutorialPanel");
         ResetTutorial();
+        if (secondTime) ShowExtras();
     }
 
     #region Start/Reset Tutorial
@@ -190,6 +212,11 @@ public class TutorialController : MonoBehaviour {
         //(it will display the first tween
         hasTutorial = true;
         TutorialArray[0].SetActive(true);
+        if (TutorialArray[0].GetComponent<resetTypewriter>() == null) TutorialArray[0].AddComponent<resetTypewriter>();
+        CurrentTypeWritter = TutorialArray[0].GetComponent<resetTypewriter>();
+        CurrentTypeWritter.Reset(TypewriterEffectTemplate);
+        //if (secondTime) TutorialArray[0].GetComponentInChildren<TypewriterEffect>().ResetToBeginning();
+
         if (TutorialExtra.Length > 0)if (TutorialExtra[0] != null) TutorialExtra[0].SetActive(true);
         TutoIndex += 1;
         SkipTutorialButton.SetActive(false);
@@ -256,48 +283,99 @@ public class TutorialController : MonoBehaviour {
 
 
         if (!hasTutorial)
-        { //when tutorial sequence finishes, goes to Pause Menu
+        { //when tutorial sequence finishes, goes to Pause Menu            
+            if (!readyToClick && !secondTime) return;
+            if (CurrentTypeWritter != null) CurrentTypeWritter.DisableTypeWriter();
             bool b = StaticFloatingTextPanel.activeSelf;
             ChangeState(b);
         }
         else
         { //Tutorial sequence >
 
-            //We have to wait until text stops displaying
-            //readyToClick will be "true" when the current text finishes displaying        
-            if (!readyToClick && !secondTime) return;
-
-            //we set Active the current box, and the tween will start animating
-            TutorialArray[TutoIndex].SetActive(true);
-
-            //we disable last box (if it exists)
-            if (TutoIndex -1 >= 0) if (TutorialArray[TutoIndex - 1] != null)TutorialArray[TutoIndex - 1].SetActive(false);
-               
-
-            //After initial Text, player can Skip!
-            SkipTutorialButton.SetActive(true);
             
-            //we set active the "extra" game object (in case it exists)
-            if (TutorialExtra.Length >= (TutoIndex + 1))
+            
+
+            if (secondTime)
             {
-                if (TutorialExtra[TutoIndex] != null)
+                if (!readyToClick)
                 {
-                    TutorialExtra[TutoIndex].SetActive(true);
-                    TutorialExtra[TutoIndex].BroadcastMessage("Freeze",SendMessageOptions.DontRequireReceiver);
+                    if (TutorialArray[TutoIndex - 1] != null)
+                    {
+                        TutorialArray[TutoIndex - 1].GetComponent<resetTypewriter>().finishTypeWritter();
+                    }
+                    readyToClick = true;
+                    if (TutoIndex >= TutorialArray.Length)
+                    {
+                        FinishTutorial();
+                    }
+                    return;
+                }else
+                {
+                    NextHint();
+                   // if (TutoIndex >= TutorialArray.Length) FinishTutorial();
+                    return;
                 }
+
+                
+
             }
-
-            //For the next iteration (next click)
-            TutoIndex += 1;
-
-            //Set this to false, player will be "Stuck" until typegraphic tween finishes
-            readyToClick = false;
-            SetPressToContinue();
-
-            //This checks if all items of the array have been displayed in order to finish the tutorial
-            if (TutoIndex >= TutorialArray.Length) FinishTutorial();
+            else
+            {
+                if (!readyToClick) return;
+                NextHint();
+                return;
+            }
+            
             
         }
+    }
+
+    void NextHint() {
+
+        if (!readyToClick) return;
+
+        if (TutoIndex >= TutorialArray.Length)
+        {
+            if (secondTime && readyToClick) FinishTutorial();
+            readyToClick = true; return;
+        }
+        //we set Active the current box, and the tween will start animating
+        TutorialArray[TutoIndex].SetActive(true);
+        //Se resetea el TypewriterEffect
+        if (TutorialArray[TutoIndex].GetComponent<resetTypewriter>() == null) TutorialArray[TutoIndex].AddComponent<resetTypewriter>();
+        CurrentTypeWritter = TutorialArray[TutoIndex].GetComponent<resetTypewriter>();
+        CurrentTypeWritter.Reset(TypewriterEffectTemplate);
+
+        //we disable last box (if it exists)
+        if (TutoIndex - 1 >= 0) if (TutorialArray[TutoIndex - 1] != null)
+            {                
+                TutorialArray[TutoIndex - 1].SetActive(false);
+                TutorialArray[TutoIndex - 1].GetComponent<resetTypewriter>().DisableTypeWriter();
+            }
+
+
+        //After initial Text, player can Skip!
+        SkipTutorialButton.SetActive(true);
+
+        //we set active the "extra" game object (in case it exists)
+        if (TutorialExtra.Length >= (TutoIndex + 1))
+        {
+            if (TutorialExtra[TutoIndex] != null)
+            {
+                TutorialExtra[TutoIndex].SetActive(true);
+                TutorialExtra[TutoIndex].BroadcastMessage("Freeze", SendMessageOptions.DontRequireReceiver);
+            }
+        }
+
+        //For the next iteration (next click)
+        TutoIndex += 1;
+
+        //Set this to false, player will be "Stuck" until typegraphic tween finishes
+        readyToClick = false;
+        SetPressToContinue();
+
+        //This checks if all items of the array have been displayed in order to finish the tutorial
+        if (!secondTime) if (TutoIndex >= TutorialArray.Length) FinishTutorial();
     }
 
     /// <summary>
@@ -305,6 +383,7 @@ public class TutorialController : MonoBehaviour {
     /// </summary>
     void FinishTutorial()
     {
+        readyToClick = true;
         hasTutorial = false;
         sProfileManager.ProfileSingleton.profileLevels[GameController.s.level].TutorialDone = true;
         GameController.s.SaveProfile(true);
@@ -326,6 +405,7 @@ public class TutorialController : MonoBehaviour {
     /// </summary>
     public void SkipTutorial()
     {
+        if (CurrentTypeWritter != null) CurrentTypeWritter.DisableTypeWriter();
         ShowExtras();
         FinishTutorial();
         Click();
@@ -335,11 +415,27 @@ public class TutorialController : MonoBehaviour {
     /// Usually Extra GameObjects on the TutorialExtra Array
     /// needs to be enabled for the game to function correctly
     /// </summary>
-    void ShowExtras()
+    public void ShowExtras()
     {
+        bool gamestarted = GameController.s.gameStarted;
         for (int i = 0; i < TutorialExtra.Length; i++)
         {
-            if (TutorialExtra[i] != null)TutorialExtra[i].SetActive(true);
+            if (TutorialExtra[i] != null)
+            {
+                TutorialExtra[i].SetActive(true);
+                IFreezable[] freezables = TutorialExtra[i].GetComponents<IFreezable>();
+                for (int e = 0; e < freezables.Length; e++)
+                {
+                    if (gamestarted) { freezables[e].Freeze(); } else { freezables[e].Unfreeze(); }
+
+                }
+                IFreezable[] freezableschilds = TutorialExtra[i].GetComponentsInChildren<IFreezable>();
+                for (int a = 0; a < freezableschilds.Length; a++)
+                {
+                    if (gamestarted) { freezableschilds[a].Freeze(); } else { freezableschilds[a].Unfreeze(); }
+                }
+            }
+
         }
     }
 

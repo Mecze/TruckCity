@@ -52,7 +52,13 @@ public class AcceptsCargo : CargoManagement
             //cs.cargoType = CargoType;
             cs.produced = false;
             cs.moneyOnDelivery = moneyGained;
-            cs.SetColor(GameConfig.s.cargoColors[(int)CargoType], GameConfig.s.cargoTextColors[(int)CargoType]);
+            if (GameConfig.s != null)
+            {
+                cs.SetColor(GameConfig.s.cargoColors[(int)CargoType], GameConfig.s.cargoTextColors[(int)CargoType]);
+            }else
+            {
+                cs.SetColor(Color.white, Color.black);
+            }
             
         }
     }

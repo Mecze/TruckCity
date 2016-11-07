@@ -17,6 +17,7 @@ public class PlayAliasSound : MonoBehaviour {
     public void Play()
     {
         float volume=0f;
+        if (GameConfig.s == null || SoundStore.s == null) return;
         switch (settings.soundType)
         {
             case SoundType.Music:

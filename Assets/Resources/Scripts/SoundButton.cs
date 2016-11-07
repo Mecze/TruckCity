@@ -58,7 +58,7 @@ public class SoundButton : MonoBehaviour {
         set
         {
             _state = value;
-            GameConfig.s.SoundState = value;
+            if (GameConfig.s != null) GameConfig.s.SoundState = value;
             SetSprite(value);
         }
     }
@@ -68,20 +68,38 @@ public class SoundButton : MonoBehaviour {
     {
         if (set)
         {
-            mySprite.spriteName = GameConfig.s.SoundSprite;
+            if (GameConfig.s != null)
+            {
+                mySprite.spriteName = GameConfig.s.SoundSprite;
+            }else
+            {
+                mySprite.spriteName = "ButtonIcons_Sound";
+            }
 
         }
         else
         {
-            mySprite.spriteName = GameConfig.s.NoSoundSprite;
+            if (GameConfig.s != null)
+            {
+                mySprite.spriteName = GameConfig.s.NoSoundSprite;
+            }else
+            {
+                mySprite.spriteName = "ButtonIcons_Mute";
+            }
         }
     }
 
 
     void Awake()
     {
-        _state = GameConfig.s.SoundState;
-        SetSprite(GameConfig.s.SoundState);
+        if (GameConfig.s != null)
+        {
+            _state = GameConfig.s.SoundState;
+        }else
+        {
+            _state = false;
+        }        
+        SetSprite(_state);
     }
 
     public void Click()

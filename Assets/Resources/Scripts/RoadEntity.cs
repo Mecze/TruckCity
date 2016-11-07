@@ -2,7 +2,14 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using PicaVoxel;
+using System;
+using System.Linq;
 
+public enum RoadRotationType { Green=0, Blue=1, Purple=2, Gold=3 }
+public enum RoadRotationGreen { NE=0,SE=1,SW=2,NW=3}
+public enum RoadRotationBlue { EW=0,NS=1 }
+public enum RoadPositionPurple { None=0,N=1,E=2,S=3,W=4}
+//public enum RoadPositionPurple { N=0,E=1,W=2,S=3}
 
 
 public class RoadEntity : MonoBehaviour, IFreezable {
@@ -23,8 +30,9 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     /// <summary>
     /// Posición del tipo "Vector3Int"
     /// </summary>
-    [System.NonSerialized]
+    [HideInInspector]
     public Vector3Int position;
+    #endregion
 
     #region Propiedades HAS<Direction>
     //estas propiedades indican si una carretera tiene una salida hacia
@@ -198,19 +206,21 @@ public class RoadEntity : MonoBehaviour, IFreezable {
 
         set
         {
+            if (_direction == value) return;
             _direction = value;
-            ChangeVisuals(_direction,sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings,GameConfig.s.LowIMGPath);
+            if (direction == RoadDirection.EW)
+            {
+         
+               //Debug.Log("ASdf");
+            }
+            ChangeVisuals(_direction);
+
         }
     }
 
     
 
 
-    /// <summary>
-    /// Posibles rotaciones de esta carretera
-    /// </summary>    
-    [SerializeField]
-    List<RoadDirection> possibleRotations;
     
 
     /// <summary>
@@ -224,7 +234,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     /// <summary>
     /// 
     /// </summary>
-    [System.NonSerialized]
+    [HideInInspector]
     int numberOfTruckOnTop = 0;
     public int NumberOfTruckOnTop
     {
@@ -238,7 +248,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
             bool b = (value == numberOfTruckOnTop);
             numberOfTruckOnTop = value;
             if (b) return;
-            if (possibleRotations.Count <= 1) return;    
+            if (possibleGoldRotations.Count <= 1) return;    
             if (value > 0) ChangeSpritesColor(enumColor.Red);
             if (value <= 0) ChangeSpritesColor(enumColor.Black);
             
@@ -247,14 +257,42 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     }
     int numberOfComingTrucks = 0;
 
-    #endregion
+    [Header("Clickable Animation?")]
+    [SerializeField]
+    public bool isClickable = false;
+    //[HideInInspector]
+    public Animator myAnimator;
+    //[HideInInspector]
+    public RoadRotationType TypeOfRotation;
+    [Header("Green")]
+    //[HideInInspector]
+    public RoadRotationGreen StartingGreenRotation = RoadRotationGreen.NE;
+    [Header("Blue")]
+    //[HideInInspector]
+    public RoadRotationBlue StartingBlueRotation = RoadRotationBlue.EW;
 
+    /// <summary>
+    /// Posibles rotaciones de esta carretera
+    /// </summary>   
 
+    [Header("Purple")]
+    //[HideInInspector]
+    //public int StartingGoldIndex = 0;
+    [SerializeField]
+    //[HideInInspector]
+    public RoadPositionPurple roadAnchorPurple = RoadPositionPurple.N;
+    [SerializeField]
+//    [HideInInspector]
+    public RoadPositionPurple roadStartingPurple = RoadPositionPurple.E;
+    //List<CardinalPoint> roadArrayPurple;
+    [Header("Gold")]
+    [SerializeField]
+    //[HideInInspector]
+    public List<RoadDirection> possibleGoldRotations;
+    int purpleDirection = 1;
 
-    #endregion
-
-
-
+#endregion
+    
     #region Freeze
 
     public void Freeze()
@@ -269,16 +307,82 @@ public class RoadEntity : MonoBehaviour, IFreezable {
 
     #endregion
 
-
-    #region RecordPosition
+    #region AWAKE()
     void Awake()
     {
-        RecalculateSprites();
+    #region animator reference
+        if (isClickable && myAnimator == null)
+        {
+            if (GetComponentInChildren<Animator>() == null)
+            {
+                Debug.LogError("Reference not made on the Road: " + this.name + " ||| Missing myAnimator and no animator found on childrens");
+            }
+            else
+            {
+                myAnimator = GetComponentInChildren<Animator>();
+            }
+        }
+    #endregion
+        //RecalculateSprites();
         RecordPosition();
-        if (possibleRotations.Count > 1) ClickableSprite.SetActive(true);
-        //GlobalQS = sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings;
+        InitializeAnimator();
+        ClickableSpriteInitialization();
     }
-    
+#endregion
+
+    #region Begin Sequence - InitializeAnimator()
+
+    /// <summary>
+    /// Initializes the starting position of the animator if the road is Clickable
+    /// and other things
+    /// </summary>
+    void InitializeAnimator()
+    {
+        TurnOffAllSprites();
+        if (!isClickable || myAnimator == null) return;        
+        switch (TypeOfRotation)
+        {
+            case RoadRotationType.Green:
+                _direction = StartingGreenRotation.toRoadDirection();
+                ChangeVisuals(RoadDirection.NE);
+                if (myAnimator.GetCurrentAnimatorStateInfo(0).IsName("90_"+greenDirtoString(StartingGreenRotation)+"_state")) { break; }                
+                myAnimator.SetBool("NoAnim", true);
+                myAnimator.SetBool("GoTo"+greenDirtoString(StartingGreenRotation),true);
+                  
+                
+                break;
+            case RoadRotationType.Blue:                
+                _direction = StartingBlueRotation.toRoadDirection();
+                StartingGreenRotation = StartingBlueRotation.BlueToGreen();
+                ChangeVisuals(RoadDirection.EW);
+                if (myAnimator.GetCurrentAnimatorStateInfo(0).IsName("90_" + greenDirtoString(StartingBlueRotation.BlueToGreen()) + "_State")) { break; }
+                myAnimator.SetBool("NoAnim", true);
+                myAnimator.SetBool("GoTo" + greenDirtoString(StartingBlueRotation.BlueToGreen()), true);
+                break;
+            case RoadRotationType.Purple:
+                //This is "not" animator, but it's an initializatin needed for Purple type of clickable roads
+                if (roadAnchorPurple == roadStartingPurple) roadStartingPurple = roadStartingPurple.NextPurpleCardinalPoint(roadAnchorPurple, ref purpleDirection);
+                direction = RoadDirectionExtensions.ComposeRoadDirection(roadAnchorPurple, roadStartingPurple);
+                RecalculateSprites(RoadDirectionExtensions.ComposeRoadDirection(roadAnchorPurple, roadStartingPurple.NextPurpleCardinalPoint(roadAnchorPurple, ref purpleDirection)));
+                break;
+            case RoadRotationType.Gold:
+                
+                direction = possibleGoldRotations[0];               
+                possibleGoldRotations.RemoveAt(0);
+                possibleGoldRotations.Add(direction);
+                RecalculateSprites();
+                break;
+            default:
+                break;
+        }
+
+
+
+    }
+
+    #endregion
+
+    #region Begin Sequence - RecordPosition()
     /// <summary>
     /// Al iniciar el juego registra la posición de este bloque en el mapa.
     /// </summary>
@@ -302,28 +406,126 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     }
     #endregion
 
+    #region Begin Sequence - ClickableSpriteInitialization()
+    void ClickableSpriteInitialization()
+    {
+        
+
+
+
+        if (isClickable) ClickableSprite.SetActive(true);
+        SpriteRenderer sr = ClickableSprite.GetComponent<SpriteRenderer>();
+
+        //Colors
+        List<Color> colors = new List<Color>();        
+
+        //Path
+        string path = "";
+
+
+        if (GameConfig.s == null)
+        {
+            path = "IMG\\";
+            colors.Add(Color.green);
+            colors.Add(Color.blue);
+            colors.Add(Color.magenta);
+            colors.Add(Color.yellow);
+        }else
+        {
+            colors = GameConfig.s.clickableRoadColors.ToList<Color>();
+            path = GameConfig.s.IMGPath;
+        }
+        if (path == "") return;
+        switch (TypeOfRotation)
+        {
+            case RoadRotationType.Green:
+                sr.color = colors[0];
+                sr.sprite = (Sprite)Resources.Load<Sprite>(path + "GreenOverlay");
+                break;
+            case RoadRotationType.Blue:
+                sr.color = colors[1];
+                sr.sprite = (Sprite)Resources.Load<Sprite>(path + "BlueOverlay");
+                
+
+                break;
+            case RoadRotationType.Purple:
+                sr.color = colors[2];
+                sr.sprite = (Sprite)Resources.Load<Sprite>(path + "PurpleOverlay");
+                
+                
+                switch (roadAnchorPurple)
+                {
+                    case RoadPositionPurple.None:
+                        break;
+                    case RoadPositionPurple.N:
+                        ClickableSprite.transform.rotation = new Quaternion(-3.090862e-08f, 0.7071068f, -0.7071068f, -3.090862e-08f);
+                        break;
+                    case RoadPositionPurple.E:
+                        ClickableSprite.transform.rotation = new Quaternion(0.5f, -0.5f, 0.5f, 0.5f);
+                        break;
+                    case RoadPositionPurple.S:
+                        break;
+                    case RoadPositionPurple.W:
+                        ClickableSprite.transform.rotation = new Quaternion(0.5f, 0.5f, -0.5f, 0.5f);
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case RoadRotationType.Gold:
+                sr.color = colors[3];
+                sr.sprite = (Sprite)Resources.Load<Sprite>(path + "GoldOverlay");
+                break;
+            default:
+                break;
+        }
+
+    }
+    #endregion
+
     #region OnClick!
 
     void OnPress(bool isPressed)
     {
-
+        if (NumberOfTruckOnTop > 0) return;
+        if (numberOfComingTrucks > 0) return;
         if (freeze) return;
         if (!isPressed) return;
-        if (possibleRotations.Count > 1)
+        if (!isClickable) return;
+        
+        switch (TypeOfRotation)
         {
-            if (NumberOfTruckOnTop > 0) return;
-            if (numberOfComingTrucks > 0) return;
-            direction = possibleRotations[0];
-            possibleRotations.RemoveAt(0);
-            possibleRotations.Add(direction);
-            RecalculateSprites();
+            case RoadRotationType.Green:
+                myAnimator.SetBool("Next", true);
+                StartingGreenRotation = StartingGreenRotation.Next();
+                _direction = StartingGreenRotation.toRoadDirection();
+                break;
+            case RoadRotationType.Blue:
+                myAnimator.SetBool("Next",true);
+                StartingGreenRotation = StartingGreenRotation.Next();
+                StartingBlueRotation = StartingGreenRotation.GreenToBlue();
+                _direction = StartingBlueRotation.toRoadDirection();
+                break;
+            case RoadRotationType.Purple:
+                roadStartingPurple = roadStartingPurple.NextPurpleCardinalPoint(roadAnchorPurple,ref purpleDirection);
+                direction = RoadDirectionExtensions.ComposeRoadDirection(roadAnchorPurple, roadStartingPurple);
+                TurnOffAllSprites();
+                if (direction == RoadDirection.EW || direction == RoadDirection.NS)
+                {
+                    RecalculateSprites(RoadDirectionExtensions.ComposeRoadDirection(roadAnchorPurple, roadStartingPurple.NextPurpleCardinalPoint(roadAnchorPurple, ref purpleDirection)));
+                }
+                break;
+            case RoadRotationType.Gold:
+                direction = possibleGoldRotations[0];
+                possibleGoldRotations.RemoveAt(0);
+                possibleGoldRotations.Add(direction);
+                RecalculateSprites();
+                break;
+            default:
+                break;
         }
     }
-
     #endregion
-
-
-
 
     #region Change ROAD material and Sprites
     /// <summary>
@@ -343,69 +545,108 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     /// Cambia el material de la carretera
     /// </summary>
     /// <param name="dir"></param>
-    public void ChangeVisuals(RoadDirection dir, GraphicQualitySettings GQS, string LowIMGPath)
+    public void ChangeVisuals(RoadDirection dir, GraphicQualitySettings GQS = GraphicQualitySettings.None, string LowIMGPath= "")
     {
+        
+        if (isClickable && TypeOfRotation == RoadRotationType.Green) dir = RoadDirection.NE;
+        if (isClickable && TypeOfRotation == RoadRotationType.Blue) dir = RoadDirection.EW;
+        if (LowIMGPath == "")
+        {
+            if (GameConfig.s == null) LowIMGPath = "IMG\\LowIMGs\\";
+            if (GameConfig.s != null) LowIMGPath = GameConfig.s.LowIMGPath;
+        }
+        if (GQS == GraphicQualitySettings.None)
+        {
+            if (sProfileManager.ProfileSingleton == null)
+            {//we are probably at editor time, we change all roads
+                ChangeVisuals(dir, GraphicQualitySettings.High, LowIMGPath);
+                ChangeVisuals(dir, GraphicQualitySettings.Low, LowIMGPath);
+                //Debug.Log("ChangingVisuals: EditorTime");
+                return;
+            }else
+            {
+                //Debug.Log("ChangingVisuals: PlayTime");
+                GQS = sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings;
+            }
+        }else
+        {
+            //Debug.Log("ChangingVisuals: PlayTime 2 "+ dir.ToString());
+        }
+        
         if (PermanentVisuals) return;
         switch (GQS)
         {
             case GraphicQualitySettings.Low:
                 //Low Quality using old Materials                
                 Sprite sprite = (Sprite)Resources.Load<Sprite>(LowIMGPath + "sprite_"+ roadDirToString(dir));
-                myRoadLow.sprite = sprite;
+                if (myRoadLow != null) myRoadLow.sprite = sprite;
+                
 
                 break;
             case GraphicQualitySettings.Medium:
                 Sprite sprite1 = (Sprite)Resources.Load<Sprite>(LowIMGPath + "sprite_" + roadDirToString(dir));
-                myRoadLow.sprite = sprite1;
+                if (myRoadLow != null) myRoadLow.sprite = sprite1;
                 break;
             case GraphicQualitySettings.High:
                 //High Quality using PicaVoxel
-                myRoad.SetFrame((int)dir);
+                if (myRoad != null) myRoad.SetFrame((int)dir);
 
                 break;
             default:
                 break;
         }
-        
-
-
-        
-        
-        //Material[] currentMats = roadRenderer.materials;
-
     }
 
     public void UpdateMaterial(string LowIMGPath)
     {
         if (PermanentVisuals) return;
         RoadDirection dir = _direction;
-        if (myRoad.gameObject.activeSelf == true)
+        if (myRoad != null)
         {
-            myRoad.SetFrame((int)dir);
+            if (myRoad.gameObject.activeSelf == true)
+            {
+                myRoad.SetFrame((int)dir);
+            }
         }
-        if (myRoadLow.gameObject.activeSelf == true)
+        if (myRoadLow != null)
         {
-            string s = (string)LowIMGPath + "sprite_" + (string)roadDirToString(dir);
-            Sprite sp = Resources.Load<Sprite>(s);
-            myRoadLow.sprite = sp;
+            if (myRoadLow.gameObject.activeSelf == true)
+            {
+                string s = (string)LowIMGPath + "sprite_" + (string)roadDirToString(dir);
+                Sprite sp = Resources.Load<Sprite>(s);
+                myRoadLow.sprite = sp;
+            }
         }
 
 
 
     }
 
+
+    public void ReEnableSprites()
+    {
+        ClickableSprite.SetActive(true);
+    }
+
     /// <summary>
     /// Selecciona que Sprites deben estar activados en función de si la carretera se puede mover.
     /// </summary>
-    public void RecalculateSprites() {
-        if (possibleRotations.Count <= 1)
-        {
-            TurnOffAllSprites();
+    public void RecalculateSprites(RoadDirection RdPurple = RoadDirection.NEWS)
+    {
+        TurnOffAllSprites();
+        if (TypeOfRotation != RoadRotationType.Gold && TypeOfRotation != RoadRotationType.Purple)
+        {            
             return;
         }
-        TurnOffAllSprites();
         RoadDirection currentState = direction;
-        RoadDirection nextState = possibleRotations[0];
+        RoadDirection nextState = RoadDirection.NEWS;
+        if (TypeOfRotation == RoadRotationType.Gold) nextState = possibleGoldRotations[0];
+        if (TypeOfRotation == RoadRotationType.Purple)
+        {
+            if (RdPurple == RoadDirection.NEWS) return;
+            nextState = RdPurple;
+        }
+        if (nextState == RoadDirection.NEWS) return;
         CardinalPoint[] differences;
         CardinalPoint[] equals = currentState.Compare(nextState, out differences, true);
         List<CardinalPoint> changed = new List<CardinalPoint>();
@@ -417,6 +658,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
                 changed.Add(dir);
             }
         }
+        if (TypeOfRotation == RoadRotationType.Purple) return;
         foreach (CardinalPoint dir1 in equals)
         {
             if (dir1 != CardinalPoint.None)
@@ -425,8 +667,8 @@ public class RoadEntity : MonoBehaviour, IFreezable {
                 changed.Add(dir1);
             }
         }
-        if (possibleRotations.Count <= 2) return;
-        RoadDirection AfterState = possibleRotations[1];
+        if (possibleGoldRotations.Count <= 2 || TypeOfRotation != RoadRotationType.Gold) return;
+        RoadDirection AfterState = possibleGoldRotations[1];
         equals = nextState.Compare(AfterState, out differences, true);
         foreach (CardinalPoint dir in differences)
         {
@@ -445,7 +687,10 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         {
             if (go.activeSelf && go.transform.parent.gameObject.activeSelf)
             {
-                go.GetComponent<SpriteRenderer>().color = GameConfig.s.publicColors[(int)enumColor.Black];
+                if (GameConfig.s != null)
+                {
+                    go.GetComponent<SpriteRenderer>().color = GameConfig.s.publicColors[(int)enumColor.Black];
+                }
                 go.GetComponent<SpriteRenderer>().enabled = false;
                 go.GetComponent<Animator>().SetBool("Moving", false);
             }
@@ -453,13 +698,13 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     }
     void TurnOffSprite(CardinalPoint dir)
     {
-        GameObject go = sprites[((int)dir)-1];
+        GameObject go = sprites[((int)dir) - 1];
         go.GetComponent<SpriteRenderer>().enabled = false;
         go.GetComponent<Animator>().SetBool("Moving", false);
     }
     void TurnOnArrow(CardinalPoint dir)
     {
-        GameObject go = sprites[(int)dir-1];
+        GameObject go = sprites[(int)dir - 1];
         if (go.activeSelf && go.transform.parent.gameObject.activeSelf)
         {
             SpriteRenderer ren = go.GetComponent<SpriteRenderer>();
@@ -490,11 +735,9 @@ public class RoadEntity : MonoBehaviour, IFreezable {
             go.GetComponent<Animator>().SetBool("Moving", false);
         }
     }
+    
 
-
-
-
-    #endregion
+#endregion
 
     #region Check for trucks on top
 
@@ -512,8 +755,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
     }
 
     #endregion
-
-
+    
     #region utils
 
     /// <summary>
@@ -637,17 +879,54 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         return s;
 
     }
+    public static string greenDirtoString(RoadRotationGreen road)
+    {
+        string s;
+        switch (road)
+        {
+            case RoadRotationGreen.NE:
+                s = NE;
+                break;
+            case RoadRotationGreen.SE:
+                s = SE;
+                break;
+            case RoadRotationGreen.SW:
+                s = SW;
+                break;
+            case RoadRotationGreen.NW:
+                s = NW;
+                break;
+            default:
+                s = NE;
+                break;
+        }
+        return s;
+
+    }
+    public static string blueDirtoString(RoadRotationBlue road)
+    {
+        string s;
+        switch (road)
+        {
+            case RoadRotationBlue.EW:
+                s = EW;
+                break;
+            case RoadRotationBlue.NS:
+                s = NS;
+                break;
+            default:
+                s = EW;
+                break;
+        }
+        return s;
+    }
 
 
     #endregion
-
-
-
-
 }
 
 
-
+[System.Serializable]
 public enum RoadDirection { EW, NE, NEWS, NS, NW, SE, SW }
 #region extensions
 
@@ -863,7 +1142,178 @@ public static class RoadDirectionExtensions
         return r;
     }
 
+    public static RoadDirection toRoadDirection(this RoadRotationGreen greenRoadDirection)
+    {
+        switch (greenRoadDirection)
+        {
+            case RoadRotationGreen.NE:
+                return RoadDirection.NE;                
+            case RoadRotationGreen.SE:
+                return RoadDirection.SE;                
+            case RoadRotationGreen.SW:
+                return RoadDirection.SW;                
+            case RoadRotationGreen.NW:
+                return RoadDirection.NW;                
+            default:
+                return RoadDirection.NE;                
+        }
+    }
+    public static RoadRotationGreen Next(this RoadRotationGreen greenRoadDirection)
+    {
+        
+        switch (greenRoadDirection)
+        {
+            case RoadRotationGreen.NE:
+                return RoadRotationGreen.SE;
+            case RoadRotationGreen.SE:
+                return RoadRotationGreen.SW;
+            case RoadRotationGreen.SW:
+                return RoadRotationGreen.NW;
+            case RoadRotationGreen.NW:
+                return RoadRotationGreen.NE;
+            default:
+                return RoadRotationGreen.NE;
+        }
+    }
+    public static RoadDirection toRoadDirection(this RoadRotationBlue blueRoadDirection)
+    {
+        switch (blueRoadDirection)
+        {
+            case RoadRotationBlue.EW:
+                return RoadDirection.EW;                
+            case RoadRotationBlue.NS:
+                return RoadDirection.NS;                
+            default:
+                return RoadDirection.EW;
+        }
+    }
+    public static RoadRotationBlue Next(this RoadRotationBlue blueRoadDirection)
+    {
+        switch (blueRoadDirection)
+        {
+            case RoadRotationBlue.EW:
+                return RoadRotationBlue.NS;
+                
+            case RoadRotationBlue.NS:
+                return RoadRotationBlue.EW;
+                
+            default:
+                return RoadRotationBlue.EW;                
+        }
+    }
+    public static RoadRotationGreen BlueToGreen(this RoadRotationBlue blueRoadDirection)
+    {
+        switch (blueRoadDirection)
+        {
+            case RoadRotationBlue.EW:
+                return RoadRotationGreen.SE;
+                
+            case RoadRotationBlue.NS:
+                return RoadRotationGreen.NW;
+                
+            default:
+                return RoadRotationGreen.NE;
+                
+        }
+    }
+    public static RoadRotationBlue GreenToBlue(this RoadRotationGreen greenRoadDirection)
+    {
+        switch (greenRoadDirection)
+        {
+            case RoadRotationGreen.NE:
+                return RoadRotationBlue.EW;                
+            case RoadRotationGreen.SE:
+                return RoadRotationBlue.NS;                
+            case RoadRotationGreen.SW:
+                return RoadRotationBlue.EW;                
+            case RoadRotationGreen.NW:
+                return RoadRotationBlue.NS;                
+            default:
+                return RoadRotationBlue.EW;                
+        }
+    }
+    public static RoadPositionPurple NextPurpleCardinalPoint(this RoadPositionPurple purpleRoadcurrent, RoadPositionPurple purpleRoadAnchor, ref int Direction)
+    {
+        if (Direction != -1 && Direction != 1) return RoadPositionPurple.None;
+        int currentPos = (int)purpleRoadcurrent;
+        int anchorPos = (int)purpleRoadAnchor;
+        currentPos = currentPos.AddwithBoundaries(Direction, 1, 4);
+        if (currentPos == anchorPos)
+        {
+            //We bounce
+            Direction = -Direction;
+            //Now we advance 2 (on the other direction)
+            currentPos = currentPos.AddwithBoundaries(Direction * 2, 1, 4);
+        }
+        return (RoadPositionPurple)currentPos;
+    }
+    public static RoadDirection ComposeRoadDirection(RoadPositionPurple A, RoadPositionPurple B)
+    {
+        List<RoadDirection> result = new List<RoadDirection>();
+        RoadDirection dummy = RoadDirection.NEWS;
+        result = dummy.GetAll().FindAll(x => x.HasDirection(A.ToCardinalPoint()) && x.HasDirection(B.ToCardinalPoint()));
+        result.Remove(RoadDirection.NEWS);
+        return result[0];
+    }
+    /// <summary>
+    /// Add (or substract) an amount to this number.
+    /// The result will be kept between or equal to the boundaries (min & max) values
+    /// the result will loop around the boundaries in case it's too big, and keep substracting from the top (or bottom) of the boundary
+    /// example: 4+2 in a 1 to 4 boundary will be 2 (loops once). 18-11 in a 15 to 20 boundary will be 19 (it loops twice)
+    /// </summary>
+    /// <param name="thisInt"></param>
+    /// <param name="amount"></param>
+    /// <param name="min"></param>
+    /// <param name="max"></param>
+    /// <returns></returns>
+    public static int AddwithBoundaries(this int thisInt, int amount,int min, int max)
+    {
+        bool done = false;
+        int candidate;
+        candidate = thisInt + amount;
+        while (!done)
+        {            
+            if (candidate > max)
+            {
+                int delta = (candidate - max)-1;
+                candidate = min + delta;
+            }
+            if (candidate < min)
+            {
+                int delta = (min - candidate) - 1;
+                candidate = max - delta;
+            }
+            if (candidate >= min && candidate <= max) done = true;
+        }
+        return candidate;
 
+    }
+    public static CardinalPoint ToCardinalPoint(this RoadPositionPurple roadPositionPurple)
+    {
+        switch (roadPositionPurple)
+        {
+            case RoadPositionPurple.None:
+                return CardinalPoint.None;                
+            case RoadPositionPurple.N:
+                return CardinalPoint.N;
+            case RoadPositionPurple.E:
+                return CardinalPoint.E;                
+            case RoadPositionPurple.S:
+                return CardinalPoint.S;
+            case RoadPositionPurple.W:
+                return CardinalPoint.W;                
+            default:
+                return CardinalPoint.None;
+                //break;
+        }
 
+    }
+    public static List<RoadDirection> GetAll(this RoadDirection thisRD)
+    {
+        List<RoadDirection> rds = ((RoadDirection[])Enum.GetValues(typeof(RoadDirection))).ToList();
+        //rds.Remove(RoadDirection.NEWS);
+        return rds;
+    }
+    
 }
 #endregion

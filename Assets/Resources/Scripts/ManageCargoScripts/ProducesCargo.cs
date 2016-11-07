@@ -147,7 +147,13 @@ public class ProducesCargo : CargoManagement
             //cs.cargoType = CargoType;
             cs.produced = true;
             cs.Infinite = infiniteAmount;
-            cs.SetColor(GameConfig.s.cargoColors[(int)CargoType], GameConfig.s.cargoTextColors[(int)CargoType]);
+            if (GameConfig.s != null)
+            {
+                cs.SetColor(GameConfig.s.cargoColors[(int)CargoType], GameConfig.s.cargoTextColors[(int)CargoType]);
+            }else
+            {
+                cs.SetColor(Color.white, Color.black);
+            }
         }
     }
 

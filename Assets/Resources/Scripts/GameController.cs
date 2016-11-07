@@ -132,7 +132,7 @@ public class GameController : MonoBehaviour {
             if (MenuVersion) return;
             if (OnMoneyGain != null) OnMoneyGain(i);
             MoneyText.text = _money.ToString();
-            
+
         }
     }
 
@@ -171,27 +171,33 @@ public class GameController : MonoBehaviour {
     UILabel IntroMenuMainLabel;
     [SerializeField]
     TweenAnimationController TimerTweenController;
-
+    public Camera UICamera;
+    
 
 
     [Header("Prefabs")]
     [SerializeField]
     GameObject QuestSlatePrefab;
-   /* [SerializeField]
-    GameObject QuestSlatePrefabMoney;
-    [SerializeField]
-    GameObject QuestSlatePrefabTimer;
-    */
+    /* [SerializeField]
+     GameObject QuestSlatePrefabMoney;
+     [SerializeField]
+     GameObject QuestSlatePrefabTimer;
+     */
     [SerializeField]
     GameObject IPQuestSlatePrefab;
-    
+
     /// <summary>
     /// Evita que se reproduzca dos veces el ending.
     /// </summary>
     bool gameEnding = false;
-    bool PreeGameEngind = false;
+    public bool gameStarted = true;
+    //bool PreeGameEngind = false;
     [System.NonSerialized]
     public bool MusicPlaying = false;
+
+    [Header("Default Level (For testing)")]    
+    public LevelConditions defaultLevel;
+
 
     #region StartGame SEQUENCE
     //En orden
@@ -212,15 +218,30 @@ public class GameController : MonoBehaviour {
     /// </summary>
     void SetQuality()
     {
-        GraphicQualitySettings QS = sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings;
+
+        GraphicQualitySettings QS;
+        if (sProfileManager.ProfileSingleton != null)
+        {
+            QS = sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings;
+        }else
+        {
+            QS = GraphicQualitySettings.High;
+        }
         QualitySelector[] Qss = GameObject.FindObjectsOfType<QualitySelector>();
         QualitySelector.instances = Qss.Length;
         QualitySelector.finishedinstances = 0;
         if (Qss.Length < 1) return; //Failsafe
-
+        string s;
+        if (GameConfig.s != null)
+        {
+            s = GameConfig.s.LowIMGPath;
+        }else
+        {
+            s = "IMG\\LowIMGs\\";
+        }
         for (int i = 0; i < Qss.Length; i++)
         {
-            Qss[i].Set(QS,GameConfig.s.LowIMGPath);
+            Qss[i].Set(QS,s);
         }
     }
 
@@ -241,8 +262,15 @@ public class GameController : MonoBehaviour {
 
             //Ajustamos este nivel dependiendo de el sitio en las build settings de su escena
             level = SceneManager.GetActiveScene().buildIndex - 3;
+            if (sProfileManager.instance != null) if (level > sProfileManager.instance.levelconditions.Count - 1) level = 1;
             //Clonamos la configuración de este nivel (LevelConditions)
             if (sProfileManager.instance != null) myLevel = ObjectCloner.Clone<LevelConditions>(sProfileManager.instance.levelconditions.Find(x => x.level == level));
+            //if sProfiel dues not exist, Bootstrap a TEST level
+            if (sProfileManager.instance == null)
+            {
+                myLevel = defaultLevel;
+
+            }
 
             //Set Strings
             MoneyText.text = _money.ToString();
@@ -320,9 +348,12 @@ public class GameController : MonoBehaviour {
 
             //Esta lina activa el tutorial (si es false) 
             //O va directo al menú de INTRO (si es true)
-            TutorialController.s.hasTutorial = !sProfileManager.ProfileSingleton.profileLevels[level].TutorialDone;
-            TutorialController.ChangeMyState(sProfileManager.ProfileSingleton.profileLevels[level].TutorialDone);
-            if (!sProfileManager.ProfileSingleton.profileLevels[level].TutorialDone) { TutorialController.s.ResetTutorialAndGo(); }else { TutorialController.s.secondTime = true; }
+            if (sProfileManager.instance != null)
+            {
+                TutorialController.s.hasTutorial = !sProfileManager.ProfileSingleton.profileLevels[level].TutorialDone;
+                TutorialController.ChangeMyState(sProfileManager.ProfileSingleton.profileLevels[level].TutorialDone);
+                if (!sProfileManager.ProfileSingleton.profileLevels[level].TutorialDone) { TutorialController.s.ResetTutorialAndGo(); } else { TutorialController.s.secondTime = true; }
+            }
             
 
             
@@ -425,7 +456,9 @@ public class GameController : MonoBehaviour {
     /// (Esto se ejecuta desde el ANIMADOR del CountDown inicial)
     /// </summary>
     public void StartGame()
-    {        
+    {
+        gameStarted = true;
+        gameEnding = false;
         FreezeGame(false);
         CounddownOBJ.SetActive(false);        
     }
@@ -552,6 +585,7 @@ public class GameController : MonoBehaviour {
     /// </summary>
     void ActivateLowTimeTimerAnimation()
     {
+        if (gameEnding) return;
         //Si la musica está activada:
         if (sProfileManager.ProfileSingleton.MusicState)
         {
@@ -562,13 +596,13 @@ public class GameController : MonoBehaviour {
                 {
                     SoundStore.s.PlaySoundByAlias("TimeRunOut", 0f, GameConfig.s.SoundVolume + 0.5f, false, 0f, false, 0f, () =>
                     {
-                        SoundSystem.s.AudioSources[0].pitch = 1.2f;
+                        if (!gameEnding) SoundSystem.s.AudioSources[0].pitch = 1.2f;
                         if (sProfileManager.ProfileSingleton.MusicState) SoundSystem.s.FadeToMusic(1f, 0.2f);
                     });
                 }else
                 {
                     //Si el sonido noe stá activado
-                    SoundSystem.s.AudioSources[0].pitch = 1.2f;
+                    if (!gameEnding) SoundSystem.s.AudioSources[0].pitch = 1.2f;
                 }
             });
         }
@@ -675,14 +709,17 @@ public class GameController : MonoBehaviour {
     {
         if (gameEnding) return;
         gameEnding = true;
-
-        if (sProfileManager.ProfileSingleton.MusicState)
+        gameStarted = false;
+        if (sProfileManager.s != null && SoundSystem.s != null)
         {
-            SoundSystem.s.FadeOutMusic(0.2f, () => { StopLowTimeTimerAnimation(); MusicStore.s.PlayMusicByAlias("Victory", 0f, 1f); });
-        }
-        else
-        {
-            StopLowTimeTimerAnimation();
+            if (sProfileManager.ProfileSingleton.MusicState)
+            {
+                SoundSystem.s.FadeOutMusic(0.2f, () => { StopLowTimeTimerAnimation(); MusicStore.s.PlayMusicByAlias("Victory", 0f, 1f); });
+            }
+            else
+            {
+                StopLowTimeTimerAnimation();
+            }
         }
         FreezeGame(true);
         FinishText.SetActive(true);
@@ -805,6 +842,7 @@ public class GameController : MonoBehaviour {
     {
         float delay = 0f;
         if (startLevel) delay = 3f;
+        if (MusicButton.s == null || MusicStore.s == null) return;
         if (!MenuVersion) if (!MusicStore.s.AliasIsPlaying(myLevel.MusicAlias)) MusicStore.s.PlayMusicByAlias(myLevel.MusicAlias, delay, GameConfig.s.MusicVolume, true, 2f, true, 2f, null, () => { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
         if (MenuVersion) if (!MusicStore.s.AliasIsPlaying("Menu")) MusicStore.s.PlayMusicByAlias("Menu", 0f, GameConfig.s.MusicVolume, true, 0f, true, 1f, null, () => { if (MusicButton.s != null) MusicButton.s.Clickable = true; });
     }
@@ -822,6 +860,7 @@ public class GameController : MonoBehaviour {
     /// </summary>
     public void SaveProfile(bool force = false)
     {
+        if (sProfileManager.s == null) return;
         bool b = false;
         int stars = myLevel.CheckQuests();
         if (stars > 0) { b = true; sProfileManager.ProfileSingleton.profileLevels[level].beated = true; }

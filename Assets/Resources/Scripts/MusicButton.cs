@@ -57,7 +57,7 @@ public class MusicButton : MonoBehaviour {
         set
         {
             _state = value;
-            GameConfig.s.MusicState = value;
+            if (GameConfig.s != null) GameConfig.s.MusicState = value;
             SetSprite(_state);
             
         }
@@ -83,19 +83,41 @@ public class MusicButton : MonoBehaviour {
     {
         if (set)
         {
-            mySprite.spriteName = GameConfig.s.MusicSprite;
+            if (GameConfig.s != null)
+            {
+                mySprite.spriteName = GameConfig.s.MusicSprite;
+            }else
+            {
+                mySprite.spriteName = "ButtonIcons_BGM";
+            }
 
         }
         else
         {
-            mySprite.spriteName = GameConfig.s.NoMusicSprite;
+            if (GameConfig.s != null)
+            {
+                
+                mySprite.spriteName = GameConfig.s.NoMusicSprite;
+               // Debug.Log("saf");
+            }else
+            {
+                mySprite.spriteName = "ButtonIcons_BGMOff";
+            }
+                
         }
     }
 
     void Awake()
     {
-        _state = GameConfig.s.MusicState;
-        SetSprite(GameConfig.s.MusicState);
+        if (GameConfig.s != null)
+        {
+            _state = GameConfig.s.MusicState;
+        }else
+        {
+            _state = false;
+        }
+    
+        SetSprite(_state);
     }
 
     public void Click()

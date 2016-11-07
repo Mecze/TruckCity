@@ -346,7 +346,7 @@ public class QuestSlate : MonoBehaviour {
         switch (_myQuest.winCondition)
         {
             case WinCondition.Delivered:
-                MainIMG.color = GameConfig.s.cargoColors[(int)_myQuest.CargoType];
+                if (GameConfig.s != null)MainIMG.color = GameConfig.s.cargoColors[(int)_myQuest.CargoType];
                 MainLabel.text = "0/" + _myQuest.winAmount.ToString();
                 MainIMG.spriteName = DeliveryName;
                 ShadowIMG.gameObject.SetActive(true);

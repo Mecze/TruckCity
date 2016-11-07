@@ -73,6 +73,9 @@ public class GameConfig : Singleton<GameConfig> {
 
     #endregion
 
+    [Header("Clickable Roads Colors")]
+    public Color[] clickableRoadColors;
+
     #region strings for Quest Slate
     public string[] playerOrdersQuestSlate;
 
@@ -190,10 +193,21 @@ public class GameConfig : Singleton<GameConfig> {
     public string MusicSprite;
     public string NoMusicSprite;
 
-    
+    [Header("Menu Levels Font and Shadow Colors")]
+    public FontShadowColors[] MenuLevelFontShadowColors;
+
 
 
 
 
     #endregion
+}
+
+[System.Serializable]
+public class FontShadowColors
+{
+    public Color fontColor;
+    public Color OutlineColor;
+    public Color shadowColor;
+    
 }

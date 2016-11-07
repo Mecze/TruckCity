@@ -93,15 +93,23 @@ public class TypewriterEffect : MonoBehaviour
 
 	public void ResetToBeginning ()
 	{
-		Finish();
-		mReset = true;
-		mActive = true;
-		mNextChar = 0f;
+		
+		
+        mActive = true;
+		//mNextChar = 0f;
 		mCurrentOffset = 0;
         if (initialDelay == 0f) { firstEmptyCharacter = true; } else { firstEmptyCharacter = false; }
+        
+
 
         Update();
-	}
+        if (mLabel != null)
+        {
+            mLabel.text = "";
+        }
+        mReset = true;
+        Finish();
+    }
 
 	/// <summary>
 	/// Finish the typewriter operation and show all the text right away.
@@ -115,7 +123,7 @@ public class TypewriterEffect : MonoBehaviour
 
 			if (!mReset)
 			{
-				mCurrentOffset = mFullText.Length;
+				if (mFullText != null)mCurrentOffset = mFullText.Length;
 				mFade.Clear();
 				mLabel.text = mFullText;
 			}
