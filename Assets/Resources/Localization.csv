@@ -26,6 +26,11 @@ WhatsNew,What's New?, Novedades
 Version,Version, Versión
 VersionNumber,Beta: 0.1,Beta: 0.1
 VersionText,"[u]0.1[/u]\n- Google Play Beta Launch","[u]0.1[/u]\n- Lanzamiento a Google Play Beta"
+Beta1,"Welcome to Truck City's Beta","Bienvenido a la Beta de Truck City"
+Beta2,"Please provide feedback by completing the following [FF5454FF]Survey[-]:","Por favor danos tu feedback completanto la siguiente [FF5454FF]Encuesta[-]:"
+Survey,"Survey","Encuesta"
+ReportBug,"Report a Bug","Reportar un Bug"
+Suggestion,"Suggestion","Sugerencia"
 Skip,Skip,Saltar
 RepeatTutorial,Repeat Tutorial,Repetir Tutorial
 PressHere, Touch here to continue, Toca aquí para continuar
