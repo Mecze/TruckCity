@@ -53,7 +53,7 @@ Level1Hint12,"Lastly, each level will feature a timer to acomplish the level";"F
 
 Level2Hint0,"As you saw before, There are more than one kinds of cargo\nBut also, the are more kind of rotable roads","Como se vió anteriormente, Hay mas de un tipo de cargamento\nPero tambien hay mas tipos de carreteras que se pueden rotar"
 Level2Hint1,"This are the [9B30FF]Anchor Roads[-]", "Esta son las [9B30FF]Carreteras Ancla"
-Level2Hint2,"It has the property that one of the sides is locked, and the other one moves after each touch","Tiene la proiedad de que uno de los lados de la carretera no se mueve, mientras que el otro lo hace tras cada toque"
+Level2Hint2,"It has the property that one of the sides is locked, and the other one moves after each touch","Tiene la propiedad de que uno de los lados de la carretera no se mueve, mientras que el otro lo hace tras cada toque"
 Level2Hint3,"Observe the position of the icon","Observa la posición del icono"
 Level2Hint4,"This road is anchored on its West side","Esta carretera está anclada por su lado Oeste"
 Level2Hint5,"And this one is anchored on its East side","Y esta está anclada por su lado Este"
@@ -69,7 +69,7 @@ Level3Hint5,"Also, remenber that Trucks can turn around when they cannot enter t
 Level4Hint0,"[FF5454FF]Time is really important[-] on this one","[FF5454FF]El tiempo es muy importante[-] aquí"
 Level4Hint1,"Factories not always produce infinte amounts of Cargo","Las factorias no siempre producen cargamento infinito"
 Level4Hint2,"Sometimes they store a limited amount of Cargo Items","A veces almacenan una cantidad limitada de Carga"
-Level4Hint3,"And produces [FF5454FF]more[-] cargo every once in a while when it's capacity isn't full","Y producen [FF5454FF]más[-] cargamento de cada cierto tiempo cuando no están llenos"
+Level4Hint3,"And produces [FF5454FF]more[-] cargo every once in a while when it's capacity isn't full","Y producen [FF5454FF]más[-] cargamento cada cierto tiempo cuando no están llenos"
 Level4Hint4,"Try to synchronize the arrival of your trucks with the production times of the factories","Intenta sincronizar la llegada de tus camiones con la producción de las factorias"
 Level4Hint5,"For that: sometimes it's better to make your Trucks to lose some time","Para ello: a veces es mejor hacer que tus camiones pierdan el tiempo"
 Level5Hint0,Each Delivery yields different amounts of money,Cada envio da una cantidad diferente de dinero

@@ -30,6 +30,7 @@ public class MenuLevel : MonoBehaviour {
 
     public bool hover = false;
     public bool pressed = false;
+    public bool dragging = false;
 
     ProfileLevels _myProfileLevel;
 
@@ -97,6 +98,10 @@ public class MenuLevel : MonoBehaviour {
     }
     public void back()
     {
+        if (dragging)
+        {
+            dragging = false; return;
+        }
         if (!pressed)
         {
 #if UNITY_STANDALONE_WIN 
@@ -139,6 +144,14 @@ public class MenuLevel : MonoBehaviour {
     {
         pressed = false;
         tween2.PlayReverse();        
+    }
+    public void OnDrag()
+    {
+        dragging = true;
+    }
+    public void OnDragEnd()
+    {
+        //dragging = false;
     }
 
 }

@@ -55,16 +55,19 @@ public class sProfileManager : Singleton<sProfileManager> {
                         _singleton = NewProfile(); //we create a new profile (a copy of Default's profile)
 
                         //if new version (default's) is greater than loaded version and we are not forced to clean player progression we proceed to copy it from old profile
-                        if (sProfileManager.instance.defaultProfile.buildNumber > pf.buildNumber && !_singleton.forceNewProfileOnUpdate)
+                        if (pf != null)
                         {
-                            //Newer versi�n detected!
-                            //we try to copy older ProfileLevels and stars of the player (Progresion)
-                            for (int i = 0; i < pf.profileLevels.Count; i++)
+                            if (sProfileManager.instance.defaultProfile.buildNumber > pf.buildNumber && !_singleton.forceNewProfileOnUpdate)
                             {
-                                //we do it one by one, on a for to respect newer levels
-                                _singleton.profileLevels[i] = pf.profileLevels[i];
+                                //Newer versi�n detected!
+                                //we try to copy older ProfileLevels and stars of the player (Progresion)
+                                for (int i = 0; i < pf.profileLevels.Count; i++)
+                                {
+                                    //we do it one by one, on a for to respect newer levels
+                                    _singleton.profileLevels[i] = pf.profileLevels[i];
+                                }
+                                Debug.Log("Profile adapted");
                             }
-                            Debug.Log("Profile adapted");
                         }
                     }
                     else
