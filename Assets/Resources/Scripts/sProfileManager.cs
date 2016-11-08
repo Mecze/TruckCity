@@ -34,20 +34,45 @@ public class sProfileManager : Singleton<sProfileManager> {
         {
             if (_singleton == null)
             {
+                //If we have no profile:
+
+                //if there's no instance of the Manager we exit to avoid errors
                 if (sProfileManager.instance == null) return null;
+                
+                //If we are forced to create a new profile (usually used for debuging and testing)
                 if (sProfileManager.instance.ForceNewProfile)
                 {
                     _singleton = NewProfile();
                 }
                 else
                 {
+                    //if we are allowed to load:
                     Profile pf = sSaveLoad.LoadProfile();
-                    if (pf == null || pf.version == "" || pf.version != sProfileManager.instance.defaultProfile.version)
+
+                    //Now we compare loaded profile versions with current versi�n (default's profile build numbers)
+                    if (pf == null || pf.buildNumber == 0 || pf.buildNumber != sProfileManager.instance.defaultProfile.buildNumber)
                     {
-                        _singleton = NewProfile();
+                        _singleton = NewProfile(); //we create a new profile (a copy of Default's profile)
+
+                        //if new version (default's) is greater than loaded version and we are not forced to clean player progression we proceed to copy it from old profile
+                        if (pf != null)
+                        {
+                            if (sProfileManager.instance.defaultProfile.buildNumber > pf.buildNumber && !_singleton.forceNewProfileOnUpdate)
+                            {
+                                //Newer versi�n detected!
+                                //we try to copy older ProfileLevels and stars of the player (Progresion)
+                                for (int i = 0; i < pf.profileLevels.Count; i++)
+                                {
+                                    //we do it one by one, on a for to respect newer levels
+                                    _singleton.profileLevels[i] = pf.profileLevels[i];
+                                }
+                                Debug.Log("Profile adapted");
+                            }
+                        }
                     }
                     else
                     {
+                        //If the version Build number Match, we just load
                         _singleton = pf;
                         sSaveLoad.savedProfile = _singleton;                        
                         Debug.Log("Profile Loaded");

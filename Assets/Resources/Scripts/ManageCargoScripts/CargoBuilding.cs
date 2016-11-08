@@ -42,7 +42,7 @@ public class CargoBuilding : MonoBehaviour, IFreezable {
     [SerializeField]
     public List<AcceptsCargo> acceptsCargo;
 
-
+    
 
 
     #region References

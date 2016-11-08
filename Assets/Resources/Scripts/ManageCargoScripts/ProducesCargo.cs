@@ -10,7 +10,7 @@ using System.Collections;
 /// Hereda de CargoManagement
 //////////////////////////////
 
-public enum TimeToProduce {None = 0, ThreeSeconds = 3, SixSeconds = 6, TwelveSeconds = 12, TwentyFourSeconds = 24 }
+public enum TimeToProduce {None = 0, ThreeSeconds = 3, SixSeconds = 6, TwelveSeconds = 12, TwentyFourSeconds = 24, ThirtyTwoSeconds = 32, FortySeconds = 40, FortyEightSeconds = 48 }
 
 [System.Serializable]
 public class ProducesCargo : CargoManagement

@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 
 
-public enum AIWanderState {WalkingTowards = 0, LookingTrucks = 1, LookingPoint = 2 }
+public enum AIWanderState {None = 0, WalkingTowards = 1, LookingTrucks = 2, LookingPoint = 3 }
 #pragma warning disable 0649
 public class Wander : MonoBehaviour
 {
@@ -35,7 +35,7 @@ public class Wander : MonoBehaviour
     List<Transform> LookPoints;
     public List<Transform> nearbyTruck;
 
-
+    List<AIWanderState> array;
 
     bool changedState = false;
 
@@ -47,6 +47,12 @@ public class Wander : MonoBehaviour
 
     void Awake()
     {
+        array = ((AIWanderState[])Enum.GetValues(typeof(AIWanderState))).ToList();
+        if (!LookingPoints) array.Remove(AIWanderState.LookingPoint);
+        if (!LookingTrucks) array.Remove(AIWanderState.LookingTrucks);
+        if (!WalkTowards) array.Remove(AIWanderState.LookingTrucks);
+        array.Remove(AIWanderState.None);
+
         if (InterestPoints == null) InterestPoints = new List<Transform>();
         if (nearbyTruck == null) nearbyTruck = new List<Transform>();
         StartCoroutine(newState());
@@ -68,22 +74,41 @@ public class Wander : MonoBehaviour
 
     void newRandomState()
     {
+        int curr = array.Count;
+
+        
+
         AIWanderState lastState = AIstate;
         int max = Enum.GetValues(typeof(AIWanderState)).Length;
-        int random = 0;
-        bool correctPick = false;
-        do
+        //int random = 0;
+        //bool correctPick = false;
+        if (curr > 1)
         {
-            random = UnityEngine.Random.Range(0, max);
-            AIstate = (AIWanderState)random;
-            correctPick = true;
-            if (AIstate == AIWanderState.LookingPoint && !LookingPoints) correctPick = false;
-            if (AIstate == AIWanderState.LookingTrucks && !LookingTrucks)correctPick = false;            
-            if (AIstate == AIWanderState.WalkingTowards && !WalkTowards) correctPick = false;
+            
+            
+                AIstate = array.FindAll(x => array[array.RandomIndex()] != lastState)[0];
+            
+            /*
+            do
+            {
+                random = UnityEngine.Random.Range(1, max);
+                AIstate = (AIWanderState)random;
+                correctPick = true;
 
-        } while (AIstate == lastState || correctPick == false);
+                if (AIstate == AIWanderState.LookingPoint && !LookingPoints) correctPick = false;
+                if (AIstate == AIWanderState.LookingTrucks && !LookingTrucks) correctPick = false;
+                if (AIstate == AIWanderState.WalkingTowards && !WalkTowards) correctPick = false;
+
+
+            } while (AIstate == lastState || correctPick == false);
+            */
+        }else
+        {
+            if (curr == 1)AIstate = array[0];
+            if (curr == 0) AIstate = AIWanderState.LookingTrucks;
+        }
         changedState = true;
-
+        //if (AIstate == AIWanderState.None) AIstate = AIWanderState.LookingTrucks;
 
     }
 

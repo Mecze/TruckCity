@@ -49,6 +49,9 @@ public class sMenu : MonoBehaviour {
     [SerializeField]
     GameObject languagePrefab;
 
+    [SerializeField]
+    UIScrollView VersionScrollView;
+
     bool Loading = false;
 
     void Start()
@@ -73,6 +76,7 @@ public class sMenu : MonoBehaviour {
             go.transform.localScale = Vector3.one;
         }
         anchor.GetComponent<UIGrid>().Reposition();
+        anchor.GetComponentInParent<UIScrollView>().ResetPosition();
         
 
 
@@ -96,7 +100,10 @@ public class sMenu : MonoBehaviour {
             go.transform.localScale = Vector3.one;
         }
         languageAnchor.GetComponent<UIGrid>().Reposition();
-        languageAnchor.GetComponent<UIGrid>().repositionNow = true;
+        //languageAnchor.GetComponent<UIGrid>().repositionNow = true;
+        //languageAnchor.GetComponentInParent<UIScrollView>().ResetPosition();
+
+        VersionScrollView.ResetPosition();
     }   
 
     public void OnLevelButtonClick(int levelIndex)
@@ -116,6 +123,28 @@ public class sMenu : MonoBehaviour {
             sProfileManager.instance.ChangeLevel(levelIndex);
         }
     }
-       
+
+
+    #region BETA BUTTONS
+
+    public void SurveyButton()
+    {
+        if (GameConfig.s == null) return;
+        Application.OpenURL(GameConfig.s.GetBETAURLs().SurveyURL);
+    }
+    public void ReportABugButton()
+    {
+        if (GameConfig.s == null) return;
+        Application.OpenURL(GameConfig.s.GetBETAURLs().BugURL);
+    }
+    public void SuggestionButton()
+    {
+        if (GameConfig.s == null) return;
+        Application.OpenURL(GameConfig.s.GetBETAURLs().SuggestionURL);
+    }
+
+    #endregion
+
+
 
 }

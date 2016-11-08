@@ -25,9 +25,23 @@ public class Profile {
     /// Points to the level to create new
     /// </summary>
     public int newLevelIndex;
-
-
+    
+    /// <summary>
+    /// String of the Versi�n of this Build
+    /// </summary>
     public string version;
+
+    /// <summary>
+    /// The build number. Newer builds should have greater numbers;
+    /// </summary>
+    public int buildNumber = 0;
+
+    /// <summary>
+    /// IF a build is released with this to Truth, Player's progression upon update
+    /// will be deleted.
+    /// </summary>
+    public bool forceNewProfileOnUpdate = false;
+
 
     public int stars
     {
