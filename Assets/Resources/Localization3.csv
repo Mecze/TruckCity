@@ -1,0 +1,87 @@
+Key,English,Spanish
+Flag,UKflag,SpanishFlag
+English,English,Inglés
+Spanish,Spanish,Español
+Sound,Sound,Sonido
+Music,Music,Música
+Desc,English Localization,Localización Español
+Levels,Levels:,Niveles:
+Settings,Settings:,Configuración:
+Language,Language:,Idioma:
+Level,Level,Nivel
+Missions,[FF5454FF]M[-]issions,[FF5454FF]M[-]isiones
+Trucks,[FF5454FF]T[-]rucks,[FF5454FF]C[-]amiones
+Time!,Time!,¡Tiempo!
+QuestDeliver,Deliver,Entrega
+QuestDeliverAny,Deliver (Any), Entrega (Cualquier)
+QuestMoney,Get Money,Consigue dinero
+QuestTime,Complete Before,Antes de
+Loading,[FF5454FF]L[-]oading,[FF5454FF]C[-]argando
+LoadingComplete,[FF5454FF]L[-]oading [FF5454FF]D[-]one,[FF5454FF]C[-]arga [FF5454FF]C[-]ompleta
+Graphics,Graphics:,Gráficos:
+Low,Low,Bajo
+Medium,Medium,Medio
+High,High,Alto
+WhatsNew,What's New?, Novedades
+Version,Version, Versión
+VersionNumber,Beta: 0.1,Beta: 0.1
+VersionText,[u]0.1[/u]\n- Google Play Beta Launch,[u]0.1[/u]\n- Lanzamiento a Google Play Beta
+Beta1,Welcome to Truck City's Beta,Bienvenido a la Beta de Truck City
+Beta2,Please provide feedback by completing the following [FF5454FF]Survey[-]:,Por favor danos tu feedback completando la siguiente [FF5454FF]Encuesta[-]:
+Survey,Survey,Encuesta
+ReportBug,Report a Bug,Reportar un Bug
+Suggestion,Suggestion,Sugerencia
+Skip,Skip,Saltar
+RepeatTutorial,Repeat Tutorial,Repetir Tutorial
+PressHere, Touch here to continue, Toca aquí para continuar
+PressAnywhere, Touch anywhere to continue, Toca para continuar
+
+Level1Hint0,Welcome to [FF5454FF]Truck City[-].\n\nYour Job is to Deliver Cargo from one place to another.\n,Bienvenido a [FF5454FF]Truck City[-].\n\nTu tarea es llevar carga de un sitio a otro.
+Level1Hint1,[EE82EE]Pink Cargo[-] has to be delivered to -,El [EE82EE]Cargamento Rosa[-] debe ser entregado -
+Level1Hint2,- buildings that accepts [EE82EE]Pink Cargo[-],- en edificios que acepten [EE82EE]Cargamento Rosa[-]
+Level1Hint3,And the same for [8B6914]Brown Cargo[-]!,Y lo mismo para el [8B6914]Cargamento Marrón[-]!
+Level1Hint4,For that you will use these [FF5454FF]trucks[-],Para ello debes usar estos [FF5454FF]camiones[-]
+Level1Hint5,"Trucks are stupid, You will have to touch on certain roads to [FF5454FF]rotate[-] them in order to guide their path"," "Los camiones son estúpidos. Tendrás que [FF5454FF]tocar[-] en ciertas carreteras para rotarlas y guiar su camino"
+Level1Hint6,"This is a turnable road, a [5DFC0A]Green Road[-]","Esta es una Carretera girable, en concreto, una [5DFC0A]Carretera Verde[-]"
+Level1Hint7,"[5DFC0A]Green Roads[-] are simple, they rotate 90 degrees each time you touch them","Las [5DFC0A]Carreteras Verdes[-] son sencillas, se giran 90 grados cada vez que las tocas"
+Level1Hint8,You will receive [FFE600]Stars[-] every time you complete Missions,Recibirás [FFE600]Estrellas[-] cada vez que completes una misión
+Level1Hint9,[FFE600]Stars[-] allow you to unlock more levels,Con [FFE600]Estrellas[-] puedes desbloquear mas niveles
+Level1Hint10,You can find the Missions at the beginning of each level and in the pause menu,"Puedes encontrar las Misiones de cada nivel al principio de cada uno, y en el menú de pause"
+Level1Hint11,And a quick look on Missions over here too,También un resumen aquí
+Level1Hint12,"Lastly, each level will feature a timer to accomplish the level","Finalmente, cada nivel tiene un temporizador aquí"
+
+
+Level2Hint0,"As you saw before, There are more than one kinds of cargo\nBut also, the are more kind of turnable roads","Como se vio anteriormente, Hay mas de un tipo de cargamento\nPero también hay mas tipos de carreteras que se pueden rotar"
+Level2Hint1,This are the [9B30FF]Anchor Roads[-],"Esta son las [9B30FF]Carreteras Ancla"
+Level2Hint2,"It has the property that one of the sides is locked, and the other one moves after each touch","Tiene la propiedad de que uno de los lados de la carretera no se mueve, mientras que el otro lo hace tras cada toque"
+Level2Hint3,Observe the position of the icon,Observa la posición del icono
+Level2Hint4,This road is anchored on its West side,Esta carretera está anclada por su lado Oeste
+Level2Hint5,And this one is anchored on its East side,Y esta está anclada por su lado Este
+Level2Hint6,Beware! On this level you now control 2 trucks!,Cuidado! Ahora controlas 2 camiones!
+
+Level3Hint0,This is a [009ACD]Blue Road[-],Esta es una [009ACD]Carretera Azul[-]
+Level3Hint1,[009ACD]Blue Roads[-] are straight roads that alternate between an horizontal road and a vertical road upon touching them,Las [009ACD]Carreteras Azules[-] son carreteras rectas que se alternan entre una carretera horizontal y vertical cuando se las toca
+Level3Hint2,Getting all the [FFE600]Stars[-] on this level might be a little harder than before,Conseguir todas las [FFE600]Estrellas[-] en este nivel puede ser mas difícil que antes
+Level3Hint3,Don't despair! You can restart at any time from the pause menu,No desesperes! Puedes reiniciar en cualquier momento desde el menú de pause
+Level3Hint4,"The [C1CDCD]?[-] icon on the pause menu will close the menu while the game is stopped, so you can plan your strategy\nAlso you can repeat this tutorial from there","El icono [C1CDCD]?[-] del menú de pause cerrará dicho menú manteniendo el  juego pausado, de manera que puedas planear tu estrategia\nAdemas, desde allí podrás repetir este tutorial"
+Level3Hint5,"Also, remember that Trucks can turn around when they cannot enter to the next road","Además, recuerda que los camiones también pueden dar la vuelta cuando no pueden entrar a la siguiente carretera!"
+
+Level4Hint0,[FF5454FF]Time is really important[-] on this one,[FF5454FF]El tiempo es muy importante[-] aquí
+Level4Hint1,Factories not always produce infinite amounts of Cargo,Las factorías no siempre producen cargamento infinito
+Level4Hint2,Sometimes they store a limited amount of Cargo Items,A veces almacenan una cantidad limitada de Carga
+Level4Hint3,And produces [FF5454FF]more[-] cargo every once in a while when it's capacity isn't full,Y producen [FF5454FF]más[-] cargamento cada cierto tiempo cuando no están llenos
+Level4Hint4,Try to synchronize the arrival of your trucks with the production times of the factories,Intenta sincronizar la llegada de tus camiones con la producción de las factorías
+Level4Hint5,For that: sometimes it's better to make your Trucks to lose some time,Para ello: a veces es mejor hacer que tus camiones pierdan el tiempo
+Level5Hint0,Each Delivery yields different amounts of money,Cada envío da una cantidad diferente de dinero
+Level5Hint1,This one only yields 9 $,Este solo da 9 $
+Level5Hint2,But this yields 30 $,Pero este da 30 $
+Level5Hint3,Make a good decision to where send your trucks!,Decide donde deben ir tus camiones!
+Level6Hint0,[FF5454FF]Something's Burning![-],[FF5454FF]Algo está ardiendo![-]
+Level6Hint1,These are [FF5454FF]Road Blocks[-] they block one lane of the Road,Estos son [FF5454FF]Bloqueos[-] y bloquean un carril
+Level6Hint2,Your Trucks will [FF5454FF]Turn Around[-] when encountering a Road Block,Tus camiones [FF5454FF]Darán la vuelta[-] cuando se encuentren con un Bloqueo.
+Level6Hint3,Try to use it on your advantage,Intenta sacar ventaja de ello
+Level6Hint4,"Also, this [FFFFFF]white icon[-] means this factory accepts any kind of cargo","Ademas,este [FFFFFF]icono blanco[-] significa que esta fabrica acepta cualquier tipo de cargamento"
+
+Level7Hint0,On this level we have added one more truck!,En este nivel hemos añadido un nuevo camión!
+Level7Hint1,"Worry not, overall speed is slower","No te preocupues"," la velocidad ha sido reducidad"
+Level7Hint2,But don't sleep or trucks will run wild!,Pero presta atención o los camiones se te descontrolaran
