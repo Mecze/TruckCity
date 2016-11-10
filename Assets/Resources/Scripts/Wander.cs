@@ -42,7 +42,7 @@ public class Wander : MonoBehaviour
     [Header("Current State (debug)")]
     [SerializeField]
     AIWanderState AIstate = AIWanderState.LookingTrucks;
-
+    AIWanderState lastState = AIWanderState.None;
 
 
     void Awake()
@@ -50,7 +50,7 @@ public class Wander : MonoBehaviour
         array = ((AIWanderState[])Enum.GetValues(typeof(AIWanderState))).ToList();
         if (!LookingPoints) array.Remove(AIWanderState.LookingPoint);
         if (!LookingTrucks) array.Remove(AIWanderState.LookingTrucks);
-        if (!WalkTowards) array.Remove(AIWanderState.LookingTrucks);
+        if (!WalkTowards) array.Remove(AIWanderState.WalkingTowards);
         array.Remove(AIWanderState.None);
 
         if (InterestPoints == null) InterestPoints = new List<Transform>();
@@ -78,16 +78,23 @@ public class Wander : MonoBehaviour
 
         
 
-        AIWanderState lastState = AIstate;
+
+
         int max = Enum.GetValues(typeof(AIWanderState)).Length;
         //int random = 0;
         //bool correctPick = false;
         if (curr > 1)
-        {
-            
-            
-                AIstate = array.FindAll(x => array[array.RandomIndex()] != lastState)[0];
-            
+        {            
+            do
+            {
+                AIstate = array[UnityEngine.Random.Range(0, array.Count)];
+            } while (lastState == AIstate);
+            //AIstate = array.FindAll(x => array[array.RandomIndex()] != lastState)[0];
+            lastState = AIstate;
+
+
+
+
             /*
             do
             {
@@ -102,7 +109,8 @@ public class Wander : MonoBehaviour
 
             } while (AIstate == lastState || correctPick == false);
             */
-        }else
+        }
+        else
         {
             if (curr == 1)AIstate = array[0];
             if (curr == 0) AIstate = AIWanderState.LookingTrucks;
@@ -121,8 +129,7 @@ public class Wander : MonoBehaviour
             case AIWanderState.WalkingTowards:
                 if (changedState)
                 {
-                    PickDirection();
-                    
+                    PickDirection();                    
                 }
                 walkAnimator.SetBool("Walk", true);
                 Vector3 v = (Vector3.forward);                
@@ -176,19 +183,51 @@ public class Wander : MonoBehaviour
     void PickDirection()
     {
         //Failsafes
-        if (InterestPoints.Count == 1) interestPicked = 0;        
+        if (InterestPoints.Count == 1)
+        {
+            interestPicked = 0;
+            return;
+        }
         if (InterestPoints.Count <= 1) return;        
 
         int max = InterestPoints.Count;
-        int last = interestPicked;        
+        int last = interestPicked;
+
+        //List<float> distances = new List<float>();
+        /*
+        int candidate = 0;
+        float maxDist = 0f;
+        for (int i = 0; i < InterestPoints.Count; i++)
+        {
+            float thisDist = Vector3.Distance(InterestPoints[i].position, this.transform.position);
+            if (maxDist < thisDist)
+            {
+                maxDist = thisDist;
+                candidate = i;
+            }            
+        }
+        interestPicked = candidate;
+        */
+        do
+        {
+            interestPicked = UnityEngine.Random.Range(0, max);
+
+
+        } while (interestPicked == last);
+
+        Vector3 v = InterestPoints[interestPicked].position;
+        v.y = transform.position.y;
+        transform.LookAt(v);
+
+
+        /*     
         do
         {
             interestPicked = UnityEngine.Random.Range(0, max);            
-            Vector3 v = InterestPoints[interestPicked].position;
-            v.y = transform.position.y;            
-            transform.LookAt(v);
+           
 
-        } while (interestPicked == last);        
+        } while (interestPicked == last);    
+        */
     }
     void PickDirectionTolook()
     {
@@ -212,13 +251,22 @@ public class Wander : MonoBehaviour
     {
         if (col.tag == "AICollider")
         {
+            if (AIstate != AIWanderState.WalkingTowards) return;
+            if (col.gameObject != InterestPoints[interestPicked].gameObject) return;
+
             AIstate = AIWanderState.LookingTrucks;
+            lastState = AIWanderState.None;
             changedState = true;
             if (AIstate == AIWanderState.LookingTrucks && !LookingTrucks)
             {
                 AIstate = AIWanderState.LookingPoint;
                 changedState = false;
-                if (AIstate == AIWanderState.LookingPoint && !LookingPoints) AIstate = AIWanderState.WalkingTowards;
+                if (AIstate == AIWanderState.LookingPoint && !LookingPoints)
+                {
+                    changedState = true;
+                    AIstate = AIWanderState.WalkingTowards;
+                }
+
             }
             
         }
