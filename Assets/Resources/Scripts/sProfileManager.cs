@@ -97,7 +97,7 @@ public class sProfileManager : Singleton<sProfileManager> {
 
 
 
-    static Profile NewProfile()
+    public static Profile NewProfile()
     {
         Debug.Log("NEW PROFILE!");
         
@@ -158,7 +158,19 @@ public class sProfileManager : Singleton<sProfileManager> {
 
 
         //Si estabamos jugando:
-        
+
+        InitializeGame();
+
+        //if (GameConfig.s.MusicState) MusicStore.s.PlayMusicByAlias("Menu", 1.5f, GameConfig.s.MusicVolume, true, 5f);
+
+
+
+
+    }
+
+    public void InitializeGame(bool InstantTransition=false)
+    {
+        Profile pf = sProfileManager.ProfileSingleton;
         Localization.language = pf.LanguageSelected;
 
         switch (sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings)
@@ -181,14 +193,21 @@ public class sProfileManager : Singleton<sProfileManager> {
         QualitySettings.SetQualityLevel((int)_singleton.GlobalGraphicQualitySettings);
         GameConfig.s.MusicState = pf.MusicState;
         GameConfig.s.SoundState = pf.SoundState;
-        if (!DebugVersion)StartCoroutine(ChangeScene(1)); //Vamos al menu
+        if (!DebugVersion)
+        {
+            if (InstantTransition)
+            {
+                LoadingScreenManager.LoadScene(1);
+            }
+            else
+            {
+                StartCoroutine(ChangeScene(1)); //Vamos al menu
+            }
+            
 
-        //if (GameConfig.s.MusicState) MusicStore.s.PlayMusicByAlias("Menu", 1.5f, GameConfig.s.MusicVolume, true, 5f);
-
-
-
-
+        }
     }
+
 
     IEnumerator ChangeScene(int i)
     {

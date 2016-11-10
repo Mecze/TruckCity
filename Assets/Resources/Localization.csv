@@ -24,8 +24,8 @@ Medium,Medium,Medio
 High,High,Alto
 WhatsNew,What's New?, Novedades
 Version,Version, Versión
-VersionNumber,Beta: 0.1,Beta: 0.1
-VersionText,[u]0.1[/u]\n- Google Play Beta Launch,[u]0.1[/u]\n- Lanzamiento a Google Play Beta
+VersionNumber,Beta: 0.1.1,Beta: 0.1.1
+VersionText,"[u]0.1.1[/u]\n- Added 8th Level\n-Added Several new Assets for Factories and Stores\n- Added the ability to Reset the Profile and Start over\n\n[u]0.1[/u]\n- Google Play Beta Launch","[u]0.1.1[/u]\n- Añadido Octavo Nivel\n- Añadidos nuevos modelos para Factorias y Almacenes\n- Añadida la habilidad de restablecer el perfil y empezar de nuevo\n\n[u]0.1[/u]\n- Lanzamiento a Google Play Beta"
 Beta1,Welcome to Truck City's Beta,Bienvenido a la Beta de Truck City
 Beta2,Please provide feedback by completing the following [FF5454FF]Survey[-]:,Por favor danos tu feedback completando la siguiente [FF5454FF]Encuesta[-]:
 Survey,Survey,Encuesta
@@ -35,6 +35,11 @@ Skip,Skip,Saltar
 RepeatTutorial,Repeat Tutorial,Repetir Tutorial
 PressHere, Touch here to continue, Toca aquí para continuar
 PressAnywhere, Touch anywhere to continue, Toca para continuar
+ResetProfile,"Reset Profile","Reestablecer Perfil"
+Sure,"Sure?","Seguro?"
+Yes,"Yes","Si"
+No,"No", "No"
+
 
 Level1Hint0,Welcome to [FF5454FF]Truck City[-].\n\nYour Job is to Deliver Cargo from one place to another.\n,Bienvenido a [FF5454FF]Truck City[-].\n\nTu tarea es llevar carga de un sitio a otro.
 Level1Hint1,[EE82EE]Pink Cargo[-] has to be delivered to -,El [EE82EE]Cargamento Rosa[-] debe ser entregado -
