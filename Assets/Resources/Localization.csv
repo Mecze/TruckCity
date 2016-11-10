@@ -24,8 +24,8 @@ Medium,Medium,Medio
 High,High,Alto
 WhatsNew,What's New?, Novedades
 Version,Version, Versión
-VersionNumber,Beta: 0.1,Beta: 0.1
-VersionText,[u]0.1[/u]\n- Google Play Beta Launch,[u]0.1[/u]\n- Lanzamiento a Google Play Beta
+VersionNumber,Beta: 0.1.1,Beta: 0.1.1
+VersionText,"[u]0.1.1[/u]\n- Added 8th Level\n-Added Several new Assets for Factories and Stores\n- Added the ability to Reset the Profile and Start over\n\n[u]0.1[/u]\n- Google Play Beta Launch","[u]0.1.1[/u]\n- Añadido Octavo Nivel\n- Añadidos nuevos modelos para Factorias y Almacenes\n- Añadida la habilidad de restablecer el perfil y empezar de nuevo\n\n[u]0.1[/u]\n- Lanzamiento a Google Play Beta"
 Beta1,Welcome to Truck City's Beta,Bienvenido a la Beta de Truck City
 Beta2,Please provide feedback by completing the following [FF5454FF]Survey[-]:,Por favor danos tu feedback completando la siguiente [FF5454FF]Encuesta[-]:
 Survey,Survey,Encuesta
@@ -35,13 +35,18 @@ Skip,Skip,Saltar
 RepeatTutorial,Repeat Tutorial,Repetir Tutorial
 PressHere, Touch here to continue, Toca aquí para continuar
 PressAnywhere, Touch anywhere to continue, Toca para continuar
+ResetProfile,"Reset Profile","Reestablecer Perfil"
+Sure,"Sure?","Seguro?"
+Yes,"Yes","Si"
+No,"No", "No"
+
 
 Level1Hint0,Welcome to [FF5454FF]Truck City[-].\n\nYour Job is to Deliver Cargo from one place to another.\n,Bienvenido a [FF5454FF]Truck City[-].\n\nTu tarea es llevar carga de un sitio a otro.
 Level1Hint1,[EE82EE]Pink Cargo[-] has to be delivered to -,El [EE82EE]Cargamento Rosa[-] debe ser entregado -
 Level1Hint2,- buildings that accepts [EE82EE]Pink Cargo[-],- en edificios que acepten [EE82EE]Cargamento Rosa[-]
 Level1Hint3,And the same for [8B6914]Brown Cargo[-]!,Y lo mismo para el [8B6914]Cargamento Marrón[-]!
 Level1Hint4,For that you will use these [FF5454FF]trucks[-],Para ello debes usar estos [FF5454FF]camiones[-]
-Level1Hint5,"Trucks are stupid, You will have to touch on certain roads to [FF5454FF]rotate[-] them in order to guide their path"," "Los camiones son estúpidos. Tendrás que [FF5454FF]tocar[-] en ciertas carreteras para rotarlas y guiar su camino"
+Level1Hint5,"Trucks are stupid, You will have to touch on certain roads to [FF5454FF]rotate[-] them in order to guide their path","Los camiones son estúpidos. Tendrás que [FF5454FF]tocar[-] en ciertas carreteras para rotarlas y guiar su camino"
 Level1Hint6,"This is a turnable road, a [5DFC0A]Green Road[-]","Esta es una Carretera girable, en concreto, una [5DFC0A]Carretera Verde[-]"
 Level1Hint7,"[5DFC0A]Green Roads[-] are simple, they rotate 90 degrees each time you touch them","Las [5DFC0A]Carreteras Verdes[-] son sencillas, se giran 90 grados cada vez que las tocas"
 Level1Hint8,You will receive [FFE600]Stars[-] every time you complete Missions,Recibirás [FFE600]Estrellas[-] cada vez que completes una misión
@@ -80,10 +85,10 @@ Level6Hint0,[FF5454FF]Something's Burning![-],[FF5454FF]Algo está ardiendo![-]
 Level6Hint1,These are [FF5454FF]Road Blocks[-] they block one lane of the Road,Estos son [FF5454FF]Bloqueos[-] y bloquean un carril
 Level6Hint2,Your Trucks will [FF5454FF]Turn Around[-] when encountering a Road Block,Tus camiones [FF5454FF]Darán la vuelta[-] cuando se encuentren con un Bloqueo.
 Level6Hint3,Try to use it on your advantage,Intenta sacar ventaja de ello
-Level6Hint4,"Also, this [FFFFFF]white icon[-] means this factory accepts any kind of cargo","Ademas,este [FFFFFF]icono blanco[-] significa que esta fabrica acepta cualquier tipo de cargamento"
+Level6Hint4,"Also, this [FFFFFF]white icon[-] means this store accepts any kind of cargo","Ademas,este [FFFFFF]icono blanco[-] significa que este almacen acepta cualquier tipo de cargamento"
 
 Level7Hint0,On this level we have added one more truck!,En este nivel hemos añadido un nuevo camión!
-Level7Hint1,"Worry not, overall speed is slower","No te preocupues"," la velocidad ha sido reducidad"
+Level7Hint1,"Worry not, overall speed is slower","No te preocupues, la velocidad ha sido reducidad"
 Level7Hint2,But don't sleep or trucks will run wild!,Pero presta atención o los camiones se te descontrolaran
 
 Level8Hint0,"This City is a mess!","Esta cuidad es un desastre!"

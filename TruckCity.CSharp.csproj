@@ -293,6 +293,7 @@
     <Compile Include="Assets\Resources\Scripts\QualitySelector.cs" />
     <Compile Include="Assets\Resources\Scripts\QuestSlate.cs" />
     <Compile Include="Assets\Resources\Scripts\QuestSlateDeliveryIntro.cs" />
+    <Compile Include="Assets\Resources\Scripts\ResetProfile.cs" />
     <Compile Include="Assets\Resources\Scripts\RoadBlock.cs" />
     <Compile Include="Assets\Resources\Scripts\RoadCollider.cs" />
     <Compile Include="Assets\Resources\Scripts\RoadEndCollider.cs" />
