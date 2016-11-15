@@ -103,6 +103,7 @@ public class sProfileManager : Singleton<sProfileManager> {
         
         sSaveLoad.savedProfile = sProfileManager.instance.defaultProfile;
         sSaveLoad.savedProfile.LanguageSelected = ChooseLanguage();
+        sSaveLoad.SaveProfile();
         //sSaveLoad.savedProfile.GlobalGraphicQualitySettings = CheckSystem(out sSaveLoad.savedProfile.GraphicMemory);
         return sSaveLoad.savedProfile;
     }

@@ -3,7 +3,10 @@
 #################
 
 
-Library/metadata/
-Library/metadata/*
-Library/metadata/**/*
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
 *.apk
+*.unitypackage
