@@ -95,6 +95,7 @@ public class sProfileManager : Singleton<sProfileManager> {
 
     public List<LevelConditions> levelconditions;
 
+    public List<AspectRatioOptions> ResolutionDictionary;
 
 
     public static Profile NewProfile()
@@ -158,13 +159,34 @@ public class sProfileManager : Singleton<sProfileManager> {
         //pf.currentlyPlayingLevel = sSaveLoad.CheckIfSavedGame();
 
 
-        //Si estabamos jugando:
 
+        ChoseResolution();
         InitializeGame();
 
         //if (GameConfig.s.MusicState) MusicStore.s.PlayMusicByAlias("Menu", 1.5f, GameConfig.s.MusicVolume, true, 5f);
 
 
+
+
+    }
+
+    void ChoseResolution() {
+        //Get current screen resolution
+        Resolution myRes = Screen.currentResolution;
+        //we calculate Aspect Ratio coeficient:
+        float myAR = (float)myRes.width / (float)myRes.height;
+        //We find our Aspect Ratio "Option"!
+        AspectRatioOptions myARO = null;
+        myARO = ResolutionDictionary.Find(x => Mathf.Approximately(x.aspectRatio, myAR));
+        //if not found, we do nothing!
+        if (myARO == null) return;
+
+        //If the current resolution exceeds the maximum resolution of out Option
+        //we change resolution
+        if (myRes.height > myARO.height)
+        {
+            Screen.SetResolution(myARO.width, myARO.height, true, myARO.refreshRate);
+        }
 
 
     }
@@ -233,6 +255,84 @@ public class sProfileManager : Singleton<sProfileManager> {
 
 }
 
+
+
+
+
+
+
+[System.Serializable]
+public class AspectRatioOptions
+{
+    /*
+    public const float AspectRatio1609 = 1.7777f;
+    public const float AspectRatio1610 = 1.6f;
+    public const float AspectRatio0403 = 1.3333f;
+
+    public const int max1609height = 1080;
+    public const int max1610height = 1200;
+    public const int max0403 = 1200;
+    */
+    
+    //Used to differentiate them (developer, serialized onto the inspector)
+    public string ResolutionName;
+    /// <summary>
+    /// Max Height of this AspectRatio
+    /// </summary>
+    public int height;
+    /// <summary>
+    /// Max Width of this AspectRatio
+    /// </summary>
+    public int width; 
+    /// <summary>
+    /// Refresh Rate, usually 60
+    /// </summary>
+    public int refreshRate;
+
+    #region Constructor    
+
+    public AspectRatioOptions(int width=1920,int height=1080, int RefresRate=60)
+    {
+        this.height = height;
+        this.width = width;
+        this.refreshRate = RefresRate;
+    }
+
+    #endregion
+
+    #region TO Resolution
+    public Resolution resolution
+    {
+        get
+        {
+            Resolution res = new Resolution();
+            res.height = height;
+            res.width = width;
+            res.refreshRate = refreshRate;
+            return res;
+        }
+        set
+        {
+            height = value.height;
+            width = value.width;
+            refreshRate = value.refreshRate;
+        }
+    }
+    #endregion
+
+    #region AspectRatio Transformation
+    public float aspectRatio
+    {
+        get
+        {
+            return (float)width / (float)height;
+        }
+    }
+    #endregion
+
+
+
+}
 
 
 
