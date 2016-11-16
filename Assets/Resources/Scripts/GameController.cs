@@ -332,7 +332,7 @@ public class GameController : MonoBehaviour {
                 //---
                 //Creamos los SLATES apropiados (Para UI y para la INTRO)
                 CreateGUISlate(q, e);
-                CreateIPGUISlate(q, e, true);
+                CreateIPGUISlate(q, e, false);
             }
 
             //Tras crear Slates se le indica al Grid que se ajuste
@@ -472,17 +472,25 @@ public class GameController : MonoBehaviour {
     /// </summary>
     /// <param name="q">la Quest</param>
     /// <param name="position">la posicion (bucle)</param>
-    /// <param name="intro">Si es intro o no</param>
-    void CreateIPGUISlate(Quest q, int position, bool intro)
+    /// <param name="outro">Si es intro o no</param>
+    void CreateIPGUISlate(Quest q, int position, bool outro)
     {
         GameObject go;
-        go = GameObject.Instantiate(QuestSlatePrefab);
+        string s;
+        if (outro)
+        {
+            s = "OPQuestSlateAnchor";
+        }else
+        {
+            s = "IPQuestSlateAnchor";
+        }
+        go = GameObject.Instantiate(IPQuestSlatePrefab);
         QuestSlate qs = go.GetComponent<QuestSlate>();
         qs.position = position;
         qs.MyCargoDelivered = CargosDelivered.Find(x => x.type == q.CargoType);
         qs.MyQuest = q;
         qs.IP = true;
-        go.transform.SetParent(GameObject.FindGameObjectWithTag("IPQuestSlateAnchor").transform);
+        go.transform.SetParent(GameObject.FindGameObjectWithTag(s).transform);
         go.transform.localScale = Vector3.one;
 
 
@@ -575,6 +583,17 @@ public class GameController : MonoBehaviour {
     {
         ResetMusic();
         LoadingScreenManager.LoadScene(1);
+    }
+
+    /// <summary>
+    /// Try to Call for next Level
+    /// </summary>
+    public void NextLevel()
+    {
+        if (sProfileManager.s.IsNextLevelUnlocked(level))
+        {
+            LoadingScreenManager.LoadScene(level + 4);
+        }
     }
     #endregion
 
@@ -769,10 +788,24 @@ public class GameController : MonoBehaviour {
         FinishTextScaleTween.ResetToBeginning();
         FinishText.SetActive(false);
         OutroPanel.SetActive(true);
+        int e = 1;
+        foreach (Quest q in myLevel.quests)
+        {
+            CreateIPGUISlate(q, e, true);
+            e++;
+        }
+        GameObject OPAnchor = GameObject.FindGameObjectWithTag("OPQuestSlateAnchor");
+        OPAnchor.GetComponent<UIGrid>().Reposition();
+        /*
+        Vector3 pos = OPAnchor.transform.position;
+        pos.y = 100f;
+        OPAnchor.transform.position = pos;
+        */
+        OPAnchor.transform.position = OPAnchor.transform.parent.transform.position;
         PauseButtonPosTween.PlayReverse();
         GUIPanel.SetActive(false);
         OutroPanelScript ops = OutroPanel.GetComponent<OutroPanelScript>();
-        ops.ShowPanel(level, myLevel.CheckQuests());
+        ops.ShowPanel(level, myLevel.CheckQuests(), sProfileManager.s.IsNextLevelUnlocked(level));
     }
 
 

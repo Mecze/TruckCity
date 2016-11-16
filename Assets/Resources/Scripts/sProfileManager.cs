@@ -282,6 +282,16 @@ public class sProfileManager : Singleton<sProfileManager> {
          });
     }
 
+
+    public bool IsNextLevelUnlocked(int thisLevel)
+    {
+        if (ProfileSingleton.profileLevels[thisLevel + 1] == null) return false;
+        if (ProfileSingleton.profileLevels[thisLevel + 1].starsToUnlock <= ProfileSingleton.stars)
+        {
+            return true;
+        }
+        return false;
+    }
     
 
 
