@@ -286,9 +286,12 @@
     <Compile Include="Assets\Resources\Scripts\MapController.cs" />
     <Compile Include="Assets\Resources\Scripts\MenuLevel.cs" />
     <Compile Include="Assets\Resources\Scripts\MouseController.cs" />
+    <Compile Include="Assets\Resources\Scripts\MoveCameraAspectRatio.cs" />
+    <Compile Include="Assets\Resources\Scripts\MoveUIToWorldPos.cs" />
     <Compile Include="Assets\Resources\Scripts\MusicButton.cs" />
     <Compile Include="Assets\Resources\Scripts\ObjectCloner.cs" />
     <Compile Include="Assets\Resources\Scripts\OutroPanelScript.cs" />
+    <Compile Include="Assets\Resources\Scripts\PauseButtonTweenerAspectRatioAdapter.cs" />
     <Compile Include="Assets\Resources\Scripts\PlayAliasSound.cs" />
     <Compile Include="Assets\Resources\Scripts\Profile.cs" />
     <Compile Include="Assets\Resources\Scripts\QualitySelector.cs" />

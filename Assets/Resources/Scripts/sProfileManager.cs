@@ -174,12 +174,34 @@ public class sProfileManager : Singleton<sProfileManager> {
         //Get current screen resolution
         Resolution myRes = Screen.currentResolution;
         //we calculate Aspect Ratio coeficient:
-        float myAR = (float)myRes.width / (float)myRes.height;
+        float myAR;
+#if UNITY_EDITOR
+        Vector2 size = GetMainGameViewSize();
+        myAR = size.x / size.y;
+#else
+
+        myAR = (float)myRes.width / (float)myRes.height;
+#endif
+        
+
+
         //We find our Aspect Ratio "Option"!
         AspectRatioOptions myARO = null;
         myARO = ResolutionDictionary.Find(x => Mathf.Approximately(x.aspectRatio, myAR));
-        //if not found, we do nothing!
-        if (myARO == null) return;
+        
+        if (myARO == null)
+        {
+            //if not found, we save the default AspectRatio as current
+            //and return;    
+            GameConfig.s.currentAspectRatio = ResolutionDictionary[0];
+            return;
+        }
+        else {
+            //We save the AspectRatio we are playing with on the GameConfig Instance
+            //and continue
+            GameConfig.s.currentAspectRatio = myARO;
+        }
+
 
         //If the current resolution exceeds the maximum resolution of out Option
         //we change resolution
@@ -189,6 +211,16 @@ public class sProfileManager : Singleton<sProfileManager> {
         }
 
 
+    }
+
+    public static Vector2 GetMainGameViewSize()
+    {
+#if UNITY_EDITOR
+        System.Type T = System.Type.GetType("UnityEditor.GameView,UnityEditor");
+        System.Reflection.MethodInfo GetSizeOfMainGameView = T.GetMethod("GetSizeOfMainGameView", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+        System.Object Res = GetSizeOfMainGameView.Invoke(null, null);
+        return (Vector2)Res;
+#endif
     }
 
     public void InitializeGame(bool InstantTransition=false)
@@ -249,8 +281,8 @@ public class sProfileManager : Singleton<sProfileManager> {
              LoadingScreenManager.LoadScene(levelIndex + 3);
          });
     }
-    
 
+    
 
 
 }
@@ -289,7 +321,7 @@ public class AspectRatioOptions
     /// </summary>
     public int refreshRate;
 
-    #region Constructor    
+#region Constructor    
 
     public AspectRatioOptions(int width=1920,int height=1080, int RefresRate=60)
     {
@@ -298,9 +330,9 @@ public class AspectRatioOptions
         this.refreshRate = RefresRate;
     }
 
-    #endregion
+#endregion
 
-    #region TO Resolution
+#region TO Resolution
     public Resolution resolution
     {
         get
@@ -318,9 +350,9 @@ public class AspectRatioOptions
             refreshRate = value.refreshRate;
         }
     }
-    #endregion
+#endregion
 
-    #region AspectRatio Transformation
+#region AspectRatio Transformation
     public float aspectRatio
     {
         get
@@ -328,7 +360,7 @@ public class AspectRatioOptions
             return (float)width / (float)height;
         }
     }
-    #endregion
+#endregion
 
 
 
