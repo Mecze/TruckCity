@@ -10,6 +10,7 @@ public class sMenuButton : MonoBehaviour {
     public Button button;
     bool parented = false;
     public int levelIndex;
+    string code;
     [SerializeField]
     GameObject StarAnchor;
     [SerializeField]
@@ -42,6 +43,7 @@ public class sMenuButton : MonoBehaviour {
 
             buttonText.text = "Level " + (myProfileLevel.index + 1).ToString();
             tick.SetActive(myProfileLevel.beated);
+            
             levelIndex = myProfileLevel.index;
 
             if (myStars == null) myStars = new List<GameObject>();
@@ -78,8 +80,7 @@ public class sMenuButton : MonoBehaviour {
 
         }
         else
-        {
-            levelIndex = myProfileLevel.index;
+        {            
             buttonText.text = "Locked";
             StarsToUnlockPanel.SetActive(true);
             int i = myProfileLevel.starsToUnlock - sProfileManager.ProfileSingleton.stars;
@@ -87,6 +88,8 @@ public class sMenuButton : MonoBehaviour {
             StarstoUnlockText.text = i.ToString() + " more";
             tick.SetActive(false);
         }
+        code = myProfileLevel.code;
+        levelIndex = myProfileLevel.index;
         button.interactable = !myProfileLevel.locked;
     }
 
@@ -112,7 +115,7 @@ public class sMenuButton : MonoBehaviour {
     }
     public void OnClick()
     {        
-        sMenu.singleton.OnLevelButtonClick(levelIndex);
+        sMenu.singleton.OnLevelButtonClick(code);
     }
 	
 }

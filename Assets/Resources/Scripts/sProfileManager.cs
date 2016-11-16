@@ -64,7 +64,9 @@ public class sProfileManager : Singleton<sProfileManager> {
                                 for (int i = 0; i < pf.profileLevels.Count; i++)
                                 {
                                     //we do it one by one, on a for to respect newer levels
-                                    _singleton.profileLevels[i] = pf.profileLevels[i];
+                                    string code = _singleton.profileLevels[i].code;
+                                    ProfileLevels TempPL = pf.profileLevels.Find(x => x.code == code);
+                                    if (TempPL != null) _singleton.profileLevels[i] = TempPL;
                                 }
                                 Debug.Log("Profile adapted");
                             }
@@ -270,16 +272,36 @@ public class sProfileManager : Singleton<sProfileManager> {
         //        SceneManager.LoadScene(i);
         LoadingScreenManager.LoadScene(i);
     }
-
+/*
     public void ChangeLevel(int levelIndex)
     {
         SoundSystem.s.FadeOutMusic(0.5f, () =>
          {
+             LevelConditions LC = levelconditions.Find(x => x.BuildSettingOrder == levelIndex);
+             if (LC != null) {
+                 ProfileLevels PL = ProfileSingleton.profileLevels.Find(x => x.code == LC.Code);
+                 if (PL != null)
+                 {
+                     sProfileManager.ProfileSingleton.newLevelIndex = PL.index;
 
-             sProfileManager.ProfileSingleton.newLevelIndex = levelIndex;
+                 }
+            }
              sProfileManager.ProfileSingleton.ChangingLevel = true;
              LoadingScreenManager.LoadScene(levelIndex + 3);
          });
+    }
+    */
+    public void ChangeLevel(string code)
+    {
+        int levelIndex = 0;
+        levelIndex = levelconditions.Find(x => x.Code == code).BuildSettingOrder;
+        SoundSystem.s.FadeOutMusic(0.5f, () =>
+        {
+
+            sProfileManager.ProfileSingleton.newLevelIndex = ProfileSingleton.profileLevels.Find(x => x.code == code).index;
+            sProfileManager.ProfileSingleton.ChangingLevel = true;
+            LoadingScreenManager.LoadScene(levelIndex);
+        });
     }
 
 

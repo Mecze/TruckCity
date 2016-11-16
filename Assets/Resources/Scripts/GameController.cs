@@ -256,22 +256,29 @@ public class GameController : MonoBehaviour {
             //Congela los elementos jubales por ahora
             FreezeGame(true);
 
-            //GUI Activa el panel de entrada y la GUI detras
-            IntroPanel.SetActive(true);
-            GUIPanel.SetActive(true);
-
             //Ajustamos este nivel dependiendo de el sitio en las build settings de su escena
-            level = SceneManager.GetActiveScene().buildIndex - 3;
+            level = sProfileManager.ProfileSingleton.newLevelIndex;
+            sProfileManager.ProfileSingleton.ChangingLevel = false;
+
             if (sProfileManager.instance != null) if (level > sProfileManager.instance.levelconditions.Count - 1) level = 1;
             //Clonamos la configuración de este nivel (LevelConditions)
-            if (sProfileManager.instance != null) myLevel = ObjectCloner.Clone<LevelConditions>(sProfileManager.instance.levelconditions.Find(x => x.level == level));
+            if (sProfileManager.instance != null)
+            {
+                LevelConditions LC = sProfileManager.instance.levelconditions.Find(x => x.Code == sProfileManager.ProfileSingleton.profileLevels[level].code);
+                
+                if (LC != null)myLevel = ObjectCloner.Clone<LevelConditions>(LC);
+                if (LC == null) { myLevel = defaultLevel; Debug.LogWarning("Failed to Load Level Conditions"); }
+            }
             //if sProfiel dues not exist, Bootstrap a TEST level
             if (sProfileManager.instance == null)
             {
                 myLevel = defaultLevel;
 
             }
-
+            
+            //GUI Activa el panel de entrada y la GUI detras
+            IntroPanel.SetActive(true);
+            GUIPanel.SetActive(true);
             //Set Strings
             MoneyText.text = _money.ToString();
             IntroMenuMainLabel.text = "Level " + (level + 1).ToString() + " - Menu";
@@ -592,7 +599,7 @@ public class GameController : MonoBehaviour {
     {
         if (sProfileManager.s.IsNextLevelUnlocked(level))
         {
-            LoadingScreenManager.LoadScene(level + 4);
+            sProfileManager.s.ChangeLevel(sProfileManager.ProfileSingleton.profileLevels[level + 1].code);
         }
     }
     #endregion
@@ -971,6 +978,49 @@ public enum LevelMode { TimeAttack = 0 }
 [System.Serializable]
 public class LevelConditions
 {
+    #region Code
+    [SerializeField]
+    string code;
+    /// <summary>
+    /// The code of the LevelCondition. It has to match ANY "ProfileLevel" Code
+    /// </summary>
+    public string Code
+    {
+        get
+        {
+            return code;
+        }
+
+        set
+        {
+            code = value;
+        }
+    }
+
+    #endregion
+
+    #region LevelToLoad
+
+    [SerializeField]
+    int buildSettingOrder;
+    /// <summary>
+    /// The Level to LOAD on the buildSettingsOrder
+    /// </summary>
+    public int BuildSettingOrder
+    {
+        get
+        {
+            return buildSettingOrder;
+        }
+
+        set
+        {
+            buildSettingOrder = value;
+        }
+    }
+
+    #endregion
+
     #region Level Mode
     [SerializeField]
     LevelMode _mode;
@@ -1107,6 +1157,8 @@ public class LevelConditions
             _musicAlias = value;
         }
     }
+
+   
     #endregion
 
 

@@ -94,7 +94,7 @@ public class MenuLevel : MonoBehaviour {
     public void clicked()
     {
         if (_myProfileLevel.locked) return;
-        sMenu.singleton.OnLevelButtonClick(_myProfileLevel.index);
+        sMenu.singleton.OnLevelButtonClick(_myProfileLevel.code);
     }
     public void back()
     {
