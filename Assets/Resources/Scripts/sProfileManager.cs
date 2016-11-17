@@ -223,6 +223,7 @@ public class sProfileManager : Singleton<sProfileManager> {
         System.Object Res = GetSizeOfMainGameView.Invoke(null, null);
         return (Vector2)Res;
 #endif
+        return Vector2.one;
     }
 
     public void InitializeGame(bool InstantTransition=false)
@@ -307,6 +308,7 @@ public class sProfileManager : Singleton<sProfileManager> {
 
     public bool IsNextLevelUnlocked(int thisLevel)
     {
+        if (!ProfileSingleton.profileLevels.Exists(x => x.index == thisLevel + 1)) return false;
         if (ProfileSingleton.profileLevels[thisLevel + 1] == null) return false;
         if (ProfileSingleton.profileLevels[thisLevel + 1].starsToUnlock <= ProfileSingleton.stars)
         {

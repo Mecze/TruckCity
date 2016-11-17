@@ -24,8 +24,8 @@ Medium,Medium,Medio
 High,High,Alto
 WhatsNew,What's New?, Novedades
 Version,Version, Versión
-VersionNumber,Beta: 0.1.1,Beta: 0.1.1
-VersionText,"[u]0.1.1[/u]\n- Added 8th Level\n-Added Several new Assets for Factories and Stores\n- Added the ability to Reset the Profile and Start over\n\n[u]0.1[/u]\n- Google Play Beta Launch","[u]0.1.1[/u]\n- Añadido Octavo Nivel\n- Añadidos nuevos modelos para Factorias y Almacenes\n- Añadida la habilidad de restablecer el perfil y empezar de nuevo\n\n[u]0.1[/u]\n- Lanzamiento a Google Play Beta"
+VersionNumber,Beta: 0.1.2,Beta: 0.1.2
+VersionText,"[u]0.1.2[/u]\n- Added 9th Level\n- Modified UI\n- Modified Profile (Requires Profile Swipe!)\n- Added support for 16:9, 16:10 and 4:3 (native)\n- Minor Bugfixes and Changes\n[u]0.1.1[/u]\n- Added 8th Level\n-Added Several new Assets for Factories and Stores\n- Added the ability to Reset the Profile and Start over\n\n[u]0.1[/u]\n- Google Play Beta Launch","[u]0.1.2[/u]\n- Añadido noveno nivel\n- UI Modificada\n- Perfil Modificado (Require perder el progreso!)\n- Añadido soporte para 16:9, 16:10 y 4:3 nativo\n- Pequeños arreglos y cambios\n[u]0.1.1[/u]\n- Añadido Octavo Nivel\n- Añadidos nuevos modelos para Factorias y Almacenes\n- Añadida la habilidad de restablecer el perfil y empezar de nuevo\n\n[u]0.1[/u]\n- Lanzamiento a Google Play Beta"
 Beta1,Welcome to Truck City's Beta,Bienvenido a la Beta de Truck City
 Beta2,Please provide feedback by completing the following [FF5454FF]Survey[-]:,Por favor danos tu feedback completando la siguiente [FF5454FF]Encuesta[-]:
 Survey,Survey,Encuesta
@@ -99,3 +99,10 @@ Level8Hint3,"[ffd700]Golden Roads[-] will mess you up, since every single one of
 Level8Hint4,"Each [ffd700]Golden Road[-] will adopt a new direction when you touch them. Learn the pattern of each one to master them","Cada [ffd700]Carretera Dorada[-] adoptará una nueva dirección cuando las toques. Aprende el patrón de cada una de ellas para dominarlas"
 Level8Hint5,"Watch the little arrows on the [ffd700]Golden Roads[-], they indicate which will be the next position","Observa las pequeñas flechas de las [ffd700]Carreteras Doradas[-], indican cual será la proxima posición"
 Level8Hint6,"Also, beware of the north part of this level, making a truck come back to the south might be tricky","Ademas, cuidado con la parte norte de este nivel, hacer volver un camión a la parte sur puede ser complicado"
+
+Level9Hint0,"This town is called [FF5454FF]Right-Village[-]!","Este pueblo se llama [FF5454FF]Villa Derecha[-]!"
+Level9Hint1,"Look at that huge mall!","Mira este gigantesco centro comercial!"
+Level9Hint2,"It even has houses on top of it!","Hasta tiene casas encima!"
+Level9Hint3,"It needs a lot of things, Go get 'em!","Necesita un monton de cosas, Consiguelas!"
+
+
