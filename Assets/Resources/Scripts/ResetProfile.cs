@@ -25,7 +25,7 @@ public class ResetProfile : MonoBehaviour {
 
     void DoResetProfile()
     {
-        sProfileManager.ProfileSingleton = sProfileManager.NewProfile();
+        sProfileManager.ProfileSingleton = sProfileManager.NewProfile(true);
         sProfileManager.s.InitializeGame(true);
 //        LoadingScreenManager.LoadScene(1);
 

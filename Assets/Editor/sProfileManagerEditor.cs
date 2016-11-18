@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 [CustomEditor(typeof(sProfileManager))]
-public class sProfileManagerEditor : Editor {
+public class sProfileManagerEditor : Editor
+{
 
     sProfileManager t;
 
@@ -22,10 +23,13 @@ public class sProfileManagerEditor : Editor {
         if (GUILayout.Button("Reorder Default Profile levels"))
         {
             t.defaultProfile.profileLevels = t.defaultProfile.profileLevels.OrderBy(x => x.index).ToList<ProfileLevels>();
+
+        }
+        if (GUILayout.Button("Reorder Level Conditions"))
+        {
+            t.levelconditions = t.levelconditions.OrderBy(x => x.level).ToList<LevelConditions>();
         }
 
+
     }
-
-
-
 }

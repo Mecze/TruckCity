@@ -580,7 +580,7 @@ public class GameController : MonoBehaviour {
     {
         ResetMusic();
         //SceneManager.UnloadScene(SceneManager.GetActiveScene());
-        LoadingScreenManager.LoadScene(level + 3, true, level + 3);
+        sProfileManager.s.ChangeLevel(myLevel.Code);
     }
 
     /// <summary>

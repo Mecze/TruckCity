@@ -49,10 +49,19 @@ public class sProfileManager : Singleton<sProfileManager> {
                     //if we are allowed to load:
                     Profile pf = sSaveLoad.LoadProfile();
 
+                    
+                    
+
                     //Now we compare loaded profile versions with current versi�n (default's profile build numbers)
                     if (pf == null || pf.buildNumber == 0 || pf.buildNumber != sProfileManager.instance.defaultProfile.buildNumber)
                     {
+                        
+                         
+
                         _singleton = NewProfile(); //we create a new profile (a copy of Default's profile)
+
+                        //below buildNumber 6 there are no CODENAMES, we will not try to adapt
+                        if (pf.buildNumber < 6) { return _singleton; }
 
                         //if new version (default's) is greater than loaded version and we are not forced to clean player progression we proceed to copy it from old profile
                         if (pf != null)
@@ -100,15 +109,18 @@ public class sProfileManager : Singleton<sProfileManager> {
     public List<AspectRatioOptions> ResolutionDictionary;
 
 
-    public static Profile NewProfile()
+    public static Profile NewProfile(bool deleteOld = false)
     {
+        if (deleteOld) sSaveLoad.DeleteSavedGame();
         Debug.Log("NEW PROFILE!");
         
-        sSaveLoad.savedProfile = sProfileManager.instance.defaultProfile;
+        Profile PL = new Profile();
+        PL = ObjectCloner.Clone<Profile>(sProfileManager.instance.defaultProfile);
+        sSaveLoad.savedProfile = PL;
         sSaveLoad.savedProfile.LanguageSelected = ChooseLanguage();
         sSaveLoad.SaveProfile();
         //sSaveLoad.savedProfile.GlobalGraphicQualitySettings = CheckSystem(out sSaveLoad.savedProfile.GraphicMemory);
-        return sSaveLoad.savedProfile;
+        return PL;
     }
 
     static GraphicQualitySettings CheckSystem(out float graphicMemory)
