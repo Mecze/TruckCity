@@ -49,10 +49,19 @@ public class sProfileManager : Singleton<sProfileManager> {
                     //if we are allowed to load:
                     Profile pf = sSaveLoad.LoadProfile();
 
+                    
+                    
+
                     //Now we compare loaded profile versions with current versi�n (default's profile build numbers)
                     if (pf == null || pf.buildNumber == 0 || pf.buildNumber != sProfileManager.instance.defaultProfile.buildNumber)
                     {
+                        
+                         
+
                         _singleton = NewProfile(); //we create a new profile (a copy of Default's profile)
+
+                        //below buildNumber 6 there are no CODENAMES, we will not try to adapt
+                        if (pf.buildNumber < 6) { return _singleton; }
 
                         //if new version (default's) is greater than loaded version and we are not forced to clean player progression we proceed to copy it from old profile
                         if (pf != null)
@@ -64,7 +73,9 @@ public class sProfileManager : Singleton<sProfileManager> {
                                 for (int i = 0; i < pf.profileLevels.Count; i++)
                                 {
                                     //we do it one by one, on a for to respect newer levels
-                                    _singleton.profileLevels[i] = pf.profileLevels[i];
+                                    string code = _singleton.profileLevels[i].code;
+                                    ProfileLevels TempPL = pf.profileLevels.Find(x => x.code == code);
+                                    if (TempPL != null) _singleton.profileLevels[i] = TempPL;
                                 }
                                 Debug.Log("Profile adapted");
                             }
@@ -95,16 +106,21 @@ public class sProfileManager : Singleton<sProfileManager> {
 
     public List<LevelConditions> levelconditions;
 
+    public List<AspectRatioOptions> ResolutionDictionary;
 
 
-    public static Profile NewProfile()
+    public static Profile NewProfile(bool deleteOld = false)
     {
+        if (deleteOld) sSaveLoad.DeleteSavedGame();
         Debug.Log("NEW PROFILE!");
         
-        sSaveLoad.savedProfile = sProfileManager.instance.defaultProfile;
+        Profile PL = new Profile();
+        PL = ObjectCloner.Clone<Profile>(sProfileManager.instance.defaultProfile);
+        sSaveLoad.savedProfile = PL;
         sSaveLoad.savedProfile.LanguageSelected = ChooseLanguage();
+        sSaveLoad.SaveProfile();
         //sSaveLoad.savedProfile.GlobalGraphicQualitySettings = CheckSystem(out sSaveLoad.savedProfile.GraphicMemory);
-        return sSaveLoad.savedProfile;
+        return PL;
     }
 
     static GraphicQualitySettings CheckSystem(out float graphicMemory)
@@ -157,8 +173,8 @@ public class sProfileManager : Singleton<sProfileManager> {
         //pf.currentlyPlayingLevel = sSaveLoad.CheckIfSavedGame();
 
 
-        //Si estabamos jugando:
 
+        ChoseResolution();
         InitializeGame();
 
         //if (GameConfig.s.MusicState) MusicStore.s.PlayMusicByAlias("Menu", 1.5f, GameConfig.s.MusicVolume, true, 5f);
@@ -166,6 +182,60 @@ public class sProfileManager : Singleton<sProfileManager> {
 
 
 
+    }
+
+    void ChoseResolution() {
+        //Get current screen resolution
+        Resolution myRes = Screen.currentResolution;
+        //we calculate Aspect Ratio coeficient:
+        float myAR;
+#if UNITY_EDITOR
+        Vector2 size = GetMainGameViewSize();
+        myAR = size.x / size.y;
+#else
+
+        myAR = (float)myRes.width / (float)myRes.height;
+#endif
+        
+
+
+        //We find our Aspect Ratio "Option"!
+        AspectRatioOptions myARO = null;
+        myARO = ResolutionDictionary.Find(x => Mathf.Approximately(x.aspectRatio, myAR));
+        
+        if (myARO == null)
+        {
+            //if not found, we save the default AspectRatio as current
+            //and return;    
+            GameConfig.s.currentAspectRatio = ResolutionDictionary[0];
+            return;
+        }
+        else {
+            //We save the AspectRatio we are playing with on the GameConfig Instance
+            //and continue
+            GameConfig.s.currentAspectRatio = myARO;
+        }
+
+
+        //If the current resolution exceeds the maximum resolution of out Option
+        //we change resolution
+        if (myRes.height > myARO.height)
+        {
+            Screen.SetResolution(myARO.width, myARO.height, true, myARO.refreshRate);
+        }
+
+
+    }
+
+    public static Vector2 GetMainGameViewSize()
+    {
+#if UNITY_EDITOR
+        System.Type T = System.Type.GetType("UnityEditor.GameView,UnityEditor");
+        System.Reflection.MethodInfo GetSizeOfMainGameView = T.GetMethod("GetSizeOfMainGameView", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+        System.Object Res = GetSizeOfMainGameView.Invoke(null, null);
+        return (Vector2)Res;
+#endif
+        return Vector2.one;
     }
 
     public void InitializeGame(bool InstantTransition=false)
@@ -215,23 +285,132 @@ public class sProfileManager : Singleton<sProfileManager> {
         //        SceneManager.LoadScene(i);
         LoadingScreenManager.LoadScene(i);
     }
-
+/*
     public void ChangeLevel(int levelIndex)
     {
         SoundSystem.s.FadeOutMusic(0.5f, () =>
          {
+             LevelConditions LC = levelconditions.Find(x => x.BuildSettingOrder == levelIndex);
+             if (LC != null) {
+                 ProfileLevels PL = ProfileSingleton.profileLevels.Find(x => x.code == LC.Code);
+                 if (PL != null)
+                 {
+                     sProfileManager.ProfileSingleton.newLevelIndex = PL.index;
 
-             sProfileManager.ProfileSingleton.newLevelIndex = levelIndex;
+                 }
+            }
              sProfileManager.ProfileSingleton.ChangingLevel = true;
              LoadingScreenManager.LoadScene(levelIndex + 3);
          });
     }
-    
+    */
+    public void ChangeLevel(string code)
+    {
+        int levelIndex = 0;
+        levelIndex = levelconditions.Find(x => x.Code == code).BuildSettingOrder;
+        SoundSystem.s.FadeOutMusic(0.5f, () =>
+        {
 
+            sProfileManager.ProfileSingleton.newLevelIndex = ProfileSingleton.profileLevels.Find(x => x.code == code).index;
+            sProfileManager.ProfileSingleton.ChangingLevel = true;
+            LoadingScreenManager.LoadScene(levelIndex);
+        });
+    }
+
+
+    public bool IsNextLevelUnlocked(int thisLevel)
+    {
+        if (!ProfileSingleton.profileLevels.Exists(x => x.index == thisLevel + 1)) return false;
+        if (ProfileSingleton.profileLevels[thisLevel + 1] == null) return false;
+        if (ProfileSingleton.profileLevels[thisLevel + 1].starsToUnlock <= ProfileSingleton.stars)
+        {
+            return true;
+        }
+        return false;
+    }
+    
 
 
 }
 
+
+
+
+
+
+
+[System.Serializable]
+public class AspectRatioOptions
+{
+    /*
+    public const float AspectRatio1609 = 1.7777f;
+    public const float AspectRatio1610 = 1.6f;
+    public const float AspectRatio0403 = 1.3333f;
+
+    public const int max1609height = 1080;
+    public const int max1610height = 1200;
+    public const int max0403 = 1200;
+    */
+    
+    //Used to differentiate them (developer, serialized onto the inspector)
+    public string ResolutionName;
+    /// <summary>
+    /// Max Height of this AspectRatio
+    /// </summary>
+    public int height;
+    /// <summary>
+    /// Max Width of this AspectRatio
+    /// </summary>
+    public int width; 
+    /// <summary>
+    /// Refresh Rate, usually 60
+    /// </summary>
+    public int refreshRate;
+
+#region Constructor    
+
+    public AspectRatioOptions(int width=1920,int height=1080, int RefresRate=60)
+    {
+        this.height = height;
+        this.width = width;
+        this.refreshRate = RefresRate;
+    }
+
+#endregion
+
+#region TO Resolution
+    public Resolution resolution
+    {
+        get
+        {
+            Resolution res = new Resolution();
+            res.height = height;
+            res.width = width;
+            res.refreshRate = refreshRate;
+            return res;
+        }
+        set
+        {
+            height = value.height;
+            width = value.width;
+            refreshRate = value.refreshRate;
+        }
+    }
+#endregion
+
+#region AspectRatio Transformation
+    public float aspectRatio
+    {
+        get
+        {
+            return (float)width / (float)height;
+        }
+    }
+#endregion
+
+
+
+}
 
 
 

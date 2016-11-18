@@ -256,22 +256,29 @@ public class GameController : MonoBehaviour {
             //Congela los elementos jubales por ahora
             FreezeGame(true);
 
-            //GUI Activa el panel de entrada y la GUI detras
-            IntroPanel.SetActive(true);
-            GUIPanel.SetActive(true);
-
             //Ajustamos este nivel dependiendo de el sitio en las build settings de su escena
-            level = SceneManager.GetActiveScene().buildIndex - 3;
+            level = sProfileManager.ProfileSingleton.newLevelIndex;
+            sProfileManager.ProfileSingleton.ChangingLevel = false;
+
             if (sProfileManager.instance != null) if (level > sProfileManager.instance.levelconditions.Count - 1) level = 1;
             //Clonamos la configuración de este nivel (LevelConditions)
-            if (sProfileManager.instance != null) myLevel = ObjectCloner.Clone<LevelConditions>(sProfileManager.instance.levelconditions.Find(x => x.level == level));
+            if (sProfileManager.instance != null)
+            {
+                LevelConditions LC = sProfileManager.instance.levelconditions.Find(x => x.Code == sProfileManager.ProfileSingleton.profileLevels[level].code);
+                
+                if (LC != null)myLevel = ObjectCloner.Clone<LevelConditions>(LC);
+                if (LC == null) { myLevel = defaultLevel; Debug.LogWarning("Failed to Load Level Conditions"); }
+            }
             //if sProfiel dues not exist, Bootstrap a TEST level
             if (sProfileManager.instance == null)
             {
                 myLevel = defaultLevel;
 
             }
-
+            
+            //GUI Activa el panel de entrada y la GUI detras
+            IntroPanel.SetActive(true);
+            GUIPanel.SetActive(true);
             //Set Strings
             MoneyText.text = _money.ToString();
             IntroMenuMainLabel.text = "Level " + (level + 1).ToString() + " - Menu";
@@ -332,7 +339,7 @@ public class GameController : MonoBehaviour {
                 //---
                 //Creamos los SLATES apropiados (Para UI y para la INTRO)
                 CreateGUISlate(q, e);
-                CreateIPGUISlate(q, e, true);
+                CreateIPGUISlate(q, e, false);
             }
 
             //Tras crear Slates se le indica al Grid que se ajuste
@@ -472,17 +479,25 @@ public class GameController : MonoBehaviour {
     /// </summary>
     /// <param name="q">la Quest</param>
     /// <param name="position">la posicion (bucle)</param>
-    /// <param name="intro">Si es intro o no</param>
-    void CreateIPGUISlate(Quest q, int position, bool intro)
+    /// <param name="outro">Si es intro o no</param>
+    void CreateIPGUISlate(Quest q, int position, bool outro)
     {
         GameObject go;
-        go = GameObject.Instantiate(QuestSlatePrefab);
+        string s;
+        if (outro)
+        {
+            s = "OPQuestSlateAnchor";
+        }else
+        {
+            s = "IPQuestSlateAnchor";
+        }
+        go = GameObject.Instantiate(IPQuestSlatePrefab);
         QuestSlate qs = go.GetComponent<QuestSlate>();
         qs.position = position;
         qs.MyCargoDelivered = CargosDelivered.Find(x => x.type == q.CargoType);
         qs.MyQuest = q;
         qs.IP = true;
-        go.transform.SetParent(GameObject.FindGameObjectWithTag("IPQuestSlateAnchor").transform);
+        go.transform.SetParent(GameObject.FindGameObjectWithTag(s).transform);
         go.transform.localScale = Vector3.one;
 
 
@@ -565,7 +580,7 @@ public class GameController : MonoBehaviour {
     {
         ResetMusic();
         //SceneManager.UnloadScene(SceneManager.GetActiveScene());
-        LoadingScreenManager.LoadScene(level + 3, true, level + 3);
+        sProfileManager.s.ChangeLevel(myLevel.Code);
     }
 
     /// <summary>
@@ -575,6 +590,17 @@ public class GameController : MonoBehaviour {
     {
         ResetMusic();
         LoadingScreenManager.LoadScene(1);
+    }
+
+    /// <summary>
+    /// Try to Call for next Level
+    /// </summary>
+    public void NextLevel()
+    {
+        if (sProfileManager.s.IsNextLevelUnlocked(level))
+        {
+            sProfileManager.s.ChangeLevel(sProfileManager.ProfileSingleton.profileLevels[level + 1].code);
+        }
     }
     #endregion
 
@@ -769,10 +795,24 @@ public class GameController : MonoBehaviour {
         FinishTextScaleTween.ResetToBeginning();
         FinishText.SetActive(false);
         OutroPanel.SetActive(true);
+        int e = 1;
+        foreach (Quest q in myLevel.quests)
+        {
+            CreateIPGUISlate(q, e, true);
+            e++;
+        }
+        GameObject OPAnchor = GameObject.FindGameObjectWithTag("OPQuestSlateAnchor");
+        OPAnchor.GetComponent<UIGrid>().Reposition();
+        /*
+        Vector3 pos = OPAnchor.transform.position;
+        pos.y = 100f;
+        OPAnchor.transform.position = pos;
+        */
+        OPAnchor.transform.position = OPAnchor.transform.parent.transform.position;
         PauseButtonPosTween.PlayReverse();
         GUIPanel.SetActive(false);
         OutroPanelScript ops = OutroPanel.GetComponent<OutroPanelScript>();
-        ops.ShowPanel(level, myLevel.CheckQuests());
+        ops.ShowPanel(level, myLevel.CheckQuests(), sProfileManager.s.IsNextLevelUnlocked(level));
     }
 
 
@@ -938,6 +978,49 @@ public enum LevelMode { TimeAttack = 0 }
 [System.Serializable]
 public class LevelConditions
 {
+    #region Code
+    [SerializeField]
+    string code;
+    /// <summary>
+    /// The code of the LevelCondition. It has to match ANY "ProfileLevel" Code
+    /// </summary>
+    public string Code
+    {
+        get
+        {
+            return code;
+        }
+
+        set
+        {
+            code = value;
+        }
+    }
+
+    #endregion
+
+    #region LevelToLoad
+
+    [SerializeField]
+    int buildSettingOrder;
+    /// <summary>
+    /// The Level to LOAD on the buildSettingsOrder
+    /// </summary>
+    public int BuildSettingOrder
+    {
+        get
+        {
+            return buildSettingOrder;
+        }
+
+        set
+        {
+            buildSettingOrder = value;
+        }
+    }
+
+    #endregion
+
     #region Level Mode
     [SerializeField]
     LevelMode _mode;
@@ -1074,6 +1157,8 @@ public class LevelConditions
             _musicAlias = value;
         }
     }
+
+   
     #endregion
 
 

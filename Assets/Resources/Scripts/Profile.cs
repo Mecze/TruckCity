@@ -85,6 +85,15 @@ public class Profile {
 public class ProfileLevels
 {
     /// <summary>
+    /// Code refers to a LevelCondition-Code
+    /// The game will load these LevelConditions
+    /// Is use also to "Adapt" a Profile from older version
+    /// Giving the ability to re-arrange levels between versions (Adapt
+    /// will fix the level array using "Code" as Index)
+    /// </summary>
+    public string code;
+
+    /// <summary>
     /// Index of the Level. This correspond to "Levels" InGame
     /// </summary>
     public int index;

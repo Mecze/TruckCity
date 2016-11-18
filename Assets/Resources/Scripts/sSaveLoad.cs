@@ -104,13 +104,13 @@ public class sSaveLoad : MonoBehaviour
 
     #region Utils
 
-    
+    */
 
     public static bool CheckIfSavedGame()
     {
             return File.Exists(Application.persistentDataPath + "/savedGames.gd");
     }
-
+    
     public static bool DeleteSavedGame()
     {
         if (CheckIfSavedGame())
@@ -124,7 +124,7 @@ public class sSaveLoad : MonoBehaviour
         }
     }
 
-    
+    /*
     
 
     IEnumerator Wait(float waitTime)

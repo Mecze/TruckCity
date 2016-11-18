@@ -20,11 +20,13 @@ public class OutroPanelScript : MonoBehaviour {
     float beforeStars = 1f;
     [SerializeField]
     float betweenStars = 0.3f;
+    [SerializeField]
+    GameObject NextLevel;
 
-    public void ShowPanel(int levelIndex, int stars)
+    public void ShowPanel(int levelIndex, int stars, bool ShowNextLevel)
     {
-        
 
+        NextLevel.SetActive(ShowNextLevel);
         
         Stars = stars;
         Title.text = "Level " + (levelIndex+1).ToString();

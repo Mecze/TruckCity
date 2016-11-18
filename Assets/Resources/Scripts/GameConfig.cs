@@ -213,7 +213,8 @@ public class GameConfig : Singleton<GameConfig> {
         if (Language == "") Language = Localization.language;
         return languageLinks.Find(x => x.Language == Language);
     }
-
+    [HideInInspector]
+    public AspectRatioOptions currentAspectRatio;
 
     
 }

@@ -106,21 +106,21 @@ public class sMenu : MonoBehaviour {
         VersionScrollView.ResetPosition();
     }   
 
-    public void OnLevelButtonClick(int levelIndex)
+    public void OnLevelButtonClick(string code)
     {
         if (promptIsUp) return; //FAILSAFE, Si hay un prompt, los botones no hacen nada
-        NewGameLoadGame(levelIndex);       
+        NewGameLoadGame(code);       
     }   
     public void ContinueGame()
     {
         SceneManager.LoadScene(1);
     }
-    void NewGameLoadGame(int levelIndex)
+    void NewGameLoadGame(string code)
     {
         if (Loading == false)
         {
             Loading = true;
-            sProfileManager.instance.ChangeLevel(levelIndex);
+            sProfileManager.instance.ChangeLevel(code);
         }
     }
 
