@@ -85,8 +85,8 @@ public class Vector3Int  {
     #endregion
 
     /// <summary>
-    /// Si este Vector3Int y "other" no son adyacentes devuelve "TruckDirection.None"
-    /// Si lo son, devuelve la dirección (TruckDirection.N, E, W, S) hacia donde está "other", el otro Vector3Int
+    /// Si este Vector3Int y "other" no son adyacentes devuelve "CardinalPoint.None"
+    /// Si lo son, devuelve la dirección (CardinalPoint.N, E, W, S) hacia donde está "other", el otro Vector3Int
     /// </summary>
     /// <param name="other">El otro Vector3Int</param>
     /// <returns>Norte, Sur, Este, Oeste (N, S, E, W) ó None</returns>

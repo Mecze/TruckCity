@@ -198,6 +198,8 @@ public class GameController : MonoBehaviour {
     [Header("Default Level (For testing)")]    
     public LevelConditions defaultLevel;
 
+    [Header("Default QualitySettings (For Test)")]
+    public GraphicQualitySettings defaultQSettings;
 
     #region StartGame SEQUENCE
     //En orden
@@ -225,7 +227,7 @@ public class GameController : MonoBehaviour {
             QS = sProfileManager.ProfileSingleton.GlobalGraphicQualitySettings;
         }else
         {
-            QS = GraphicQualitySettings.High;
+            QS = defaultQSettings;
         }
         QualitySelector[] Qss = GameObject.FindObjectsOfType<QualitySelector>();
         QualitySelector.instances = Qss.Length;

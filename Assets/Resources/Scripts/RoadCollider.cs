@@ -18,7 +18,7 @@ public class RoadCollider : MonoBehaviour {
     [SerializeField]
     Turn[] newTurn;
     [SerializeField]
-    
+
 
     void OnTriggerEnter(Collider other)
     {
@@ -65,7 +65,7 @@ public class RoadCollider : MonoBehaviour {
             if (gameObject.name == "RightCollider")
                 if (direction != CardinalPoint.E) return;
             
-
+            /*
             if (MapController.s.CheckNextTile(myRoadEntity.position, direction, out NextTile))
             {
                 bool b = RoadEntity.CheckConnection(myRoadEntity, NextTile);
@@ -79,6 +79,7 @@ public class RoadCollider : MonoBehaviour {
                 //Da la vuelta al camion
                 te.ChangeDirection(RoadEntity.ReverseDirection(te.direction), Turn.Reverse);
             }
+            */
         }
 
 

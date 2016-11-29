@@ -84,7 +84,21 @@ namespace PicaVoxel
             get { return Frames.Count; }
         }
 
-        public int CurrentFrame = 0;
+        public int CurrentFrame
+        {
+            get
+            {
+                return currentFrame;
+            }
+
+            set
+            {
+                currentFrame = value;
+                //Debug.Log("Changed! to " + currentFrame.ToString());
+            }
+        }
+
+        private int currentFrame = 0;
         public List<Frame> Frames;
 
         // Chunk generation settings
@@ -120,8 +134,10 @@ namespace PicaVoxel
 
         private void Awake()
         {
+            //Debug.Log("asdf23345");
             Hitbox = transform.FindChild("Hitbox").GetComponent<BoxCollider>();
             if (Hitbox == null) return;
+            
             int startFrame = CurrentFrame;
             if (Application.isPlaying)
             {
@@ -130,36 +146,8 @@ namespace PicaVoxel
                     NextFrame();
             }
             CurrentFrame = startFrame;
-
-#if UNITY_EDITOR
-            // This used to perform a check to see if the object had been duplicated in the editor
-            // However it is unreliable at best, so I've removed it until Unity provide a proper way to check for copy+paste/duplicate
-            // Instead, there's a button on the Volume inspector to create new mesh asset instances
-            if (!Application.isPlaying)//if in the editor
-            {
-                if (thisInstanceId != GetInstanceID())
-                {
-                    if (thisInstanceId == 0)
-                    {
-                        thisInstanceId = GetInstanceID();
-                        //Debug.Log("Not Copied");
-                    }
-                    else
-                    {
-                        // This used to perform a check to see if the object had been duplicated in the editor
-                        // However it is unreliable at best, so I've removed it until Unity provide a proper way to check for copy+paste/duplicate
-                        // Instead, there's a button on the Volume inspector to create new mesh asset instances
-                        thisInstanceId = GetInstanceID();
-                        //if (thisInstanceId < 0)
-                        //{
-                        //    SaveChunkMeshes(true);
-                        //    //Debug.Log("DUPLICATE/COPY");
-                        //}
-                    }
-                }
-
-            }
-#endif
+            //ChangeFrame();
+            
         }
 
         /// <summary>
@@ -411,13 +399,14 @@ namespace PicaVoxel
         public void SetFrame(int frame)
         {
             if (frame < 0 || frame >= NumFrames) return;
-
+            Debug.Log("ASDF");
             CurrentFrame = frame;
             ChangeFrame();
         }
 
         private void ChangeFrame()
         {
+            
             foreach (var frame in Frames)
             {
                 frame.gameObject.SetActive(false);

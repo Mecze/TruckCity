@@ -6,9 +6,9 @@ using System;
 using System.Linq;
 
 public enum RoadRotationType { Green=0, Blue=1, Purple=2, Gold=3 }
-public enum RoadRotationGreen { NE=0,SE=1,SW=2,NW=3}
-public enum RoadRotationBlue { EW=0,NS=1 }
-public enum RoadPositionPurple { None=0,N=1,E=2,S=3,W=4}
+
+
+
 //public enum RoadPositionPurple { N=0,E=1,W=2,S=3}
 
 
@@ -362,8 +362,8 @@ public class RoadEntity : MonoBehaviour, IFreezable {
             case RoadRotationType.Purple:
                 //This is "not" animator, but it's an initializatin needed for Purple type of clickable roads
                 if (roadAnchorPurple == roadStartingPurple) roadStartingPurple = roadStartingPurple.NextPurpleCardinalPoint(roadAnchorPurple, ref purpleDirection);
-                direction = RoadDirectionExtensions.ComposeRoadDirection(roadAnchorPurple, roadStartingPurple);
-                RecalculateSprites(RoadDirectionExtensions.ComposeRoadDirection(roadAnchorPurple, roadStartingPurple.NextPurpleCardinalPoint(roadAnchorPurple, ref purpleDirection)));
+                direction = RoadRotationPurpleExtensions.ComposeRoadDirection(roadAnchorPurple, roadStartingPurple);
+                RecalculateSprites(RoadRotationPurpleExtensions.ComposeRoadDirection(roadAnchorPurple, roadStartingPurple.NextPurpleCardinalPoint(roadAnchorPurple, ref purpleDirection)));
                 break;
             case RoadRotationType.Gold:
                 
@@ -398,7 +398,7 @@ public class RoadEntity : MonoBehaviour, IFreezable {
         position.z = Mathf.RoundToInt(transform.position.z);
 
         MapController.s.mapGO.Add(position, gameObject);
-        MapController.s.mapRoad.Add(position, this);
+        //MapController.s.mapRoad.Add(position, this);
 
         //Debug.Log("Registrado: " + transform.position.x + ", " + transform.position.z + " en " + pos.x + ", " + pos.z);
 
@@ -508,11 +508,11 @@ public class RoadEntity : MonoBehaviour, IFreezable {
                 break;
             case RoadRotationType.Purple:
                 roadStartingPurple = roadStartingPurple.NextPurpleCardinalPoint(roadAnchorPurple,ref purpleDirection);
-                direction = RoadDirectionExtensions.ComposeRoadDirection(roadAnchorPurple, roadStartingPurple);
+                direction = RoadRotationPurpleExtensions.ComposeRoadDirection(roadAnchorPurple, roadStartingPurple);
                 TurnOffAllSprites();
                 if (direction == RoadDirection.EW || direction == RoadDirection.NS)
                 {
-                    RecalculateSprites(RoadDirectionExtensions.ComposeRoadDirection(roadAnchorPurple, roadStartingPurple.NextPurpleCardinalPoint(roadAnchorPurple, ref purpleDirection)));
+                    RecalculateSprites(RoadRotationPurpleExtensions.ComposeRoadDirection(roadAnchorPurple, roadStartingPurple.NextPurpleCardinalPoint(roadAnchorPurple, ref purpleDirection)));
                 }
                 break;
             case RoadRotationType.Gold:
@@ -926,18 +926,19 @@ public class RoadEntity : MonoBehaviour, IFreezable {
 }
 
 
-[System.Serializable]
-public enum RoadDirection { EW, NE, NEWS, NS, NW, SE, SW }
+/*
 #region extensions
 
-
-
+[System.Serializable]
+public enum RoadDirection { EW, NE, NEWS, NS, NW, SE, SW }
 public static class RoadDirectionExtensions
 {
+
+
     /// <summary>
     /// Compara dos "RoadDirection" Devuelve las similitudes en array de Truckdirection
     /// mediante el RETURN.
-    /// Devuelve las diferencias en array de TruckDirection mediante out.
+    /// Devuelve las diferencias en array de CardinalPoint mediante out.
     /// Ambas arrays varian entre 0 y 2 elementos
     /// </summary>
     /// <param name="thisRoad">selfroad</param>
@@ -945,7 +946,7 @@ public static class RoadDirectionExtensions
     /// <param name="diferences">OUT de array de TruckDirection</param>
     /// <param name="focusDifferencesOnOtherRoad">Si es false, el out "differences" devuelve=> ¿Que tiene esta carretera que no tenga "otherRoad"?. Si es true => ¿Que tiene la otra carretera que no tenga esta?</param>
     /// <returns>array de TruckDirection</returns>
-    public static CardinalPoint[] Compare (this RoadDirection thisRoad, RoadDirection otherRoad, out CardinalPoint[] diferences, bool focusDifferencesOnOtherRoad = false)
+    public static CardinalPoint[] Compare(this RoadDirection thisRoad, RoadDirection otherRoad, out CardinalPoint[] diferences, bool focusDifferencesOnOtherRoad = false)
     {
         bool b = focusDifferencesOnOtherRoad; //alias
         //Arrays temporales a llenar
@@ -954,7 +955,7 @@ public static class RoadDirectionExtensions
         //contadores para las arrays
         int i = 0; //result
         int e = 0; //diff
-        
+
         //MainLoop de 1 a 4. el ENUM TruckDirection puede ser casteado a INT (y viceversa)
         //Nota: Enum Truckdirection. None = 0, N = 1, E = 2, W = 3, S = 4.
         for (int index = 1; index <= 4; index++)
@@ -1018,7 +1019,7 @@ public static class RoadDirectionExtensions
         {
             case CardinalPoint.N:
                 r = roadDirection.HasN();
-            break;
+                break;
             case CardinalPoint.E:
                 r = roadDirection.HasE();
                 break;
@@ -1037,28 +1038,28 @@ public static class RoadDirectionExtensions
         }
         return r;
     }
-    
+
     public static bool HasN(this RoadDirection roadDirection)
     {
         bool r = false;
         switch (roadDirection)
-        {        
+        {
             case RoadDirection.NE:
-                    r = true;
+                r = true;
                 break;
             case RoadDirection.NEWS:
-                    r = true;
-                    break;
+                r = true;
+                break;
             case RoadDirection.NS:
-                    r = true;
-                    break;
+                r = true;
+                break;
             case RoadDirection.NW:
-                    r = true;
-                    break;
-        
+                r = true;
+                break;
+
             default:
-                    r = false;
-                    break;
+                r = false;
+                break;
         }
         return r;
 
@@ -1071,15 +1072,15 @@ public static class RoadDirectionExtensions
             case RoadDirection.EW:
                 r = true;
                 break;
-            
+
             case RoadDirection.NEWS:
                 r = true;
                 break;
-           
+
             case RoadDirection.NW:
                 r = true;
                 break;
-            
+
             case RoadDirection.SW:
                 r = true;
                 break;
@@ -1097,7 +1098,7 @@ public static class RoadDirectionExtensions
         switch (roadDirection)
         {
             case RoadDirection.EW:
-                    r = true;
+                r = true;
                 break;
             case RoadDirection.NE:
                 r = true;
@@ -1106,11 +1107,11 @@ public static class RoadDirectionExtensions
             case RoadDirection.NEWS:
                 r = true;
                 break;
-            
+
             case RoadDirection.SE:
                 r = true;
                 break;
-            
+
             default:
                 r = false;
                 break;
@@ -1122,13 +1123,13 @@ public static class RoadDirectionExtensions
         bool r = false;
 
         switch (roadDirection)
-        {  
+        {
             case RoadDirection.NEWS:
                 r = true;
                 break;
             case RoadDirection.NS:
                 r = true;
-                break;           
+                break;
             case RoadDirection.SE:
                 r = true;
                 break;
@@ -1141,26 +1142,38 @@ public static class RoadDirectionExtensions
         }
         return r;
     }
+    public static List<RoadDirection> GetAll(this RoadDirection thisRD)
+    {
+        List<RoadDirection> rds = ((RoadDirection[])Enum.GetValues(typeof(RoadDirection))).ToList();
+        //rds.Remove(RoadDirection.NEWS);
+        return rds;
+    }
 
+}
+
+public enum RoadRotationGreen { NE = 0, SE = 1, SW = 2, NW = 3 }
+public static class RoadRotationGreenExtensions
+{
+    
     public static RoadDirection toRoadDirection(this RoadRotationGreen greenRoadDirection)
     {
         switch (greenRoadDirection)
         {
             case RoadRotationGreen.NE:
-                return RoadDirection.NE;                
+                return RoadDirection.NE;
             case RoadRotationGreen.SE:
-                return RoadDirection.SE;                
+                return RoadDirection.SE;
             case RoadRotationGreen.SW:
-                return RoadDirection.SW;                
+                return RoadDirection.SW;
             case RoadRotationGreen.NW:
-                return RoadDirection.NW;                
+                return RoadDirection.NW;
             default:
-                return RoadDirection.NE;                
+                return RoadDirection.NE;
         }
     }
     public static RoadRotationGreen Next(this RoadRotationGreen greenRoadDirection)
     {
-        
+
         switch (greenRoadDirection)
         {
             case RoadRotationGreen.NE:
@@ -1175,14 +1188,37 @@ public static class RoadDirectionExtensions
                 return RoadRotationGreen.NE;
         }
     }
+    public static RoadRotationBlue GreenToBlue(this RoadRotationGreen greenRoadDirection)
+    {
+        switch (greenRoadDirection)
+        {
+            case RoadRotationGreen.NE:
+                return RoadRotationBlue.EW;
+            case RoadRotationGreen.SE:
+                return RoadRotationBlue.NS;
+            case RoadRotationGreen.SW:
+                return RoadRotationBlue.EW;
+            case RoadRotationGreen.NW:
+                return RoadRotationBlue.NS;
+            default:
+                return RoadRotationBlue.EW;
+        }
+    }
+}
+
+
+public enum RoadRotationBlue { EW = 0, NS = 1 }
+public static class RoadRotationBlueExtensions
+{
+
     public static RoadDirection toRoadDirection(this RoadRotationBlue blueRoadDirection)
     {
         switch (blueRoadDirection)
         {
             case RoadRotationBlue.EW:
-                return RoadDirection.EW;                
+                return RoadDirection.EW;
             case RoadRotationBlue.NS:
-                return RoadDirection.NS;                
+                return RoadDirection.NS;
             default:
                 return RoadDirection.EW;
         }
@@ -1193,12 +1229,12 @@ public static class RoadDirectionExtensions
         {
             case RoadRotationBlue.EW:
                 return RoadRotationBlue.NS;
-                
+
             case RoadRotationBlue.NS:
                 return RoadRotationBlue.EW;
-                
+
             default:
-                return RoadRotationBlue.EW;                
+                return RoadRotationBlue.EW;
         }
     }
     public static RoadRotationGreen BlueToGreen(this RoadRotationBlue blueRoadDirection)
@@ -1207,31 +1243,23 @@ public static class RoadDirectionExtensions
         {
             case RoadRotationBlue.EW:
                 return RoadRotationGreen.SE;
-                
+
             case RoadRotationBlue.NS:
                 return RoadRotationGreen.NW;
-                
+
             default:
                 return RoadRotationGreen.NE;
-                
+
         }
     }
-    public static RoadRotationBlue GreenToBlue(this RoadRotationGreen greenRoadDirection)
-    {
-        switch (greenRoadDirection)
-        {
-            case RoadRotationGreen.NE:
-                return RoadRotationBlue.EW;                
-            case RoadRotationGreen.SE:
-                return RoadRotationBlue.NS;                
-            case RoadRotationGreen.SW:
-                return RoadRotationBlue.EW;                
-            case RoadRotationGreen.NW:
-                return RoadRotationBlue.NS;                
-            default:
-                return RoadRotationBlue.EW;                
-        }
-    }
+
+}
+
+
+public enum RoadPositionPurple { None = 0, N = 1, E = 2, S = 3, W = 4 }
+public static class RoadRotationPurpleExtensions
+    { 
+
     public static RoadPositionPurple NextPurpleCardinalPoint(this RoadPositionPurple purpleRoadcurrent, RoadPositionPurple purpleRoadAnchor, ref int Direction)
     {
         if (Direction != -1 && Direction != 1) return RoadPositionPurple.None;
@@ -1247,7 +1275,7 @@ public static class RoadDirectionExtensions
         }
         return (RoadPositionPurple)currentPos;
     }
-    public static RoadDirection ComposeRoadDirection(RoadPositionPurple A, RoadPositionPurple B)
+    public static RoadDirection ComposeRoadDirection(this RoadPositionPurple A, RoadPositionPurple B)
     {
         List<RoadDirection> result = new List<RoadDirection>();
         RoadDirection dummy = RoadDirection.NEWS;
@@ -1255,39 +1283,7 @@ public static class RoadDirectionExtensions
         result.Remove(RoadDirection.NEWS);
         return result[0];
     }
-    /// <summary>
-    /// Add (or substract) an amount to this number.
-    /// The result will be kept between or equal to the boundaries (min & max) values
-    /// the result will loop around the boundaries in case it's too big, and keep substracting from the top (or bottom) of the boundary
-    /// example: 4+2 in a 1 to 4 boundary will be 2 (loops once). 18-11 in a 15 to 20 boundary will be 19 (it loops twice)
-    /// </summary>
-    /// <param name="thisInt"></param>
-    /// <param name="amount"></param>
-    /// <param name="min"></param>
-    /// <param name="max"></param>
-    /// <returns></returns>
-    public static int AddwithBoundaries(this int thisInt, int amount,int min, int max)
-    {
-        bool done = false;
-        int candidate;
-        candidate = thisInt + amount;
-        while (!done)
-        {            
-            if (candidate > max)
-            {
-                int delta = (candidate - max)-1;
-                candidate = min + delta;
-            }
-            if (candidate < min)
-            {
-                int delta = (min - candidate) - 1;
-                candidate = max - delta;
-            }
-            if (candidate >= min && candidate <= max) done = true;
-        }
-        return candidate;
-
-    }
+    
     public static CardinalPoint ToCardinalPoint(this RoadPositionPurple roadPositionPurple)
     {
         switch (roadPositionPurple)
@@ -1308,12 +1304,8 @@ public static class RoadDirectionExtensions
         }
 
     }
-    public static List<RoadDirection> GetAll(this RoadDirection thisRD)
-    {
-        List<RoadDirection> rds = ((RoadDirection[])Enum.GetValues(typeof(RoadDirection))).ToList();
-        //rds.Remove(RoadDirection.NEWS);
-        return rds;
-    }
+    
     
 }
 #endregion
+*/

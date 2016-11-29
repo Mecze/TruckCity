@@ -75,8 +75,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\AnimatorChangeBool.cs" />
+    <Compile Include="Assets\ApplyMath.cs" />
+    <Compile Include="Assets\FinishRotation.cs" />
+    <Compile Include="Assets\GreenRotationRoad.cs" />
     <Compile Include="Assets\Mobile Cartoon GUI 2\Scripts\ButtonAnimationContoller.cs" />
-    <Compile Include="Assets\MovingPanelCorrectTweenY.cs" />
     <Compile Include="Assets\NGUI\Examples\Scripts\InventorySystem\Game\EquipItems.cs" />
     <Compile Include="Assets\NGUI\Examples\Scripts\InventorySystem\Game\EquipRandomItem.cs" />
     <Compile Include="Assets\NGUI\Examples\Scripts\InventorySystem\Game\UICursor.cs" />
@@ -215,7 +218,7 @@
     <Compile Include="Assets\NGUI\Scripts\UI\UITexture.cs" />
     <Compile Include="Assets\NGUI\Scripts\UI\UITooltip.cs" />
     <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
-    <Compile Include="Assets\NinetyDegreesState.cs" />
+    <Compile Include="Assets\NinetyDegreesStatePurple.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\BasicAnimator.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Batch.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Chunk.cs" />
@@ -255,6 +258,7 @@
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Volume.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Voxel.cs" />
     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\VoxelParticleSystem.cs" />
+    <Compile Include="Assets\PurpleRotationRoad.cs" />
     <Compile Include="Assets\Resources\Scripts\AutoGrid.cs" />
     <Compile Include="Assets\Resources\Scripts\Clickable.cs" />
     <Compile Include="Assets\Resources\Scripts\CountDownSprite.cs" />
@@ -289,7 +293,9 @@
     <Compile Include="Assets\Resources\Scripts\MouseController.cs" />
     <Compile Include="Assets\Resources\Scripts\MoveCameraAspectRatio.cs" />
     <Compile Include="Assets\Resources\Scripts\MoveUIToWorldPos.cs" />
+    <Compile Include="Assets\Resources\Scripts\MovingPanelCorrectTweenY.cs" />
     <Compile Include="Assets\Resources\Scripts\MusicButton.cs" />
+    <Compile Include="Assets\Resources\Scripts\NinetyDegreesState.cs" />
     <Compile Include="Assets\Resources\Scripts\ObjectCloner.cs" />
     <Compile Include="Assets\Resources\Scripts\OutroPanelScript.cs" />
     <Compile Include="Assets\Resources\Scripts\PauseButtonTweenerAspectRatioAdapter.cs" />
@@ -302,7 +308,9 @@
     <Compile Include="Assets\Resources\Scripts\RoadBlock.cs" />
     <Compile Include="Assets\Resources\Scripts\RoadCollider.cs" />
     <Compile Include="Assets\Resources\Scripts\RoadEndCollider.cs" />
+    <Compile Include="Assets\Resources\Scripts\RoadEnt.cs" />
     <Compile Include="Assets\Resources\Scripts\RoadEntity.cs" />
+    <Compile Include="Assets\Resources\Scripts\RoadRotations&amp;Extensions.cs" />
     <Compile Include="Assets\Resources\Scripts\RoadSprites.cs" />
     <Compile Include="Assets\Resources\Scripts\SettingsButton.cs" />
     <Compile Include="Assets\Resources\Scripts\Singleton.cs" />
@@ -332,12 +340,17 @@
     <Compile Include="Assets\Resources\Scripts\Vector3Int.cs" />
     <Compile Include="Assets\Resources\Scripts\Wander.cs" />
     <Compile Include="Assets\Resources\Scripts\WanderTruckTracker.cs" />
+    <Compile Include="Assets\Resources\Scripts\resetTypewriter.cs" />
     <Compile Include="Assets\Resources\Scripts\sMenu.cs" />
     <Compile Include="Assets\Resources\Scripts\sMenuButton.cs" />
     <Compile Include="Assets\Resources\Scripts\sProfileManager.cs" />
     <Compile Include="Assets\Resources\Scripts\sSaveLoad.cs" />
     <Compile Include="Assets\Resources\Scripts\test.cs" />
-    <Compile Include="Assets\resetTypewriter.cs" />
+    <Compile Include="Assets\RoadColl.cs" />
+    <Compile Include="Assets\RotateDisable.cs" />
+    <Compile Include="Assets\TruckEnt.cs" />
+    <Compile Include="Assets\TurnOffBool.cs" />
+    <Compile Include="Assets\dummyGameController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mobile Cartoon GUI 2\Readme.txt" />

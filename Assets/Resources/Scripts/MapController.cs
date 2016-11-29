@@ -1,6 +1,10 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+
+
+public delegate void TileClickedEventHandler(Vector3Int position, bool CheckSelf);
 
 
 public class MapController : MonoBehaviour {
@@ -43,19 +47,75 @@ public class MapController : MonoBehaviour {
     }
     #endregion
 
+    #region Events
+    private TileClickedEventHandler _onPurpleTileClicked;
+    public event TileClickedEventHandler OnPurpleTileClicked
+    {
+        add
+        {
+            if (_onPurpleTileClicked == null || !_onPurpleTileClicked.GetInvocationList().Contains(value))
+            {
+                _onPurpleTileClicked += value;
+            }
+        }
+        remove
+        {
+            _onPurpleTileClicked -= value;
+        }
+    }
+
+
+    private TileClickedEventHandler _onGreenTileClicked;
+    public event TileClickedEventHandler OnGreenTileCLicked
+    {
+        add
+        {
+            if (_onGreenTileClicked == null || !_onGreenTileClicked.GetInvocationList().Contains(value))
+            {
+                _onGreenTileClicked += value;
+            }
+        }
+        remove
+        {
+            _onGreenTileClicked -= value;
+        }
+    }
+    /// <summary>
+    /// Fire a Green Tile Event Clicked on the position "pos"
+    /// </summary>
+    /// <param name="pos"></param>
+    public void GreenTileClicked(Vector3Int pos)
+    {
+        if (_onGreenTileClicked != null) _onGreenTileClicked(pos, false);
+    }
+
+
+    /// <summary>
+    /// Fire a Purple Tile Event Clicked on the position "pos"
+    /// </summary>
+    /// <param name="pos"></param>
+    public void PurpleTileClicked(Vector3Int pos)
+    {
+        if (_onPurpleTileClicked != null) _onPurpleTileClicked(pos, false);
+    }
+
+
+    #endregion
+
+
 
     public Dictionary<Vector3Int, GameObject> mapGO;
-    public Dictionary<Vector3Int, RoadEntity> mapRoad;
+    public Dictionary<Vector3Int, RoadEnt> mapRoad;
  
 
     void Awake()
     {
         mapGO = new Dictionary<Vector3Int, GameObject>();
-        mapRoad = new Dictionary<Vector3Int, RoadEntity>();
+        mapRoad = new Dictionary<Vector3Int, RoadEnt>();
     }
 
 
-    public bool CheckNextTile(Vector3Int pos, CardinalPoint dir, out RoadEntity roadID)
+    public bool CheckNextTile(Vector3Int pos, CardinalPoint dir, out RoadEnt roadID)
     {
         roadID = null;
         Vector3Int des = new Vector3Int(pos.x,pos.y,pos.z);
