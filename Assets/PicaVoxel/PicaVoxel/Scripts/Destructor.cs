@@ -1,4 +1,4 @@
-﻿/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
 // 
 // PicaVoxel - The tiny voxel engine for Unity - http://picavoxel.com
 // By Gareth Williams - @garethiw - http://gareth.pw
@@ -90,20 +90,15 @@ namespace PicaVoxel
                             Voxel v = frame.Voxels[x + PicaVoxelVolume.XSize*(y + PicaVoxelVolume.YSize*z)];
                             v.Color *= PicaVoxelVolume.Material.GetColor("_Tint");
                             batch.Add(v, x, y, z, checkPos);
-                            frame.SetVoxelStateAtArrayPosition(x,y,z,VoxelState.Hidden);
-                            //frame.SetChunkAtVoxelPositionDirty(x, y, z);
+                            frame.Voxels[x + PicaVoxelVolume.XSize*(y + PicaVoxelVolume.YSize*z)].State = VoxelState.Hidden;
+                            frame.SetChunkAtVoxelPositionDirty(x, y, z);
                         }
                     }
                 }
             }
 
-            frame.UpdateChunks(false);
-
             if (CreateParticles && batch.Voxels.Count > 0 && VoxelParticleSystem.Instance != null)
-                VoxelParticleSystem.Instance.SpawnBatch(batch,
-                    pos =>
-                        ((transform.position - (pos + Random.insideUnitSphere))*
-                         1f));
+                VoxelParticleSystem.Instance.SpawnBatch(batch,  pos => ((transform.position - (pos + Random.insideUnitSphere))*1f));
 
             batch.Dispose();
         }

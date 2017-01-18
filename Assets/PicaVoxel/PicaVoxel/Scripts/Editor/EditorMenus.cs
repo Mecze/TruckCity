@@ -133,14 +133,6 @@ namespace PicaVoxel
             //window.Init();
         }
 
-        [MenuItem(MENU_GAMEOBJECT_ROOT + "Generate Terrain", false, 18)]
-        private static void DoTerrainGen()
-        {
-
-            TerrainGeneratorWindow window = (TerrainGeneratorWindow)EditorWindow.GetWindowWithRect((typeof(TerrainGeneratorWindow)), new Rect(100, 100, 400, 160), true);
-            window.Init();
-        }
-
         // Taking out mesh storeage cleaning because it only works for current scene, not all scenes in project.
         //[MenuItem(MENU_GAMEOBJECT_ROOT + "Clean up Mesh Storage", false, 16)]
         //private static void CleanUpMeshStorage()

@@ -54,12 +54,12 @@ namespace PicaVoxel
                             voxelObject.DrawGrid = drawGrid;
                             SceneView.RepaintAll();
                         }
-                        //drawMesh = EditorGUILayout.ToggleLeft(new GUIContent(" Draw Wireframe"), drawMesh);
-                        //if (drawMesh != voxelObject.DrawMesh)
-                        //{
-                        //    voxelObject.DrawMesh = drawMesh;
-                        //    SceneView.RepaintAll();
-                        //}
+                        drawMesh = EditorGUILayout.ToggleLeft(new GUIContent(" Draw Wireframe"), drawMesh);
+                        if (drawMesh != voxelObject.DrawMesh)
+                        {
+                            voxelObject.DrawMesh = drawMesh;
+                            SceneView.RepaintAll();
+                        }
                         EditorGUILayout.EndHorizontal();
                     }
                 }

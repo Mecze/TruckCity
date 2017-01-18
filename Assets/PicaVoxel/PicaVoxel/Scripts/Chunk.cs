@@ -59,7 +59,6 @@ namespace PicaVoxel
         private bool hasCreatedRuntimeColMesh = false;
         private bool updateColliderNextFrame = false;
 
-
         private void Update()
         {
             if (status == ChunkStatus.Ready)
@@ -266,7 +265,7 @@ namespace PicaVoxel
             mf.sharedMesh.colors32 = colorArray;
             mf.sharedMesh.uv = uvArray;
             mf.sharedMesh.triangles = indexArray;
-            ;
+            mf.sharedMesh.Optimize();
             mf.sharedMesh.RecalculateNormals();
 
             mf.GetComponent<Renderer>().sharedMaterial = vol.Material;
@@ -317,7 +316,7 @@ namespace PicaVoxel
             mc.sharedMesh.colors32 = colorArray;
             mc.sharedMesh.uv = uvArray;
             mc.sharedMesh.triangles = indexArray;
-            ;
+            mc.sharedMesh.Optimize();
             mc.sharedMesh.RecalculateNormals();
             mc.sharedMesh.RecalculateBounds();
 

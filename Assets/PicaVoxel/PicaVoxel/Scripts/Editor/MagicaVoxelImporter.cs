@@ -75,10 +75,6 @@ namespace PicaVoxel
             }
 
             MagicaVoxelData[] voxelData = null;
-            List<MagicaVoxelData[]> frames = new List<MagicaVoxelData[]>();
-
-            //int numFrames = 1;
-            
 
             string magic = new string(stream.ReadChars(4));
             //int version = 
@@ -100,11 +96,8 @@ namespace PicaVoxel
                     stream.ReadInt32();
                     string chunkName = new string(chunkId);
 
-                    if (chunkName == "PACK")
-                    {
-                        //numFrames = stream.ReadInt32();
-                    }
-                    else if (chunkName == "SIZE")
+                    // there are only 2 chunks we only care about, and they are SIZE and XYZI
+                    if (chunkName == "SIZE")
                     {
                         sizex = stream.ReadInt32();
                         sizez = stream.ReadInt32();
@@ -124,8 +117,6 @@ namespace PicaVoxel
                         voxelData = new MagicaVoxelData[numVoxels];
                         for (int i = 0; i < voxelData.Length; i++)
                             voxelData[i] = new MagicaVoxelData(stream, subsample);
-
-                        frames.Add(voxelData);
                     }
                     else if (chunkName == "RGBA")
                     {
@@ -155,11 +146,11 @@ namespace PicaVoxel
                     voxelVolume.XSize = sizex;
                     voxelVolume.YSize = sizey;
                     voxelVolume.ZSize = sizez;
-                    voxelVolume.Frames[voxelVolume.CurrentFrame].XSize = sizex;
-                    voxelVolume.Frames[voxelVolume.CurrentFrame].YSize = sizey;
-                    voxelVolume.Frames[voxelVolume.CurrentFrame].ZSize = sizez;
-                    voxelVolume.Frames[voxelVolume.CurrentFrame].Voxels = new Voxel[sizex * sizey * sizez];
-                    for (int i = 0; i < voxelVolume.Frames[voxelVolume.CurrentFrame].Voxels.Length; i++) voxelVolume.Frames[voxelVolume.CurrentFrame].Voxels[i].Value = 128;
+                    voxelVolume.Frames[0].XSize = sizex;
+                    voxelVolume.Frames[0].YSize = sizey;
+                    voxelVolume.Frames[0].ZSize = sizez;
+                    voxelVolume.Frames[0].Voxels = new Voxel[sizex * sizey * sizez];
+                    for (int i = 0; i < voxelVolume.Frames[0].Voxels.Length; i++) voxelVolume.Frames[0].Voxels[i].Value = 128;
                     voxelVolume.VoxelSize = voxelSize;
 
                     if (centerPivot)
@@ -168,36 +159,25 @@ namespace PicaVoxel
                         voxelVolume.UpdatePivot();
                     }
 
-                    foreach (MagicaVoxelData[] d in frames)
+                    foreach (MagicaVoxelData v in voxelData)
                     {
-                        
-                        foreach (MagicaVoxelData v in d)
+                        try
                         {
-                            try
+                            voxelVolume.Frames[0].Voxels[v.x + sizex * (v.z + sizey * v.y)] = new Voxel()
                             {
-                                voxelVolume.Frames[voxelVolume.CurrentFrame].Voxels[v.x + sizex*(v.z + sizey*v.y)] = new Voxel()
-                                {
-                                    State = VoxelState.Active,
-                                    Color = colors[v.color - 1],
-                                    Value = 128
-                                };
-                            }
-                            catch (Exception)
-                            {
+                                State = VoxelState.Active,
+                                Color = colors[v.color-1],
+                                Value = 128
+                            };
+                        }
+                        catch (Exception)
+                        {
 
-                                Debug.Log(v.x + " " + v.y + " " + v.z);
-                            }
-
+                            Debug.Log(v.x + " " + v.y + " " + v.z);
                         }
 
-                        if (frames.IndexOf(d) < frames.Count - 1)
-                        {
-                            voxelVolume.AddFrame(voxelVolume.CurrentFrame + 1);
-                            voxelVolume.Frames[voxelVolume.CurrentFrame].Voxels = new Voxel[sizex*sizey*sizez];
-                        }
                     }
 
-                    voxelVolume.SetFrame(0);
                     voxelVolume.CreateChunks();
                     voxelVolume.SaveForSerialize();
                 }

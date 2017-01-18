@@ -100,8 +100,6 @@ namespace PicaVoxel
                 }
             }
 
-            frame.UpdateChunks(false);
-
             //frame.UpdateAllChunksNextFrame();
         }
     }

@@ -1,4 +1,4 @@
-﻿/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
 // 
 // PicaVoxel - The tiny voxel engine for Unity - http://picavoxel.com
 // By Gareth Williams - @garethiw - http://gareth.pw
@@ -35,7 +35,7 @@ namespace PicaVoxel
         private ParticleSystem.Particle[] parts;
 
         // Use this for initialization
-        private void Start()
+        private void Awake()
         {
             if (Instance == null)
             {
@@ -47,7 +47,7 @@ namespace PicaVoxel
             }
 
             System = GetComponent<ParticleSystem>();
-            parts = new ParticleSystem.Particle[System.main.maxParticles];
+            parts = new ParticleSystem.Particle[System.maxParticles];
         }
 
         // Update is called once per frame

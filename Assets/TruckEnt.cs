@@ -175,39 +175,7 @@ public class TruckEnt : MonoBehaviour {
             _onTruckDirectionChanged -= value;            
         }
     }
-    public bool DeltaXMoreThanRoad
-    {
-        get
-        {
-            float r = transform.position.x - myRoadPos.x;
-            return ((r > 0f) || Mathf.Approximately(r, 0f));
-        }
-    }
-    public bool DeltaXLessThanRoad
-    {
-        get
-        {
-            float r = transform.position.x - myRoadPos.x;
-            return ((r < 0f) || Mathf.Approximately(r, 0f));
-        }
-    }
-    public bool DeltaYLessThanRoad
-    {
-        get
-        {
-            float r = transform.position.z - myRoadPos.y;
-            return ((r < 0f) || Mathf.Approximately(r, 0f));
-        }
-    }
-    public bool DeltaYMoreThanRoad
-    {
-        get
-        {
-            float r = transform.position.z - myRoadPos.y;
-            return ((r > 0f) || Mathf.Approximately(r, 0f));
-        }
-    }
-
+    
 
     #endregion
 
@@ -319,16 +287,10 @@ public class TruckEnt : MonoBehaviour {
     public Vector2 DistanceToMyRoad()
     {
         Vector2 r = new Vector2();
-        r.x = transform.position.x - myRoadPos.x;
-        r.y = transform.position.z - myRoadPos.y;
-        /*
         r.x = myRoadPos.x - transform.position.x;
         r.y = myRoadPos.y - transform.position.z;
-        */
         return r;
     }
-    
-
     public float DistanceToMyRoad(bool X)
     {
         if (X)
