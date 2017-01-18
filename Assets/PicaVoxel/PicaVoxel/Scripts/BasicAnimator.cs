@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////////////////////////////
+﻿/////////////////////////////////////////////////////////////////////////
 // 
 // PicaVoxel - The tiny voxel engine for Unity - http://picavoxel.com
 // By Gareth Williams - @garethiw - http://gareth.pw
@@ -23,7 +23,6 @@ namespace PicaVoxel
         public bool Loop = true;
         public bool RandomStartFrame = false;
         public bool PlayOnAwake = true;
-        public bool PlayOnEnable = true;
         public bool IsPlaying = false;
         public int CurrentFrame = 0;
         public int NumFrames = 0;
@@ -35,16 +34,6 @@ namespace PicaVoxel
         private bool isBakedVolume = false;
 
         private void Awake()
-        {
-            if (PlayOnAwake && !IsPlaying) StartPlaying();
-        }
-
-        private void OnEnable()
-        {
-            if (PlayOnEnable && !IsPlaying) StartPlaying();
-        }
-
-        private void StartPlaying()
         {
             voxelObject = GetComponent<Volume>();
 
@@ -63,7 +52,7 @@ namespace PicaVoxel
             }
 
             Reset();
-            Play();
+            if (PlayOnAwake) Play();
         }
 
         // Update is called once per frame

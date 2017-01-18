@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////////////////////////////
+﻿/////////////////////////////////////////////////////////////////////////
 // 
 // PicaVoxel - The tiny voxel engine for Unity - http://picavoxel.com
 // By Gareth Williams - @garethiw - http://gareth.pw
@@ -36,7 +36,7 @@ namespace PicaVoxel
     }
 
     [CanEditMultipleObjects]
-    [CustomEditor(typeof (Volume))]
+    [CustomEditor(typeof(Volume))]
     public partial class VolumeEditor : Editor
     {
         private Volume voxelObject;
@@ -70,7 +70,7 @@ namespace PicaVoxel
 
         private PicaVoxelPoint boxStart;
         private PicaVoxelBox currentBox;
-        private PicaVoxelPoint previousBrushPos = new PicaVoxelPoint(0,0,0);
+        private PicaVoxelPoint previousBrushPos = new PicaVoxelPoint(0, 0, 0);
 
         private EditorPaintMode paintMode = EditorPaintMode.Color;
 
@@ -84,8 +84,8 @@ namespace PicaVoxel
 
         private void OnEnable()
         {
-     
-            voxelObject = (Volume) target;
+
+            voxelObject = (Volume)target;
             if (voxelObject == null) return;
 
             Undo.undoRedoPerformed += () => voxelObject.OnUndoRedo();
@@ -106,7 +106,7 @@ namespace PicaVoxel
             selfShadeInt = serializedObject.FindProperty("SelfShadingIntensity");
 
             drawGrid = voxelObject.DrawGrid;
-            drawMesh = voxelObject.DrawMesh;
+            //drawMesh = voxelObject.DrawMesh;
             runtimeOnlyMesh = serializedObject.FindProperty("RuntimOnlyMesh");
 
             material = serializedObject.FindProperty("Material");
@@ -184,7 +184,7 @@ namespace PicaVoxel
             paintMode =
                 (EditorPaintMode)
                     EditorGUILayout.EnumPopup(voxelObject.PaintMode,
-                        new GUIStyle(skin.GetStyle("DropDown")) {margin = new RectOffset(0, 0, 0, 5)},
+                        new GUIStyle(skin.GetStyle("DropDown")) { margin = new RectOffset(0, 0, 0, 5) },
                         GUILayout.Width(100));
             if (paintMode != voxelObject.PaintMode)
             {
@@ -195,13 +195,13 @@ namespace PicaVoxel
             EditorPersistence.SelectedValue =
                 (byte)
                     GUILayout.HorizontalSlider(EditorPersistence.SelectedValue, 0f, 255f,
-                        new GUIStyle(GUI.skin.horizontalSlider) {margin = new RectOffset(0, 0, 0, 0)},
-                        new GUIStyle(GUI.skin.horizontalSliderThumb) {margin = new RectOffset(0, 0, 0, 0)},
+                        new GUIStyle(GUI.skin.horizontalSlider) { margin = new RectOffset(0, 0, 0, 0) },
+                        new GUIStyle(GUI.skin.horizontalSliderThumb) { margin = new RectOffset(0, 0, 0, 0) },
                         GUILayout.Width(100)); //.IntSlider((int)selectedValue, 0, 255, GUILayout.Width(120));
 
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Value:",
-                new GUIStyle(GUI.skin.label) {padding = new RectOffset(0, 0, 0, 0), margin = new RectOffset(0, 0, 0, 5)},
+                new GUIStyle(GUI.skin.label) { padding = new RectOffset(0, 0, 0, 0), margin = new RectOffset(0, 0, 0, 5) },
                 GUILayout.Width(42));
             string inputSelectedValue = EditorGUILayout.TextField(EditorPersistence.SelectedValue.ToString(),
                 new GUIStyle(GUI.skin.textField)
@@ -213,7 +213,7 @@ namespace PicaVoxel
             int trySelectedValue;
             int.TryParse(inputSelectedValue, out trySelectedValue);
             if (trySelectedValue >= 0 && trySelectedValue <= 255)
-                EditorPersistence.SelectedValue = (byte) trySelectedValue;
+                EditorPersistence.SelectedValue = (byte)trySelectedValue;
             GUILayout.EndHorizontal();
 
             int colNum = 0;
@@ -332,7 +332,7 @@ namespace PicaVoxel
                 {
                     GUILayout.Space(10);
                     EditorGUILayout.LabelField("Selection");
-                    if (GUILayout.Button("Create Brush", new GUIStyle(skin.button) {margin = new RectOffset(0, 0, 0, 5)},
+                    if (GUILayout.Button("Create Brush", new GUIStyle(skin.button) { margin = new RectOffset(0, 0, 0, 5) },
                         GUILayout.Width(100)))
                     {
                         buttonJustClicked = true;
@@ -343,7 +343,7 @@ namespace PicaVoxel
                         EditorPersistence.BrushSize = new PicaVoxelPoint((EditorPersistence.SelectBox.TopRightBack.X + 1) - EditorPersistence.SelectBox.BottomLeftFront.X,
                                                                          (EditorPersistence.SelectBox.TopRightBack.Y + 1) - EditorPersistence.SelectBox.BottomLeftFront.Y,
                                                                          (EditorPersistence.SelectBox.TopRightBack.Z + 1) - EditorPersistence.SelectBox.BottomLeftFront.Z);
-                        PicaVoxelBox destBox = new PicaVoxelBox(0, 0, 0, EditorPersistence.BrushSize.X-1,EditorPersistence.BrushSize.Y-1, EditorPersistence.BrushSize.Z-1);
+                        PicaVoxelBox destBox = new PicaVoxelBox(0, 0, 0, EditorPersistence.BrushSize.X - 1, EditorPersistence.BrushSize.Y - 1, EditorPersistence.BrushSize.Z - 1);
                         Helper.CopyVoxelsInBox(ref voxelObject.GetCurrentFrame().Voxels, ref EditorPersistence.Brush,
                             EditorPersistence.SelectBox, destBox, new PicaVoxelPoint(voxelObject.XSize, voxelObject.YSize, voxelObject.ZSize), EditorPersistence.BrushSize, false);
                         EditorPersistence.CursorMode = EditorCursorMode.BrushAdd;
@@ -357,7 +357,7 @@ namespace PicaVoxel
                     }
                     GUILayout.Space(10);
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button("Fill", new GUIStyle(skin.button) {margin = new RectOffset(0, 0, 0, 0)},
+                    if (GUILayout.Button("Fill", new GUIStyle(skin.button) { margin = new RectOffset(0, 0, 0, 0) },
                         GUILayout.Width(50)))
                     {
                         RegisterUndo();
@@ -366,10 +366,10 @@ namespace PicaVoxel
                             foreach (Frame f in voxelObject.Frames)
                             {
                                 f.EditingVoxels = null;
-                                for(int x=EditorPersistence.SelectBox.BottomLeftFront.X;x<=EditorPersistence.SelectBox.TopRightBack.X;x++)
-                                    for(int y=EditorPersistence.SelectBox.BottomLeftFront.Y;y<=EditorPersistence.SelectBox.TopRightBack.Y;y++)
-                                        for(int z=EditorPersistence.SelectBox.BottomLeftFront.Z;z<=EditorPersistence.SelectBox.TopRightBack.Z;z++)
-                                            f.Voxels[x + voxelObject.XSize*(y + voxelObject.YSize*z)] = new Voxel()
+                                for (int x = EditorPersistence.SelectBox.BottomLeftFront.X; x <= EditorPersistence.SelectBox.TopRightBack.X; x++)
+                                    for (int y = EditorPersistence.SelectBox.BottomLeftFront.Y; y <= EditorPersistence.SelectBox.TopRightBack.Y; y++)
+                                        for (int z = EditorPersistence.SelectBox.BottomLeftFront.Z; z <= EditorPersistence.SelectBox.TopRightBack.Z; z++)
+                                            f.Voxels[x + voxelObject.XSize * (y + voxelObject.YSize * z)] = new Voxel()
                                             {
                                                 State = VoxelState.Active,
                                                 Color = voxelObject.PaletteColors[EditorPersistence.SelectedColor],
@@ -396,7 +396,7 @@ namespace PicaVoxel
                         }
                         buttonJustClicked = true;
                     }
-                    if (GUILayout.Button("Clear", new GUIStyle(skin.button) { margin = new RectOffset(0, 0, 0, 0) }, 
+                    if (GUILayout.Button("Clear", new GUIStyle(skin.button) { margin = new RectOffset(0, 0, 0, 0) },
                         GUILayout.Width(50)))
                     {
                         RegisterUndo();
@@ -496,17 +496,17 @@ namespace PicaVoxel
                     EditorPersistence.BrushAnchorX =
                         (AnchorX)
                             EditorGUILayout.EnumPopup(EditorPersistence.BrushAnchorX,
-                                new GUIStyle(skin.GetStyle("DropDown")) {margin = new RectOffset(0, 0, 0, 5)},
+                                new GUIStyle(skin.GetStyle("DropDown")) { margin = new RectOffset(0, 0, 0, 5) },
                                 GUILayout.Width(100));
                     EditorPersistence.BrushAnchorY =
                         (AnchorY)
                             EditorGUILayout.EnumPopup(EditorPersistence.BrushAnchorY,
-                                new GUIStyle(skin.GetStyle("DropDown")) {margin = new RectOffset(0, 0, 0, 5)},
+                                new GUIStyle(skin.GetStyle("DropDown")) { margin = new RectOffset(0, 0, 0, 5) },
                                 GUILayout.Width(100));
                     EditorPersistence.BrushAnchorZ =
                         (AnchorZ)
                             EditorGUILayout.EnumPopup(EditorPersistence.BrushAnchorZ,
-                                new GUIStyle(skin.GetStyle("DropDown")) {margin = new RectOffset(0, 0, 0, 5)},
+                                new GUIStyle(skin.GetStyle("DropDown")) { margin = new RectOffset(0, 0, 0, 5) },
                                 GUILayout.Width(100));
 
                     EditorGUILayout.LabelField("Brush Rotate");
@@ -566,7 +566,7 @@ namespace PicaVoxel
             GUI.backgroundColor = (EditorGUIUtility.isProSkin ? Color.white : Color.grey);
             GUILayout.BeginArea(new Rect(Screen.width - 410, Screen.height - 100, 400, 50),
                 EditorUtility.Buttons["pvButton_AnimBG"]);
-            GUILayout.BeginHorizontal(new GUIStyle() {alignment = TextAnchor.MiddleCenter}, GUILayout.Width(260));
+            GUILayout.BeginHorizontal(new GUIStyle() { alignment = TextAnchor.MiddleCenter }, GUILayout.Width(260));
             if (GUILayout.Button(new GUIContent(EditorUtility.Buttons["pvButton_AddFramePrev"], "Add frame before"),
                 new GUIStyle(GUI.skin.button)
                 {
@@ -610,7 +610,7 @@ namespace PicaVoxel
             GUILayout.Label(voxelObject.CurrentFrame + 1 + "/" + voxelObject.NumFrames,
                 new GUIStyle(GUI.skin.label)
                 {
-                    normal = new GUIStyleState() {textColor = Color.white},
+                    normal = new GUIStyleState() { textColor = Color.white },
                     fontSize = 20,
                     fontStyle = FontStyle.Bold,
                     alignment = TextAnchor.MiddleCenter,
@@ -667,18 +667,18 @@ namespace PicaVoxel
                     {
                         padding = new RectOffset(0, 0, 0, 0),
                         margin = new RectOffset(2, 0, 9, 0)
-                    }, GUILayout.Width(32), GUILayout.Height(32)) && EditorPersistence.AnimFrameClipboard!=null)
+                    }, GUILayout.Width(32), GUILayout.Height(32)) && EditorPersistence.AnimFrameClipboard != null)
             {
                 buttonJustClicked = true;
                 voxelObject.AddFrame(voxelObject.CurrentFrame);
-                voxelObject.SetFrame(voxelObject.CurrentFrame+1);
-                for(int x=0;x<EditorPersistence.AnimFrameClipboardSize.X;x++)
-                    for(int y=0;y<EditorPersistence.AnimFrameClipboardSize.Y;y++)
+                voxelObject.SetFrame(voxelObject.CurrentFrame + 1);
+                for (int x = 0; x < EditorPersistence.AnimFrameClipboardSize.X; x++)
+                    for (int y = 0; y < EditorPersistence.AnimFrameClipboardSize.Y; y++)
                         for (int z = 0; z < EditorPersistence.AnimFrameClipboardSize.Z; z++)
                         {
                             if (x < voxelObject.XSize && y < voxelObject.YSize && z < voxelObject.ZSize)
                             {
-                                voxelObject.Frames[voxelObject.CurrentFrame].Voxels[x + voxelObject.XSize*(y + voxelObject.YSize*z)] =
+                                voxelObject.Frames[voxelObject.CurrentFrame].Voxels[x + voxelObject.XSize * (y + voxelObject.YSize * z)] =
                                     EditorPersistence.AnimFrameClipboard[x + EditorPersistence.AnimFrameClipboardSize.X * (y + EditorPersistence.AnimFrameClipboardSize.Y * z)];
                             }
                         }
@@ -704,7 +704,7 @@ namespace PicaVoxel
             //if (buttonJustClicked && e.type == EventType.MouseUp && e.button == 0)
             //    buttonJustClicked = false;
 
-            if (GUIUtility.hotControl == 0 && EditorGUIUtility.hotControl==0 && GUI.GetNameOfFocusedControl() == "" && buttonJustClicked==false)
+            if (GUIUtility.hotControl == 0 && EditorGUIUtility.hotControl == 0 && GUI.GetNameOfFocusedControl() == "" && buttonJustClicked == false)
             {
 
                 bool validBrushPos = false;
@@ -721,13 +721,13 @@ namespace PicaVoxel
                 }
 
 
-                Ray r =
-                    Camera.current.ScreenPointToRay(new Vector3(e.mousePosition.x,
-                        -e.mousePosition.y + Camera.current.pixelHeight));
+                Ray r = HandleUtility.GUIPointToWorldRay(e.mousePosition);
+                //  Camera.current.ScreenPointToRay(new Vector3(e.mousePosition.x,
+                //   -e.mousePosition.y + Camera.current.pixelHeight));
 
                 //Debug.DrawRay(r.origin, r.direction*200f, Color.red );
 
-                for (float d = 0f; d < voxelObject.VoxelSize*200f; d += voxelObject.VoxelSize*0.1f)
+                for (float d = 0f; d < voxelObject.VoxelSize * 200f; d += voxelObject.VoxelSize * 0.1f)
                 {
                     Voxel? v = voxelObject.GetVoxelAtWorldPosition(r.GetPoint(d));
 
@@ -738,7 +738,7 @@ namespace PicaVoxel
                     {
                         if (!v.Value.Active) continue;
 
-                        d -= voxelObject.VoxelSize*0.1f;
+                        d -= voxelObject.VoxelSize * 0.1f;
                         v = voxelObject.GetVoxelAtWorldPosition(r.GetPoint(d));
                         if (!v.HasValue) break;
                     }
@@ -749,9 +749,9 @@ namespace PicaVoxel
                          (EditorPersistence.CursorMode == EditorCursorMode.BrushAdd && !EditorPersistence.BrushReplace)))
                     {
                         cursorPosition =
-                            voxelObject.transform.TransformPoint(((voxelObject.GetVoxelPosition(r.GetPoint(d))*
+                            voxelObject.transform.TransformPoint(((voxelObject.GetVoxelPosition(r.GetPoint(d)) *
                                                                    voxelObject.VoxelSize) - voxelObject.Pivot) +
-                                                                 ((Vector3.one*voxelObject.VoxelSize)*0.5f));
+                                                                 ((Vector3.one * voxelObject.VoxelSize) * 0.5f));
 
                         if (EditorPersistence.CursorMode != EditorCursorMode.BrushAdd &&
                             EditorPersistence.CursorMode != EditorCursorMode.BrushPaint &&
@@ -763,8 +763,8 @@ namespace PicaVoxel
                                              EditorPersistence.CursorMode == EditorCursorMode.BoxSubtract ||
                                              EditorPersistence.CursorMode == EditorCursorMode.PickColor ||
                                              EditorPersistence.CursorMode == EditorCursorMode.PickValue)
-                                ? Color.red*0.5f
-                                : voxelObject.PaletteColors[EditorPersistence.SelectedColor]*0.5f;
+                                ? Color.red * 0.5f
+                                : voxelObject.PaletteColors[EditorPersistence.SelectedColor] * 0.5f;
                             Handles.CubeCap(0, cursorPosition, voxelObject.transform.rotation, voxelObject.VoxelSize);
                             Repaint();
                             SceneView.RepaintAll();
@@ -789,7 +789,7 @@ namespace PicaVoxel
                                     foreach (Frame f in voxelObject.Frames)
                                     {
                                         f.EditingVoxels =
-                                            new Voxel[voxelObject.XSize*voxelObject.YSize*voxelObject.ZSize];
+                                            new Voxel[voxelObject.XSize * voxelObject.YSize * voxelObject.ZSize];
                                         Helper.CopyVoxelsInBox(ref f.Voxels,
                                             ref f.EditingVoxels,
                                             new PicaVoxelPoint(voxelObject.XSize, voxelObject.YSize, voxelObject.ZSize),
@@ -802,7 +802,7 @@ namespace PicaVoxel
                                 {
 
                                     voxelObject.GetCurrentFrame().EditingVoxels =
-                                        new Voxel[voxelObject.XSize*voxelObject.YSize*voxelObject.ZSize];
+                                        new Voxel[voxelObject.XSize * voxelObject.YSize * voxelObject.ZSize];
                                     Helper.CopyVoxelsInBox(ref voxelObject.GetCurrentFrame().Voxels,
                                         ref voxelObject.GetCurrentFrame().EditingVoxels,
                                         new PicaVoxelPoint(voxelObject.XSize, voxelObject.YSize, voxelObject.ZSize),
@@ -832,9 +832,9 @@ namespace PicaVoxel
                             {
                                 bool colorFound = false;
                                 for (int c = 0; c < 25; c++)
-                                    if (((Color32) voxelObject.PaletteColors[c]).r == ((Color32) v.Value.Color).r &&
-                                        ((Color32) voxelObject.PaletteColors[c]).g == ((Color32) v.Value.Color).g &&
-                                        ((Color32) voxelObject.PaletteColors[c]).b == ((Color32) v.Value.Color).b)
+                                    if (((Color32)voxelObject.PaletteColors[c]).r == ((Color32)v.Value.Color).r &&
+                                        ((Color32)voxelObject.PaletteColors[c]).g == ((Color32)v.Value.Color).g &&
+                                        ((Color32)voxelObject.PaletteColors[c]).b == ((Color32)v.Value.Color).b)
                                     {
                                         EditorPersistence.SelectedColor = c;
                                         colorFound = true;
@@ -910,11 +910,11 @@ namespace PicaVoxel
                                                         case EditorCursorMode.BoxAdd:
                                                             if (
                                                                 !f.Voxels[
-                                                                    x + voxelObject.XSize*(y + voxelObject.YSize*z)]
+                                                                    x + voxelObject.XSize * (y + voxelObject.YSize * z)]
                                                                     .Active)
                                                             {
                                                                 f.EditingVoxels[
-                                                                    x + voxelObject.XSize*(y + voxelObject.YSize*z)] = new Voxel
+                                                                    x + voxelObject.XSize * (y + voxelObject.YSize * z)] = new Voxel
                                                                         ()
                                                                     {
                                                                         Color =
@@ -923,13 +923,13 @@ namespace PicaVoxel
                                                                         Value = EditorPersistence.SelectedValue,
                                                                         State =
                                                                             (EditorPersistence.CursorMode !=
-                                                                             EditorCursorMode.BoxSubtract)?VoxelState.Active:VoxelState.Inactive
+                                                                             EditorCursorMode.BoxSubtract) ? VoxelState.Active : VoxelState.Inactive
                                                                     };
                                                             }
                                                             break;
                                                         case EditorCursorMode.BoxSubtract:
                                                             f.EditingVoxels[
-                                                                x + voxelObject.XSize*(y + voxelObject.YSize*z)] = new Voxel
+                                                                x + voxelObject.XSize * (y + voxelObject.YSize * z)] = new Voxel
                                                                     ()
                                                                 {
                                                                     Color =
@@ -943,7 +943,7 @@ namespace PicaVoxel
                                                             break;
                                                         case EditorCursorMode.BoxPaint:
                                                             if (
-                                                                f.Voxels[x + voxelObject.XSize*(y + voxelObject.YSize*z)
+                                                                f.Voxels[x + voxelObject.XSize * (y + voxelObject.YSize * z)
                                                                     ].Active)
                                                             {
                                                                 switch (paintMode)
@@ -952,7 +952,7 @@ namespace PicaVoxel
                                                                     case EditorPaintMode.Color:
                                                                         f.EditingVoxels[
                                                                             x +
-                                                                            voxelObject.XSize*(y + voxelObject.YSize*z)]
+                                                                            voxelObject.XSize * (y + voxelObject.YSize * z)]
                                                                             = new Voxel()
                                                                             {
                                                                                 Color =
@@ -961,13 +961,13 @@ namespace PicaVoxel
                                                                                 Value =
                                                                                     f.Voxels[
                                                                                         x +
-                                                                                        voxelObject.XSize*
-                                                                                        (y + voxelObject.YSize*z)].Value,
+                                                                                        voxelObject.XSize *
+                                                                                        (y + voxelObject.YSize * z)].Value,
                                                                                 State =
                                                                                     f.Voxels[
                                                                                         x +
-                                                                                        voxelObject.XSize*
-                                                                                        (y + voxelObject.YSize*z)]
+                                                                                        voxelObject.XSize *
+                                                                                        (y + voxelObject.YSize * z)]
                                                                                         .State
                                                                             };
                                                                         //GetCurrentFrame().EditingVoxels[x, y, z].Color = voxelObject.PaletteColors[selectedColor];
@@ -975,20 +975,20 @@ namespace PicaVoxel
                                                                     case EditorPaintMode.Value:
                                                                         f.EditingVoxels[
                                                                             x +
-                                                                            voxelObject.XSize*(y + voxelObject.YSize*z)]
+                                                                            voxelObject.XSize * (y + voxelObject.YSize * z)]
                                                                             = new Voxel()
                                                                             {
                                                                                 Color =
                                                                                     f.Voxels[
                                                                                         x +
-                                                                                        voxelObject.XSize*
-                                                                                        (y + voxelObject.YSize*z)].Color,
+                                                                                        voxelObject.XSize *
+                                                                                        (y + voxelObject.YSize * z)].Color,
                                                                                 Value = EditorPersistence.SelectedValue,
                                                                                 State =
                                                                                     f.Voxels[
                                                                                         x +
-                                                                                        voxelObject.XSize*
-                                                                                        (y + voxelObject.YSize*z)]
+                                                                                        voxelObject.XSize *
+                                                                                        (y + voxelObject.YSize * z)]
                                                                                         .State
                                                                             };
                                                                         //voxelObject.GetCurrentFrame().EditingVoxels[x, y, z].Value = selectedValue;
@@ -1007,10 +1007,10 @@ namespace PicaVoxel
                                                     case EditorCursorMode.BoxAdd:
                                                         if (
                                                             !voxelObject.GetCurrentFrame().Voxels[
-                                                                x + voxelObject.XSize*(y + voxelObject.YSize*z)].Active)
+                                                                x + voxelObject.XSize * (y + voxelObject.YSize * z)].Active)
                                                         {
                                                             voxelObject.GetCurrentFrame().EditingVoxels[
-                                                                x + voxelObject.XSize*(y + voxelObject.YSize*z)] = new Voxel
+                                                                x + voxelObject.XSize * (y + voxelObject.YSize * z)] = new Voxel
                                                                     ()
                                                                 {
                                                                     Color =
@@ -1025,7 +1025,7 @@ namespace PicaVoxel
                                                         break;
                                                     case EditorCursorMode.BoxSubtract:
                                                         voxelObject.GetCurrentFrame().EditingVoxels[
-                                                            x + voxelObject.XSize*(y + voxelObject.YSize*z)] = new Voxel
+                                                            x + voxelObject.XSize * (y + voxelObject.YSize * z)] = new Voxel
                                                                 ()
                                                             {
                                                                 Color =
@@ -1040,14 +1040,14 @@ namespace PicaVoxel
                                                     case EditorCursorMode.BoxPaint:
                                                         if (
                                                             voxelObject.GetCurrentFrame().Voxels[
-                                                                x + voxelObject.XSize*(y + voxelObject.YSize*z)].Active)
+                                                                x + voxelObject.XSize * (y + voxelObject.YSize * z)].Active)
                                                         {
                                                             switch (paintMode)
                                                             {
 
                                                                 case EditorPaintMode.Color:
                                                                     voxelObject.GetCurrentFrame().EditingVoxels[
-                                                                        x + voxelObject.XSize*(y + voxelObject.YSize*z)]
+                                                                        x + voxelObject.XSize * (y + voxelObject.YSize * z)]
                                                                         = new Voxel()
                                                                         {
                                                                             Color =
@@ -1056,32 +1056,32 @@ namespace PicaVoxel
                                                                             Value =
                                                                                 voxelObject.GetCurrentFrame().Voxels[
                                                                                     x +
-                                                                                    voxelObject.XSize*
-                                                                                    (y + voxelObject.YSize*z)].Value,
+                                                                                    voxelObject.XSize *
+                                                                                    (y + voxelObject.YSize * z)].Value,
                                                                             State =
                                                                                 voxelObject.GetCurrentFrame().Voxels[
                                                                                     x +
-                                                                                    voxelObject.XSize*
-                                                                                    (y + voxelObject.YSize*z)].State
+                                                                                    voxelObject.XSize *
+                                                                                    (y + voxelObject.YSize * z)].State
                                                                         };
                                                                     //GetCurrentFrame().EditingVoxels[x, y, z].Color = voxelObject.PaletteColors[selectedColor];
                                                                     break;
                                                                 case EditorPaintMode.Value:
                                                                     voxelObject.GetCurrentFrame().EditingVoxels[
-                                                                        x + voxelObject.XSize*(y + voxelObject.YSize*z)]
+                                                                        x + voxelObject.XSize * (y + voxelObject.YSize * z)]
                                                                         = new Voxel()
                                                                         {
                                                                             Color =
                                                                                 voxelObject.GetCurrentFrame().Voxels[
                                                                                     x +
-                                                                                    voxelObject.XSize*
-                                                                                    (y + voxelObject.YSize*z)].Color,
+                                                                                    voxelObject.XSize *
+                                                                                    (y + voxelObject.YSize * z)].Color,
                                                                             Value = EditorPersistence.SelectedValue,
                                                                             State =
                                                                                 voxelObject.GetCurrentFrame().Voxels[
                                                                                     x +
-                                                                                    voxelObject.XSize*
-                                                                                    (y + voxelObject.YSize*z)].State
+                                                                                    voxelObject.XSize *
+                                                                                    (y + voxelObject.YSize * z)].State
                                                                         };
                                                                     //voxelObject.GetCurrentFrame().EditingVoxels[x, y, z].Value = selectedValue;
                                                                     break;
@@ -1093,15 +1093,15 @@ namespace PicaVoxel
                                         }
 
 
-                                for (int x = changedVoxelExtents.BottomLeftFront.X-1;
-                                    x <= changedVoxelExtents.TopRightBack.X+1;
-                                    x ++)
-                                    for (int y = changedVoxelExtents.BottomLeftFront.Y-1;
-                                        y <= changedVoxelExtents.TopRightBack.Y+1;
-                                        y ++)
-                                        for (int z = changedVoxelExtents.BottomLeftFront.Z-1;
-                                            z <= changedVoxelExtents.TopRightBack.Z+1;
-                                            z ++)
+                                for (int x = changedVoxelExtents.BottomLeftFront.X - 1;
+                                    x <= changedVoxelExtents.TopRightBack.X + 1;
+                                    x++)
+                                    for (int y = changedVoxelExtents.BottomLeftFront.Y - 1;
+                                        y <= changedVoxelExtents.TopRightBack.Y + 1;
+                                        y++)
+                                        for (int z = changedVoxelExtents.BottomLeftFront.Z - 1;
+                                            z <= changedVoxelExtents.TopRightBack.Z + 1;
+                                            z++)
                                             if (propogateAllFrames)
                                                 foreach (Frame f in voxelObject.Frames)
                                                     f.SetChunkAtVoxelPositionDirty(x, y, z);
@@ -1140,7 +1140,7 @@ namespace PicaVoxel
                                         f.SetVoxelAtWorldPosition(r.GetPoint(d),
                                             new Voxel()
                                             {
-                                                State = (EditorPersistence.CursorMode != EditorCursorMode.Subtract)?VoxelState.Active : VoxelState.Inactive,
+                                                State = (EditorPersistence.CursorMode != EditorCursorMode.Subtract) ? VoxelState.Active : VoxelState.Inactive,
                                                 Color = voxelObject.PaletteColors[EditorPersistence.SelectedColor],
                                                 Value = EditorPersistence.SelectedValue
                                             });
@@ -1193,7 +1193,7 @@ namespace PicaVoxel
                                     if (voxelObject.GetCurrentFrame().EditingVoxels == null)
                                     {
                                         voxelObject.GetCurrentFrame().EditingVoxels =
-                                            new Voxel[voxelObject.XSize*voxelObject.YSize*voxelObject.ZSize];
+                                            new Voxel[voxelObject.XSize * voxelObject.YSize * voxelObject.ZSize];
                                         Helper.CopyVoxelsInBox(ref voxelObject.GetCurrentFrame().Voxels,
                                             ref voxelObject.GetCurrentFrame().EditingVoxels,
                                             new PicaVoxelPoint(voxelObject.XSize, voxelObject.YSize, voxelObject.ZSize),
@@ -1207,7 +1207,7 @@ namespace PicaVoxel
                                 }
                                 PicaVoxelPoint brushPos = new PicaVoxelPoint(voxelObject.GetVoxelPosition(r.GetPoint(d)));
 
-                                
+
 
                                 if (propogateAllFrames)
                                 {
@@ -1222,7 +1222,7 @@ namespace PicaVoxel
                                             new PicaVoxelPoint(voxelObject.XSize, voxelObject.YSize, voxelObject.ZSize),
                                             false);
 
-                                        
+
                                     }
                                 }
                                 else
@@ -1252,26 +1252,26 @@ namespace PicaVoxel
 
                                 int bx = brushPos.X -
                                          (EditorPersistence.BrushAnchorX == AnchorX.Center
-                                             ? EditorPersistence.BrushSize.X/2
+                                             ? EditorPersistence.BrushSize.X / 2
                                              : EditorPersistence.BrushAnchorX == AnchorX.Right
                                                  ? EditorPersistence.BrushSize.X - 1
                                                  : 0);
                                 int by = brushPos.Y -
                                          (EditorPersistence.BrushAnchorY == AnchorY.Center
-                                             ? EditorPersistence.BrushSize.Y/2
+                                             ? EditorPersistence.BrushSize.Y / 2
                                              : EditorPersistence.BrushAnchorY == AnchorY.Top
                                                  ? EditorPersistence.BrushSize.Y - 1
                                                  : 0);
                                 int bz = brushPos.Z -
                                          (EditorPersistence.BrushAnchorZ == AnchorZ.Center
-                                             ? EditorPersistence.BrushSize.Z/2
+                                             ? EditorPersistence.BrushSize.Z / 2
                                              : EditorPersistence.BrushAnchorZ == AnchorZ.Back
                                                  ? EditorPersistence.BrushSize.Z - 1
                                                  : 0);
 
-                                previousBrushPos = new PicaVoxelPoint(bx,by,bz);
+                                previousBrushPos = new PicaVoxelPoint(bx, by, bz);
 
-                              
+
 
                                 for (int x = 0; x < EditorPersistence.BrushSize.X; x++)
                                 {
@@ -1289,59 +1289,59 @@ namespace PicaVoxel
                                             if (
                                                 EditorPersistence.Brush[
                                                     x +
-                                                    (EditorPersistence.BrushSize.X)*
-                                                    (y + (EditorPersistence.BrushSize.Y)*z)].Active)
+                                                    (EditorPersistence.BrushSize.X) *
+                                                    (y + (EditorPersistence.BrushSize.Y) * z)].Active)
                                             {
                                                 if (propogateAllFrames)
                                                 {
                                                     foreach (Frame f in voxelObject.Frames)
                                                     {
                                                         if (EditorPersistence.CursorMode == EditorCursorMode.BrushPaint &&
-                                                            !f.Voxels[bx + voxelObject.XSize*(by + voxelObject.YSize*bz)
+                                                            !f.Voxels[bx + voxelObject.XSize * (by + voxelObject.YSize * bz)
                                                                 ].Active) continue;
                                                         f.SetVoxelAtArrayPosition(bx, by, bz, new Voxel()
                                                         {
                                                             Color =
                                                                 EditorPersistence.Brush[
                                                                     x +
-                                                                    (EditorPersistence.BrushSize.X)*
-                                                                    (y + (EditorPersistence.BrushSize.Y)*z)].Color,
+                                                                    (EditorPersistence.BrushSize.X) *
+                                                                    (y + (EditorPersistence.BrushSize.Y) * z)].Color,
                                                             Value =
                                                                 EditorPersistence.Brush[
                                                                     x +
-                                                                    (EditorPersistence.BrushSize.X)*
-                                                                    (y + (EditorPersistence.BrushSize.Y)*z)].Value,
+                                                                    (EditorPersistence.BrushSize.X) *
+                                                                    (y + (EditorPersistence.BrushSize.Y) * z)].Value,
                                                             State =
                                                                 (EditorPersistence.CursorMode !=
-                                                                 EditorCursorMode.BrushSubtract)?VoxelState.Active : VoxelState.Inactive
+                                                                 EditorCursorMode.BrushSubtract) ? VoxelState.Active : VoxelState.Inactive
                                                         });
-                                                    
+
                                                     }
-                                                    
+
                                                 }
                                                 else
                                                 {
                                                     if (EditorPersistence.CursorMode == EditorCursorMode.BrushPaint &&
                                                         !voxelObject.GetCurrentFrame().Voxels[
-                                                            bx + voxelObject.XSize*(by + voxelObject.YSize*bz)].Active)
+                                                            bx + voxelObject.XSize * (by + voxelObject.YSize * bz)].Active)
                                                         continue;
                                                     voxelObject.SetVoxelAtArrayPosition(bx, by, bz, new Voxel()
                                                     {
                                                         Color =
                                                             EditorPersistence.Brush[
                                                                 x +
-                                                                (EditorPersistence.BrushSize.X)*
-                                                                (y + (EditorPersistence.BrushSize.Y)*z)].Color,
+                                                                (EditorPersistence.BrushSize.X) *
+                                                                (y + (EditorPersistence.BrushSize.Y) * z)].Color,
                                                         Value =
                                                             EditorPersistence.Brush[
                                                                 x +
-                                                                (EditorPersistence.BrushSize.X)*
-                                                                (y + (EditorPersistence.BrushSize.Y)*z)].Value,
+                                                                (EditorPersistence.BrushSize.X) *
+                                                                (y + (EditorPersistence.BrushSize.Y) * z)].Value,
                                                         State =
                                                                 (EditorPersistence.CursorMode !=
                                                                  EditorCursorMode.BrushSubtract) ? VoxelState.Active : VoxelState.Inactive
                                                     });
-                                                  
+
                                                 }
 
                                             }
@@ -1350,7 +1350,7 @@ namespace PicaVoxel
                                         }
                                         bz = brushPos.Z -
                                              (EditorPersistence.BrushAnchorZ == AnchorZ.Center
-                                                 ? EditorPersistence.BrushSize.Z/2
+                                                 ? EditorPersistence.BrushSize.Z / 2
                                                  : EditorPersistence.BrushAnchorZ == AnchorZ.Back
                                                      ? EditorPersistence.BrushSize.Z - 1
                                                      : 0);
@@ -1358,7 +1358,7 @@ namespace PicaVoxel
                                     }
                                     by = brushPos.Y -
                                          (EditorPersistence.BrushAnchorY == AnchorY.Center
-                                             ? EditorPersistence.BrushSize.Y/2
+                                             ? EditorPersistence.BrushSize.Y / 2
                                              : EditorPersistence.BrushAnchorY == AnchorY.Top
                                                  ? EditorPersistence.BrushSize.Y - 1
                                                  : 0);
@@ -1374,7 +1374,7 @@ namespace PicaVoxel
 
                         // Mouse Up (Brush mode)
                         if (validBrushPos && e.type == EventType.MouseUp && e.button == 0)// &&
-                           // voxelObject.GetCurrentFrame().EditingVoxels != null)
+                                                                                          // voxelObject.GetCurrentFrame().EditingVoxels != null)
                         {
                             if ((EditorPersistence.CursorMode == EditorCursorMode.BrushAdd ||
                                  EditorPersistence.CursorMode == EditorCursorMode.BrushPaint ||
@@ -1432,26 +1432,26 @@ namespace PicaVoxel
                                 PicaVoxelPoint brushPos = new PicaVoxelPoint(voxelObject.GetVoxelPosition(r.GetPoint(d)));
                                 int bx = brushPos.X -
                                          (EditorPersistence.BrushAnchorX == AnchorX.Center
-                                             ? EditorPersistence.BrushSize.X/2
+                                             ? EditorPersistence.BrushSize.X / 2
                                              : EditorPersistence.BrushAnchorX == AnchorX.Right
                                                  ? EditorPersistence.BrushSize.X - 1
                                                  : 0);
                                 int by = brushPos.Y -
                                          (EditorPersistence.BrushAnchorY == AnchorY.Center
-                                             ? EditorPersistence.BrushSize.Y/2
+                                             ? EditorPersistence.BrushSize.Y / 2
                                              : EditorPersistence.BrushAnchorY == AnchorY.Top
                                                  ? EditorPersistence.BrushSize.Y - 1
                                                  : 0);
                                 int bz = brushPos.Z -
                                          (EditorPersistence.BrushAnchorZ == AnchorZ.Center
-                                             ? EditorPersistence.BrushSize.Z/2
+                                             ? EditorPersistence.BrushSize.Z / 2
                                              : EditorPersistence.BrushAnchorZ == AnchorZ.Back
                                                  ? EditorPersistence.BrushSize.Z - 1
                                                  : 0);
 
-                                previousBrushPos = new PicaVoxelPoint(bx,by,bz);
+                                previousBrushPos = new PicaVoxelPoint(bx, by, bz);
 
-                              
+
 
                                 for (int x = 0; x < EditorPersistence.BrushSize.X; x++)
                                 {
@@ -1469,59 +1469,59 @@ namespace PicaVoxel
                                             if (
                                                 EditorPersistence.Brush[
                                                     x +
-                                                    (EditorPersistence.BrushSize.X)*
-                                                    (y + (EditorPersistence.BrushSize.Y)*z)].Active)
+                                                    (EditorPersistence.BrushSize.X) *
+                                                    (y + (EditorPersistence.BrushSize.Y) * z)].Active)
                                             {
                                                 if (propogateAllFrames)
                                                 {
                                                     foreach (Frame f in voxelObject.Frames)
                                                     {
                                                         if (EditorPersistence.CursorMode == EditorCursorMode.BrushPaint &&
-                                                            !f.Voxels[bx + voxelObject.XSize*(by + voxelObject.YSize*bz)
+                                                            !f.Voxels[bx + voxelObject.XSize * (by + voxelObject.YSize * bz)
                                                                 ].Active) continue;
                                                         f.SetVoxelAtArrayPosition(bx, by, bz, new Voxel()
                                                         {
                                                             Color =
                                                                 EditorPersistence.Brush[
                                                                     x +
-                                                                    (EditorPersistence.BrushSize.X)*
-                                                                    (y + (EditorPersistence.BrushSize.Y)*z)].Color,
+                                                                    (EditorPersistence.BrushSize.X) *
+                                                                    (y + (EditorPersistence.BrushSize.Y) * z)].Color,
                                                             Value =
                                                                 EditorPersistence.Brush[
                                                                     x +
-                                                                    (EditorPersistence.BrushSize.X)*
-                                                                    (y + (EditorPersistence.BrushSize.Y)*z)].Value,
+                                                                    (EditorPersistence.BrushSize.X) *
+                                                                    (y + (EditorPersistence.BrushSize.Y) * z)].Value,
                                                             State =
                                                                 (EditorPersistence.CursorMode !=
                                                                  EditorCursorMode.BrushSubtract) ? VoxelState.Active : VoxelState.Inactive
                                                         });
-                                                    
+
                                                     }
-                                                    
+
                                                 }
                                                 else
                                                 {
                                                     if (EditorPersistence.CursorMode == EditorCursorMode.BrushPaint &&
                                                         !voxelObject.GetCurrentFrame().Voxels[
-                                                            bx + voxelObject.XSize*(by + voxelObject.YSize*bz)].Active)
+                                                            bx + voxelObject.XSize * (by + voxelObject.YSize * bz)].Active)
                                                         continue;
                                                     voxelObject.SetVoxelAtArrayPosition(bx, by, bz, new Voxel()
                                                     {
                                                         Color =
                                                             EditorPersistence.Brush[
                                                                 x +
-                                                                (EditorPersistence.BrushSize.X)*
-                                                                (y + (EditorPersistence.BrushSize.Y)*z)].Color,
+                                                                (EditorPersistence.BrushSize.X) *
+                                                                (y + (EditorPersistence.BrushSize.Y) * z)].Color,
                                                         Value =
                                                             EditorPersistence.Brush[
                                                                 x +
-                                                                (EditorPersistence.BrushSize.X)*
-                                                                (y + (EditorPersistence.BrushSize.Y)*z)].Value,
+                                                                (EditorPersistence.BrushSize.X) *
+                                                                (y + (EditorPersistence.BrushSize.Y) * z)].Value,
                                                         State =
                                                                 (EditorPersistence.CursorMode !=
                                                                  EditorCursorMode.BrushSubtract) ? VoxelState.Active : VoxelState.Inactive
                                                     });
-                                                  
+
                                                 }
 
                                             }
@@ -1530,7 +1530,7 @@ namespace PicaVoxel
                                         }
                                         bz = brushPos.Z -
                                              (EditorPersistence.BrushAnchorZ == AnchorZ.Center
-                                                 ? EditorPersistence.BrushSize.Z/2
+                                                 ? EditorPersistence.BrushSize.Z / 2
                                                  : EditorPersistence.BrushAnchorZ == AnchorZ.Back
                                                      ? EditorPersistence.BrushSize.Z - 1
                                                      : 0);
@@ -1538,7 +1538,7 @@ namespace PicaVoxel
                                     }
                                     by = brushPos.Y -
                                          (EditorPersistence.BrushAnchorY == AnchorY.Center
-                                             ? EditorPersistence.BrushSize.Y/2
+                                             ? EditorPersistence.BrushSize.Y / 2
                                              : EditorPersistence.BrushAnchorY == AnchorY.Top
                                                  ? EditorPersistence.BrushSize.Y - 1
                                                  : 0);
@@ -1548,10 +1548,10 @@ namespace PicaVoxel
                                 if (propogateAllFrames)
                                     foreach (Frame f in voxelObject.Frames) f.UpdateChunks(true);
                                 else voxelObject.UpdateChunks(true);
-                            
 
 
-                                
+
+
 
 
                                 currentBox = null;
@@ -1662,11 +1662,11 @@ namespace PicaVoxel
                                 EditorPersistence.SelectBox.BottomLeftFront.Z)
                         {
                             Vector3 handlePos =
-                                voxelObject.transform.TransformPoint((new Vector3(x, y, z)*voxelObject.VoxelSize) -
+                                voxelObject.transform.TransformPoint((new Vector3(x, y, z) * voxelObject.VoxelSize) -
                                                                      voxelObject.Pivot);
 
                             EditorHandles.DragHandleResult dhResult;
-                            newPos = EditorHandles.DragHandle(handlePos, HandleUtility.GetHandleSize(handlePos)*0.25f,
+                            newPos = EditorHandles.DragHandle(handlePos, HandleUtility.GetHandleSize(handlePos) * 0.25f,
                                 Handles.SphereCap, Color.red, out dhResult);
 
                             if (dhResult == EditorHandles.DragHandleResult.LMBDrag)
@@ -1678,9 +1678,9 @@ namespace PicaVoxel
                                     {
                                         EditorPersistence.SelectBox =
                                             new PicaVoxelBox(
-                                                new PicaVoxelPoint((int) voxelObject.GetVoxelPosition(newPos).x,
-                                                    (int) voxelObject.GetVoxelPosition(newPos).y,
-                                                    (int) voxelObject.GetVoxelPosition(newPos).z),
+                                                new PicaVoxelPoint((int)voxelObject.GetVoxelPosition(newPos).x,
+                                                    (int)voxelObject.GetVoxelPosition(newPos).y,
+                                                    (int)voxelObject.GetVoxelPosition(newPos).z),
                                                 new PicaVoxelPoint(EditorPersistence.SelectBox.TopRightBack.X,
                                                     EditorPersistence.SelectBox.TopRightBack.Y,
                                                     EditorPersistence.SelectBox.TopRightBack.Z));
@@ -1826,40 +1826,40 @@ namespace PicaVoxel
                 };
 
 
-                Handles.DrawSolidRectangleWithOutline(new[] {corners[0], corners[1], corners[2], corners[3]},
-                    Color.white*0.1f, Color.black);
-                Handles.DrawSolidRectangleWithOutline(new[] {corners[0], corners[4], corners[7], corners[3]},
-                    Color.white*0.1f, Color.black);
-                Handles.DrawSolidRectangleWithOutline(new[] {corners[1], corners[5], corners[4], corners[0]},
-                    Color.white*0.1f, Color.black);
-                Handles.DrawSolidRectangleWithOutline(new[] {corners[2], corners[6], corners[5], corners[1]},
-                    Color.white*0.1f, Color.black);
-                Handles.DrawSolidRectangleWithOutline(new[] {corners[3], corners[7], corners[6], corners[2]},
-                    Color.white*0.1f, Color.black);
-                Handles.DrawSolidRectangleWithOutline(new[] {corners[4], corners[5], corners[6], corners[7]},
-                    Color.white*0.1f, Color.black);
+                Handles.DrawSolidRectangleWithOutline(new[] { corners[0], corners[1], corners[2], corners[3] },
+                    Color.white * 0.1f, Color.black);
+                Handles.DrawSolidRectangleWithOutline(new[] { corners[0], corners[4], corners[7], corners[3] },
+                    Color.white * 0.1f, Color.black);
+                Handles.DrawSolidRectangleWithOutline(new[] { corners[1], corners[5], corners[4], corners[0] },
+                    Color.white * 0.1f, Color.black);
+                Handles.DrawSolidRectangleWithOutline(new[] { corners[2], corners[6], corners[5], corners[1] },
+                    Color.white * 0.1f, Color.black);
+                Handles.DrawSolidRectangleWithOutline(new[] { corners[3], corners[7], corners[6], corners[2] },
+                    Color.white * 0.1f, Color.black);
+                Handles.DrawSolidRectangleWithOutline(new[] { corners[4], corners[5], corners[6], corners[7] },
+                    Color.white * 0.1f, Color.black);
 
 
 
             }
 
-            
+
         }
 
         private void SetChunksInBoxDirty(PicaVoxelBox picaVoxelBox)
         {
-            
-            for(int x=picaVoxelBox.BottomLeftFront.X;x<=picaVoxelBox.TopRightBack.X;x+= voxelObject.XChunkSize)
-                for(int y=picaVoxelBox.BottomLeftFront.Y;y<=picaVoxelBox.TopRightBack.Y;y+= voxelObject.YChunkSize)
-                    for(int z=picaVoxelBox.BottomLeftFront.Z;z<=picaVoxelBox.TopRightBack.Z;z+= voxelObject.ZChunkSize)
-                        if(propogateAllFrames)
-                            foreach(Frame f in voxelObject.Frames) f.SetChunkAtVoxelPositionDirty(x,y,z);
+
+            for (int x = picaVoxelBox.BottomLeftFront.X; x <= picaVoxelBox.TopRightBack.X; x += voxelObject.XChunkSize)
+                for (int y = picaVoxelBox.BottomLeftFront.Y; y <= picaVoxelBox.TopRightBack.Y; y += voxelObject.YChunkSize)
+                    for (int z = picaVoxelBox.BottomLeftFront.Z; z <= picaVoxelBox.TopRightBack.Z; z += voxelObject.ZChunkSize)
+                        if (propogateAllFrames)
+                            foreach (Frame f in voxelObject.Frames) f.SetChunkAtVoxelPositionDirty(x, y, z);
                         else
-                            voxelObject.GetCurrentFrame().SetChunkAtVoxelPositionDirty(x,y,z);
+                            voxelObject.GetCurrentFrame().SetChunkAtVoxelPositionDirty(x, y, z);
         }
 
 
-        
+
 
         private void RegisterUndo()
         {
@@ -1880,29 +1880,29 @@ namespace PicaVoxel
                                     {
                                         voxelObject.GetCurrentFrame(),
                                         voxelObject,
-                                    }, "Voxel Editing"); 
+                                    }, "Voxel Editing");
             }
         }
 
         private void NudgeSelection(int dx, int dy, int dz)
         {
-            PicaVoxelBox dest = new PicaVoxelBox(EditorPersistence.SelectBox.BottomLeftFront.X+dx,
-                                                 EditorPersistence.SelectBox.BottomLeftFront.Y+dy,
-                                                 EditorPersistence.SelectBox.BottomLeftFront.Z+dz,
-                                                 EditorPersistence.SelectBox.TopRightBack.X+dx,
-                                                 EditorPersistence.SelectBox.TopRightBack.Y+dy,
-                                                 EditorPersistence.SelectBox.TopRightBack.Z+dz);
+            PicaVoxelBox dest = new PicaVoxelBox(EditorPersistence.SelectBox.BottomLeftFront.X + dx,
+                                                 EditorPersistence.SelectBox.BottomLeftFront.Y + dy,
+                                                 EditorPersistence.SelectBox.BottomLeftFront.Z + dz,
+                                                 EditorPersistence.SelectBox.TopRightBack.X + dx,
+                                                 EditorPersistence.SelectBox.TopRightBack.Y + dy,
+                                                 EditorPersistence.SelectBox.TopRightBack.Z + dz);
 
             if (dest.BottomLeftFront.X < 0 || dest.BottomLeftFront.Y < 0 || dest.BottomLeftFront.Z < 0 ||
                 dest.TopRightBack.X >= voxelObject.XSize || dest.TopRightBack.Y >= voxelObject.YSize ||
                 dest.TopRightBack.Z >= voxelObject.ZSize) return;
 
-            int destWidth = (dest.TopRightBack.X - dest.BottomLeftFront.X) +1;
-            int destHeight = (dest.TopRightBack.Y - dest.BottomLeftFront.Y)+1;
-            int destDepth = (dest.TopRightBack.Z - dest.BottomLeftFront.Z)+1;
+            int destWidth = (dest.TopRightBack.X - dest.BottomLeftFront.X) + 1;
+            int destHeight = (dest.TopRightBack.Y - dest.BottomLeftFront.Y) + 1;
+            int destDepth = (dest.TopRightBack.Z - dest.BottomLeftFront.Z) + 1;
 
-            Voxel[] tempVox = new Voxel[destWidth *destHeight * destDepth];
-            
+            Voxel[] tempVox = new Voxel[destWidth * destHeight * destDepth];
+
 
             RegisterUndo();
             if (propogateAllFrames)
@@ -1913,7 +1913,7 @@ namespace PicaVoxel
                                         EditorPersistence.SelectBox,
                                         new PicaVoxelBox(0, 0, 0, destWidth - 1, destHeight - 1, destDepth - 1),
                                         new PicaVoxelPoint(voxelObject.XSize, voxelObject.YSize, voxelObject.ZSize),
-                                        new PicaVoxelPoint(destWidth, destHeight, destDepth), false); 
+                                        new PicaVoxelPoint(destWidth, destHeight, destDepth), false);
                     f.EditingVoxels = null;
                     for (int x = EditorPersistence.SelectBox.BottomLeftFront.X; x <= EditorPersistence.SelectBox.TopRightBack.X; x++)
                         for (int y = EditorPersistence.SelectBox.BottomLeftFront.Y; y <= EditorPersistence.SelectBox.TopRightBack.Y; y++)
@@ -1928,8 +1928,8 @@ namespace PicaVoxel
                         new PicaVoxelBox(0, 0, 0, destWidth - 1, destHeight - 1, destDepth - 1),
                         dest,
                         new PicaVoxelPoint(destWidth, destHeight, destDepth),
-                        new PicaVoxelPoint(voxelObject.XSize, voxelObject.YSize, voxelObject.ZSize), false); 
-                    
+                        new PicaVoxelPoint(voxelObject.XSize, voxelObject.YSize, voxelObject.ZSize), false);
+
                     f.SaveForSerialize();
                     f.UpdateAllChunks();
                 }
@@ -1937,10 +1937,10 @@ namespace PicaVoxel
             }
             else
             {
-                Helper.CopyVoxelsInBox(ref voxelObject.Frames[voxelObject.CurrentFrame].Voxels, ref tempVox, 
-                    EditorPersistence.SelectBox, 
-                    new PicaVoxelBox(0, 0, 0, destWidth-1, destHeight-1, destDepth-1), 
-                    new PicaVoxelPoint(voxelObject.XSize, voxelObject.YSize, voxelObject.ZSize), 
+                Helper.CopyVoxelsInBox(ref voxelObject.Frames[voxelObject.CurrentFrame].Voxels, ref tempVox,
+                    EditorPersistence.SelectBox,
+                    new PicaVoxelBox(0, 0, 0, destWidth - 1, destHeight - 1, destDepth - 1),
+                    new PicaVoxelPoint(voxelObject.XSize, voxelObject.YSize, voxelObject.ZSize),
                     new PicaVoxelPoint(destWidth, destHeight, destDepth), false);
                 voxelObject.Frames[voxelObject.CurrentFrame].EditingVoxels = null;
                 for (int x = EditorPersistence.SelectBox.BottomLeftFront.X; x <= EditorPersistence.SelectBox.TopRightBack.X; x++)
@@ -1953,7 +1953,7 @@ namespace PicaVoxel
                                 Value = EditorPersistence.SelectedValue
                             };
                 Helper.CopyVoxelsInBox(ref tempVox, ref voxelObject.Frames[voxelObject.CurrentFrame].Voxels,
-                    new PicaVoxelBox(0, 0, 0, destWidth - 1, destHeight - 1, destDepth - 1),  
+                    new PicaVoxelBox(0, 0, 0, destWidth - 1, destHeight - 1, destDepth - 1),
                     dest,
                     new PicaVoxelPoint(destWidth, destHeight, destDepth),
                     new PicaVoxelPoint(voxelObject.XSize, voxelObject.YSize, voxelObject.ZSize), false);

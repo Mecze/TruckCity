@@ -1,9 +1,9 @@
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-// Shader created with Shader Forge v1.26 
+// Shader created with Shader Forge v1.30 
 // Shader Forge (c) Neat Corporation / Joachim Holmer - http://www.acegikmo.com/shaderforge/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:1.26;sub:START;pass:START;ps:flbk:,iptp:0,cusa:False,bamd:0,lico:1,lgpr:1,limd:3,spmd:1,trmd:0,grmd:0,uamb:True,mssp:True,bkdf:True,hqlp:False,rprd:True,enco:False,rmgx:True,rpth:0,vtps:0,hqsc:True,nrmq:1,nrsp:0,vomd:0,spxs:False,tesm:0,olmd:1,culm:0,bsrc:0,bdst:1,dpts:2,wrdp:True,dith:0,rfrpo:True,rfrpn:Refraction,coma:15,ufog:True,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,stcl:False,stva:128,stmr:255,stmw:255,stcp:6,stps:0,stfa:0,stfz:0,ofsf:0,ofsu:0,f2p0:False,fnsp:False,fnfb:False;n:type:ShaderForge.SFN_Final,id:2865,x:32719,y:32712,varname:node_2865,prsc:2|diff-7997-OUT,spec-358-OUT,gloss-1813-OUT;n:type:ShaderForge.SFN_Slider,id:358,x:32615,y:33230,ptovrint:False,ptlb:Metallic,ptin:_Metallic,varname:node_358,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0,max:1;n:type:ShaderForge.SFN_Slider,id:1813,x:32570,y:33144,ptovrint:False,ptlb:Gloss,ptin:_Gloss,varname:_Metallic_copy,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0,max:1;n:type:ShaderForge.SFN_VertexColor,id:2630,x:31910,y:32492,varname:node_2630,prsc:2;n:type:ShaderForge.SFN_TexCoord,id:9085,x:31920,y:32764,varname:node_9085,prsc:2,uv:0;n:type:ShaderForge.SFN_Multiply,id:7997,x:32407,y:32530,varname:node_7997,prsc:2|A-2630-RGB,B-4617-OUT,C-3066-RGB;n:type:ShaderForge.SFN_If,id:8865,x:32194,y:32666,varname:node_8865,prsc:2|A-9085-U,B-5593-OUT,GT-9000-OUT,EQ-9000-OUT,LT-6298-OUT;n:type:ShaderForge.SFN_ValueProperty,id:9000,x:31923,y:33074,ptovrint:False,ptlb:Normal Brightness,ptin:_NormalBrightness,varname:node_9000,prsc:2,glob:False,taghide:True,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,v1:1;n:type:ShaderForge.SFN_If,id:7254,x:32279,y:32801,varname:node_7254,prsc:2|A-9085-V,B-5593-OUT,GT-9000-OUT,EQ-9000-OUT,LT-6298-OUT;n:type:ShaderForge.SFN_Multiply,id:7333,x:32418,y:32687,varname:node_7333,prsc:2|A-8865-OUT,B-7254-OUT;n:type:ShaderForge.SFN_If,id:8047,x:32320,y:33163,varname:node_8047,prsc:2|A-9085-V,B-6151-OUT,GT-6010-OUT,EQ-9000-OUT,LT-9000-OUT;n:type:ShaderForge.SFN_If,id:4165,x:32334,y:32982,varname:node_4165,prsc:2|A-9085-U,B-6151-OUT,GT-6010-OUT,EQ-9000-OUT,LT-9000-OUT;n:type:ShaderForge.SFN_Multiply,id:8957,x:32529,y:33117,varname:node_8957,prsc:2|A-4165-OUT,B-8047-OUT;n:type:ShaderForge.SFN_Multiply,id:4617,x:32570,y:32829,varname:node_4617,prsc:2|A-7333-OUT,B-8957-OUT;n:type:ShaderForge.SFN_OneMinus,id:6151,x:32117,y:33002,varname:node_6151,prsc:2|IN-5593-OUT;n:type:ShaderForge.SFN_OneMinus,id:6298,x:31940,y:33184,varname:node_6298,prsc:2|IN-6017-OUT;n:type:ShaderForge.SFN_Slider,id:6017,x:31872,y:33348,ptovrint:False,ptlb:Outline Intensity,ptin:_OutlineIntensity,varname:node_6017,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0.3540895,max:1;n:type:ShaderForge.SFN_Slider,id:5593,x:31831,y:32945,ptovrint:False,ptlb:Outline Size,ptin:_OutlineSize,varname:node_5593,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0.07264958,max:0.5;n:type:ShaderForge.SFN_Multiply,id:1842,x:32348,y:33314,varname:node_1842,prsc:2|A-6298-OUT,B-7737-OUT;n:type:ShaderForge.SFN_ValueProperty,id:7737,x:32189,y:33444,ptovrint:False,ptlb:3D Lightness,ptin:_3DLightness,varname:node_7737,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,v1:10;n:type:ShaderForge.SFN_Multiply,id:6656,x:32588,y:33336,varname:node_6656,prsc:2|A-1842-OUT,B-6017-OUT;n:type:ShaderForge.SFN_ConstantClamp,id:9081,x:32802,y:33366,varname:node_9081,prsc:2,min:1,max:50|IN-6656-OUT;n:type:ShaderForge.SFN_SwitchProperty,id:6010,x:32445,y:33444,ptovrint:False,ptlb:3D Look,ptin:_3DLook,varname:node_6010,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,on:True|A-6298-OUT,B-9081-OUT;n:type:ShaderForge.SFN_Color,id:3066,x:31920,y:32641,ptovrint:False,ptlb:Tint,ptin:_Tint,varname:node_3066,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,c1:1,c2:1,c3:1,c4:1;proporder:358-1813-9000-6017-5593-6010-7737-3066;pass:END;sub:END;*/
+/*SF_DATA;ver:1.30;sub:START;pass:START;ps:flbk:,iptp:0,cusa:False,bamd:0,lico:1,lgpr:1,limd:3,spmd:1,trmd:0,grmd:0,uamb:True,mssp:True,bkdf:True,hqlp:False,rprd:True,enco:False,rmgx:True,rpth:0,vtps:0,hqsc:True,nrmq:1,nrsp:0,vomd:0,spxs:False,tesm:0,olmd:1,culm:0,bsrc:0,bdst:1,dpts:2,wrdp:True,dith:0,rfrpo:True,rfrpn:Refraction,coma:15,ufog:True,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,stcl:False,stva:128,stmr:255,stmw:255,stcp:6,stps:0,stfa:0,stfz:0,ofsf:0,ofsu:0,f2p0:False,fnsp:False,fnfb:False;n:type:ShaderForge.SFN_Final,id:2865,x:32719,y:32712,varname:node_2865,prsc:2|diff-7997-OUT,spec-358-OUT,gloss-1813-OUT;n:type:ShaderForge.SFN_Slider,id:358,x:32615,y:33230,ptovrint:False,ptlb:Metallic,ptin:_Metallic,varname:node_358,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0,max:1;n:type:ShaderForge.SFN_Slider,id:1813,x:32570,y:33144,ptovrint:False,ptlb:Gloss,ptin:_Gloss,varname:_Metallic_copy,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0,max:1;n:type:ShaderForge.SFN_VertexColor,id:2630,x:31910,y:32492,varname:node_2630,prsc:2;n:type:ShaderForge.SFN_TexCoord,id:9085,x:31920,y:32764,varname:node_9085,prsc:2,uv:0;n:type:ShaderForge.SFN_Multiply,id:7997,x:32407,y:32530,varname:node_7997,prsc:2|A-2630-RGB,B-4617-OUT,C-3066-RGB;n:type:ShaderForge.SFN_If,id:8865,x:32194,y:32666,varname:node_8865,prsc:2|A-9085-U,B-5593-OUT,GT-9000-OUT,EQ-9000-OUT,LT-6298-OUT;n:type:ShaderForge.SFN_ValueProperty,id:9000,x:31923,y:33074,ptovrint:False,ptlb:Normal Brightness,ptin:_NormalBrightness,varname:node_9000,prsc:2,glob:False,taghide:True,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,v1:1;n:type:ShaderForge.SFN_If,id:7254,x:32279,y:32801,varname:node_7254,prsc:2|A-9085-V,B-5593-OUT,GT-9000-OUT,EQ-9000-OUT,LT-6298-OUT;n:type:ShaderForge.SFN_Multiply,id:7333,x:32418,y:32687,varname:node_7333,prsc:2|A-8865-OUT,B-7254-OUT;n:type:ShaderForge.SFN_If,id:8047,x:32320,y:33163,varname:node_8047,prsc:2|A-9085-V,B-6151-OUT,GT-6010-OUT,EQ-9000-OUT,LT-9000-OUT;n:type:ShaderForge.SFN_If,id:4165,x:32334,y:32982,varname:node_4165,prsc:2|A-9085-U,B-6151-OUT,GT-6010-OUT,EQ-9000-OUT,LT-9000-OUT;n:type:ShaderForge.SFN_Multiply,id:8957,x:32529,y:33117,varname:node_8957,prsc:2|A-4165-OUT,B-8047-OUT;n:type:ShaderForge.SFN_Multiply,id:4617,x:32570,y:32829,varname:node_4617,prsc:2|A-7333-OUT,B-8957-OUT;n:type:ShaderForge.SFN_OneMinus,id:6151,x:32117,y:33002,varname:node_6151,prsc:2|IN-5593-OUT;n:type:ShaderForge.SFN_OneMinus,id:6298,x:31940,y:33184,varname:node_6298,prsc:2|IN-6017-OUT;n:type:ShaderForge.SFN_Slider,id:6017,x:31872,y:33348,ptovrint:False,ptlb:Outline Intensity,ptin:_OutlineIntensity,varname:node_6017,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0.3540895,max:1;n:type:ShaderForge.SFN_Slider,id:5593,x:31831,y:32945,ptovrint:False,ptlb:Outline Size,ptin:_OutlineSize,varname:node_5593,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0.07264958,max:0.5;n:type:ShaderForge.SFN_Multiply,id:1842,x:32348,y:33314,varname:node_1842,prsc:2|A-6298-OUT,B-7737-OUT;n:type:ShaderForge.SFN_ValueProperty,id:7737,x:32189,y:33444,ptovrint:False,ptlb:3D Lightness,ptin:_3DLightness,varname:node_7737,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,v1:10;n:type:ShaderForge.SFN_Multiply,id:6656,x:32588,y:33336,varname:node_6656,prsc:2|A-1842-OUT,B-6017-OUT;n:type:ShaderForge.SFN_ConstantClamp,id:9081,x:32802,y:33366,varname:node_9081,prsc:2,min:1,max:50|IN-6656-OUT;n:type:ShaderForge.SFN_SwitchProperty,id:6010,x:32445,y:33444,ptovrint:False,ptlb:3D Look,ptin:_3DLook,varname:node_6010,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,on:True|A-6298-OUT,B-9081-OUT;n:type:ShaderForge.SFN_Color,id:3066,x:31920,y:32641,ptovrint:False,ptlb:Tint,ptin:_Tint,varname:node_3066,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,c1:1,c2:1,c3:1,c4:1;proporder:358-1813-9000-6017-5593-6010-7737-3066;pass:END;sub:END;*/
 
 Shader "PicaVoxel/PicaVoxel PBR Mosaic" {
     Properties {
@@ -43,6 +43,7 @@ Shader "PicaVoxel/PicaVoxel PBR Mosaic" {
             #pragma multi_compile DIRLIGHTMAP_OFF DIRLIGHTMAP_COMBINED DIRLIGHTMAP_SEPARATE
             #pragma multi_compile DYNAMICLIGHTMAP_OFF DYNAMICLIGHTMAP_ON
             #pragma multi_compile_fog
+            #pragma exclude_renderers xbox360 ps3 
             #pragma target 3.0
             uniform float _Metallic;
             uniform float _Gloss;
@@ -157,6 +158,8 @@ Shader "PicaVoxel/PicaVoxel PBR Mosaic" {
 ////// Specular:
                 float NdotL = max(0, dot( normalDirection, lightDirection ));
                 float LdotH = max(0.0,dot(lightDirection, halfDirection));
+                float3 specularColor = _Metallic;
+                float specularMonochrome;
                 float node_8865_if_leA = step(i.uv0.r,_OutlineSize);
                 float node_8865_if_leB = step(_OutlineSize,i.uv0.r);
                 float node_6298 = (1.0 - _OutlineIntensity);
@@ -169,17 +172,18 @@ Shader "PicaVoxel/PicaVoxel PBR Mosaic" {
                 float node_8047_if_leA = step(i.uv0.g,node_6151);
                 float node_8047_if_leB = step(node_6151,i.uv0.g);
                 float3 diffuseColor = (i.vertexColor.rgb*((lerp((node_8865_if_leA*node_6298)+(node_8865_if_leB*_NormalBrightness),_NormalBrightness,node_8865_if_leA*node_8865_if_leB)*lerp((node_7254_if_leA*node_6298)+(node_7254_if_leB*_NormalBrightness),_NormalBrightness,node_7254_if_leA*node_7254_if_leB))*(lerp((node_4165_if_leA*_NormalBrightness)+(node_4165_if_leB*_3DLook_var),_NormalBrightness,node_4165_if_leA*node_4165_if_leB)*lerp((node_8047_if_leA*_NormalBrightness)+(node_8047_if_leB*_3DLook_var),_NormalBrightness,node_8047_if_leA*node_8047_if_leB)))*_Tint.rgb); // Need this for specular when using metallic
-                float specularMonochrome;
-                float3 specularColor;
-                diffuseColor = DiffuseAndSpecularFromMetallic( diffuseColor, _Metallic, specularColor, specularMonochrome );
-                specularMonochrome = 1-specularMonochrome;
+                diffuseColor = DiffuseAndSpecularFromMetallic( diffuseColor, specularColor, specularColor, specularMonochrome );
+                specularMonochrome = 1.0-specularMonochrome;
                 float NdotV = max(0.0,dot( normalDirection, viewDirection ));
                 float NdotH = max(0.0,dot( normalDirection, halfDirection ));
                 float VdotH = max(0.0,dot( viewDirection, halfDirection ));
-                float visTerm = SmithBeckmannVisibilityTerm( NdotL, NdotV, 1.0-gloss );
-                float normTerm = max(0.0, NDFBlinnPhongNormalizedTerm(NdotH, RoughnessToSpecPower(1.0-gloss)));
-                float specularPBL = max(0, (NdotL*visTerm*normTerm) * (UNITY_PI / 4) );
-                float3 directSpecular = 1 * pow(max(0,dot(halfDirection,normalDirection)),specPow)*specularPBL*lightColor*FresnelTerm(specularColor, LdotH);
+                float visTerm = SmithJointGGXVisibilityTerm( NdotL, NdotV, 1.0-gloss );
+                float normTerm = max(0.0, GGXTerm(NdotH, 1.0-gloss));
+                float specularPBL = (NdotL*visTerm*normTerm) * (UNITY_PI / 4);
+                if (IsGammaSpace())
+                    specularPBL = sqrt(max(1e-4h, specularPBL));
+                specularPBL = max(0, specularPBL * NdotL);
+                float3 directSpecular = (floor(attenuation) * _LightColor0.xyz)*specularPBL*FresnelTerm(specularColor, LdotH);
                 half grazingTerm = saturate( gloss + specularMonochrome );
                 float3 indirectSpecular = (gi.indirect.specular);
                 indirectSpecular *= FresnelLerp (specularColor, grazingTerm, NdotV);
@@ -187,7 +191,9 @@ Shader "PicaVoxel/PicaVoxel PBR Mosaic" {
 /////// Diffuse:
                 NdotL = max(0.0,dot( normalDirection, lightDirection ));
                 half fd90 = 0.5 + 2 * LdotH * LdotH * (1-gloss);
-                float3 directDiffuse = ((1 +(fd90 - 1)*pow((1.00001-NdotL), 5)) * (1 + (fd90 - 1)*pow((1.00001-NdotV), 5)) * NdotL) * attenColor;
+                float nlPow5 = Pow5(1-NdotL);
+                float nvPow5 = Pow5(1-NdotV);
+                float3 directDiffuse = ((1 +(fd90 - 1)*nlPow5) * (1 + (fd90 - 1)*nvPow5) * NdotL) * attenColor;
                 float3 indirectDiffuse = float3(0,0,0);
                 indirectDiffuse += gi.indirect.diffuse;
                 float3 diffuse = (directDiffuse + indirectDiffuse) * diffuseColor;
@@ -223,6 +229,7 @@ Shader "PicaVoxel/PicaVoxel PBR Mosaic" {
             #pragma multi_compile DIRLIGHTMAP_OFF DIRLIGHTMAP_COMBINED DIRLIGHTMAP_SEPARATE
             #pragma multi_compile DYNAMICLIGHTMAP_OFF DYNAMICLIGHTMAP_ON
             #pragma multi_compile_fog
+            #pragma exclude_renderers xbox360 ps3 
             #pragma target 3.0
             uniform float _Metallic;
             uniform float _Gloss;
@@ -289,6 +296,8 @@ Shader "PicaVoxel/PicaVoxel PBR Mosaic" {
 ////// Specular:
                 float NdotL = max(0, dot( normalDirection, lightDirection ));
                 float LdotH = max(0.0,dot(lightDirection, halfDirection));
+                float3 specularColor = _Metallic;
+                float specularMonochrome;
                 float node_8865_if_leA = step(i.uv0.r,_OutlineSize);
                 float node_8865_if_leB = step(_OutlineSize,i.uv0.r);
                 float node_6298 = (1.0 - _OutlineIntensity);
@@ -301,22 +310,25 @@ Shader "PicaVoxel/PicaVoxel PBR Mosaic" {
                 float node_8047_if_leA = step(i.uv0.g,node_6151);
                 float node_8047_if_leB = step(node_6151,i.uv0.g);
                 float3 diffuseColor = (i.vertexColor.rgb*((lerp((node_8865_if_leA*node_6298)+(node_8865_if_leB*_NormalBrightness),_NormalBrightness,node_8865_if_leA*node_8865_if_leB)*lerp((node_7254_if_leA*node_6298)+(node_7254_if_leB*_NormalBrightness),_NormalBrightness,node_7254_if_leA*node_7254_if_leB))*(lerp((node_4165_if_leA*_NormalBrightness)+(node_4165_if_leB*_3DLook_var),_NormalBrightness,node_4165_if_leA*node_4165_if_leB)*lerp((node_8047_if_leA*_NormalBrightness)+(node_8047_if_leB*_3DLook_var),_NormalBrightness,node_8047_if_leA*node_8047_if_leB)))*_Tint.rgb); // Need this for specular when using metallic
-                float specularMonochrome;
-                float3 specularColor;
-                diffuseColor = DiffuseAndSpecularFromMetallic( diffuseColor, _Metallic, specularColor, specularMonochrome );
-                specularMonochrome = 1-specularMonochrome;
+                diffuseColor = DiffuseAndSpecularFromMetallic( diffuseColor, specularColor, specularColor, specularMonochrome );
+                specularMonochrome = 1.0-specularMonochrome;
                 float NdotV = max(0.0,dot( normalDirection, viewDirection ));
                 float NdotH = max(0.0,dot( normalDirection, halfDirection ));
                 float VdotH = max(0.0,dot( viewDirection, halfDirection ));
-                float visTerm = SmithBeckmannVisibilityTerm( NdotL, NdotV, 1.0-gloss );
-                float normTerm = max(0.0, NDFBlinnPhongNormalizedTerm(NdotH, RoughnessToSpecPower(1.0-gloss)));
-                float specularPBL = max(0, (NdotL*visTerm*normTerm) * (UNITY_PI / 4) );
-                float3 directSpecular = attenColor * pow(max(0,dot(halfDirection,normalDirection)),specPow)*specularPBL*lightColor*FresnelTerm(specularColor, LdotH);
+                float visTerm = SmithJointGGXVisibilityTerm( NdotL, NdotV, 1.0-gloss );
+                float normTerm = max(0.0, GGXTerm(NdotH, 1.0-gloss));
+                float specularPBL = (NdotL*visTerm*normTerm) * (UNITY_PI / 4);
+                if (IsGammaSpace())
+                    specularPBL = sqrt(max(1e-4h, specularPBL));
+                specularPBL = max(0, specularPBL * NdotL);
+                float3 directSpecular = attenColor*specularPBL*FresnelTerm(specularColor, LdotH);
                 float3 specular = directSpecular;
 /////// Diffuse:
                 NdotL = max(0.0,dot( normalDirection, lightDirection ));
                 half fd90 = 0.5 + 2 * LdotH * LdotH * (1-gloss);
-                float3 directDiffuse = ((1 +(fd90 - 1)*pow((1.00001-NdotL), 5)) * (1 + (fd90 - 1)*pow((1.00001-NdotV), 5)) * NdotL) * attenColor;
+                float nlPow5 = Pow5(1-NdotL);
+                float nvPow5 = Pow5(1-NdotV);
+                float3 directDiffuse = ((1 +(fd90 - 1)*nlPow5) * (1 + (fd90 - 1)*nvPow5) * NdotL) * attenColor;
                 float3 diffuse = directDiffuse * diffuseColor;
 /// Final Color:
                 float3 finalColor = diffuse + specular;
@@ -350,6 +362,7 @@ Shader "PicaVoxel/PicaVoxel PBR Mosaic" {
             #pragma multi_compile DIRLIGHTMAP_OFF DIRLIGHTMAP_COMBINED DIRLIGHTMAP_SEPARATE
             #pragma multi_compile DYNAMICLIGHTMAP_OFF DYNAMICLIGHTMAP_ON
             #pragma multi_compile_fog
+            #pragma exclude_renderers xbox360 ps3 
             #pragma target 3.0
             uniform float _Metallic;
             uniform float _Gloss;

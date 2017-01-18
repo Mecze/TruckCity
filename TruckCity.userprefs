@@ -1,0 +1,12 @@
+﻿<Properties StartupItem="TruckCity.Plugins.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\PicaVoxel\PicaVoxel\Shaders\PicaVoxel PBR.shader">
+    <Files>
+      <File FileName="Assets\PicaVoxel\PicaVoxel\Shaders\PicaVoxel PBR.shader" Line="134" Column="54" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

@@ -106,65 +106,65 @@ public class PurpleRotationRoad : MonoBehaviour {
         get
         {
             if (myRoadEnt.OnTopTrucks.Count == 0) return myRoadEnt.OnTopTrucks;
-            bool isX = false;
-            //TODO ME QUEDE POR AQUÍ asdf
+            RoadPositionPurple current = CurrentPurplePosition;
+            if (current == AnchoredSide) current = current.Reverse();
 
-            bool isMore;
+            //MAIN SWITCH
             switch (AnchoredSide)
-            {
-
+            {                
                 case RoadPositionPurple.N:
-                    isX = false;
-                    isMore = false;
-                    return myRoadEnt.OnTopTrucks.FindAll(x => x.DistanceToMyRoad().y > 0f);
-                    //break;
-                case RoadPositionPurple.E:
-                    isX = true;
-                    isMore = false;
-                    return myRoadEnt.OnTopTrucks.FindAll(x => x.DistanceToMyRoad().x > 0f);
-                    //break;
-                case RoadPositionPurple.S:
-                    isX = false;
-                    isMore = true;
-                    return myRoadEnt.OnTopTrucks.FindAll(x => x.DistanceToMyRoad().y < 0f);
-                    //break;
-                case RoadPositionPurple.W:
-                    isX = true;
-                    isMore = true;
-                    return myRoadEnt.OnTopTrucks.FindAll(x => x.DistanceToMyRoad().x < 0f);
-                    //break;
-            }
-            /*
-            switch (AnchoredSide)
-            {
-                case RoadPositionPurple.N:
-                    if (isX)
-                    {
-                        isX = false;
-                        isMore = false;
-                    }else
-                    {
-                        isMore = true;
+                    #region North
+                    switch (CurrentPurplePosition)
+                    {   
+                        case RoadPositionPurple.E:
+                            return myRoadEnt.OnTopTrucks.FindAll(q => q.DeltaXMoreThanRoad && q.DeltaYLessThanRoad);                            
+                        case RoadPositionPurple.S:
+                            return myRoadEnt.OnTopTrucks.FindAll(q => (q.DistanceToMyRoad().y < 0f));                            
+                        case RoadPositionPurple.W:
+                            return myRoadEnt.OnTopTrucks.FindAll(q => q.DeltaXLessThanRoad && q.DeltaYLessThanRoad);                            
                     }
-
+                    #endregion
                     break;
                 case RoadPositionPurple.E:
+                    #region East
+                    switch (CurrentPurplePosition)
+                    {
+                        case RoadPositionPurple.N:
+                            return myRoadEnt.OnTopTrucks.FindAll(q => q.DeltaXLessThanRoad && q.DeltaYMoreThanRoad);                            
+                        case RoadPositionPurple.S:
+                            return myRoadEnt.OnTopTrucks.FindAll(q => q.DeltaXLessThanRoad && q.DeltaYLessThanRoad);
+                        case RoadPositionPurple.W:
+                            return myRoadEnt.OnTopTrucks.FindAll(q => q.DistanceToMyRoad().x < 0f);                            
+                    }
+                    #endregion
                     break;
                 case RoadPositionPurple.S:
+                    #region South
+                    switch (CurrentPurplePosition)
+                    {                        
+                        case RoadPositionPurple.N:
+                            return myRoadEnt.OnTopTrucks.FindAll(q => q.DistanceToMyRoad().y > 0f);                            
+                        case RoadPositionPurple.E:
+                            return myRoadEnt.OnTopTrucks.FindAll(q => q.DeltaXMoreThanRoad && q.DeltaYMoreThanRoad);
+                        case RoadPositionPurple.W:
+                            return myRoadEnt.OnTopTrucks.FindAll(q => q.DeltaXLessThanRoad && q.DeltaYMoreThanRoad);
+                    }
+                    #endregion
                     break;
                 case RoadPositionPurple.W:
-                    break;
-                default:
-                    break;
+                    #region West
+                    switch (CurrentPurplePosition)
+                    {
+                        case RoadPositionPurple.N:
+                            return myRoadEnt.OnTopTrucks.FindAll(q => q.DeltaXMoreThanRoad && q.DeltaYMoreThanRoad);
+                        case RoadPositionPurple.E:
+                            return myRoadEnt.OnTopTrucks.FindAll(q => q.DistanceToMyRoad().x > 0f);                            
+                        case RoadPositionPurple.S:
+                            return myRoadEnt.OnTopTrucks.FindAll(q => q.DeltaXMoreThanRoad && q.DeltaYLessThanRoad);
+                    }
+                    #endregion
+                    break;                
             }
-            */
-
-
-            //return myRoadEnt.OnTopTrucks.FindAll(x => x.DistanceToMyRoad(isX) < 0f);
-
-
-
-
 
             return myRoadEnt.OnTopTrucks;
         }
