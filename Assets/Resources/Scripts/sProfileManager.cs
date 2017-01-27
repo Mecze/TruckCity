@@ -61,11 +61,13 @@ public class sProfileManager : Singleton<sProfileManager> {
                         _singleton = NewProfile(); //we create a new profile (a copy of Default's profile)
 
                         //below buildNumber 6 there are no CODENAMES, we will not try to adapt
-                        if (pf.buildNumber < 6) { return _singleton; }
+                        
 
                         //if new version (default's) is greater than loaded version and we are not forced to clean player progression we proceed to copy it from old profile
                         if (pf != null)
                         {
+                            if (pf.buildNumber < 6) { return _singleton; }
+
                             if (sProfileManager.instance.defaultProfile.buildNumber > pf.buildNumber && !_singleton.forceNewProfileOnUpdate)
                             {
                                 //Newer versi�n detected!
@@ -154,15 +156,15 @@ public class sProfileManager : Singleton<sProfileManager> {
 
     void Start()
     {
-        
-     //Esto solo sera ejecutado cuando se crea este objeto.
-     //Gracias a que hereda de Singleton<> y "Is Peristent" es true
+
+        //Esto solo sera ejecutado cuando se crea este objeto.
+        //Gracias a que hereda de Singleton<> y "Is Peristent" es true
 
         //DEVELOPER!
         //sSaveLoad.DeleteSavedGame(); //
         //---DEVELOPER
 
-
+        Debug.Log(Application.persistentDataPath.ToString());
         //Inicializa el Perfil   (Se hace en el GET)
 #pragma warning disable 0219
         Profile pf = sProfileManager.ProfileSingleton;
