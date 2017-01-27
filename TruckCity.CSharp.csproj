@@ -77,6 +77,7 @@
   <ItemGroup>
     <Compile Include="Assets\AnimatorChangeBool.cs" />
     <Compile Include="Assets\ApplyMath.cs" />
+    <Compile Include="Assets\AutoClicker.cs" />
     <Compile Include="Assets\FinishRotation.cs" />
     <Compile Include="Assets\GreenRotationRoad.cs" />
     <Compile Include="Assets\Mobile Cartoon GUI 2\Scripts\ButtonAnimationContoller.cs" />
@@ -348,6 +349,8 @@
     <Compile Include="Assets\Resources\Scripts\test.cs" />
     <Compile Include="Assets\RoadColl.cs" />
     <Compile Include="Assets\RotateDisable.cs" />
+    <Compile Include="Assets\TrafficLightColl.cs" />
+    <Compile Include="Assets\TrafficRoad.cs" />
     <Compile Include="Assets\TruckEnt.cs" />
     <Compile Include="Assets\TurnOffBool.cs" />
     <Compile Include="Assets\dummyGameController.cs" />

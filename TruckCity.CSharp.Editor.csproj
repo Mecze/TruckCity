@@ -114,6 +114,7 @@
   <ItemGroup>
     <Compile Include="Assets\Editor\CustomAssetImporter.cs" />
     <Compile Include="Assets\Editor\EditorHelperEditor.cs" />
+    <Compile Include="Assets\Editor\EditorPurpleRotationRoad.cs" />
     <Compile Include="Assets\Editor\EditorRoadEnt.cs" />
     <Compile Include="Assets\Editor\EditorRoadEntity.cs" />
     <Compile Include="Assets\Editor\ImageEffects\AntialiasingEditor.cs" />

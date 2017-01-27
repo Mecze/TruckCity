@@ -144,7 +144,10 @@ public class Vector3Int  {
 
 
     }
-
+    public Vector3 ToVector3()
+    {
+        return new Vector3((float)_x, (float)_y, (float)_z);
+    }
 
 
 

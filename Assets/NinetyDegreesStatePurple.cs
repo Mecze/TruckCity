@@ -37,11 +37,14 @@ public class NinetyDegreesStatePurple : StateMachineBehaviour {
             animator.SetBool("GoTo" + position, false);
         }
         if (ChangeUpwards) animator.SetBool("Upwards", !animator.GetBool("Upwards"));
+        
         if (myPRR == null) return;
         if (position == "One") { myPRR.SetPurpleRoadFrame(0, ChangeUpwards); myPRR.SetMainFrame(0); }            
         if (position == "Two") { myPRR.SetPurpleRoadFrame(1, ChangeUpwards); myPRR.SetMainFrame(1); }
         if (position == "Three") { myPRR.SetPurpleRoadFrame(2, ChangeUpwards); myPRR.SetMainFrame(2); }
         myPRR.UpdateRoadDirection(current.ComposeRoadDirection(CardinalPoint.N));
+        if (position == "Three" && !animator.GetBool("Started")) animator.SetBool("Upwards", false);        
+        animator.SetBool("Started", true);
     }
 
 

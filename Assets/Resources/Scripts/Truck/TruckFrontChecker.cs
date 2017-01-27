@@ -14,30 +14,59 @@ using System.Collections;
 
 public class TruckFrontChecker : MonoBehaviour {
     
-    public TruckEntity mytruck;
+    public TruckEnt mytruck;
 
+    
 
-
-    void OnTriggerEnter(Collider other)
+    void OnTriggerStay(Collider other)
     {
-        if (other.tag == "TruckCollider")
+        //bool r = false;
+        //bool c = false;
+
+        if (other.tag == "TruckCollider" || other.tag == "FrontTruck")
         {
-            if (other.transform.parent.tag != "Truck") return;
-            bool b = other.transform.parent.GetComponent<TruckEntity>().ignoringCollisionsBecauseOfTurning;
-            if (!b)
+            if (other.transform.parent.tag != "Truck") return;            
+            mytruck.CollidingWithTruck = true;
+            Debug.Log("Tocamientos");         
+            return;
+        
+        }
+        else if (other.tag == "TrafficLight")
+        {
+            TrafficLightColl tlc = other.GetComponent<TrafficLightColl>();
+            if (!tlc.Green && mytruck.Direction == tlc.Position.Reverse())
             {
-                mytruck.Colliding = true;
-                Debug.Log("Tocamientos");
+
+                mytruck.myTLC = tlc;
+                mytruck.CollidingWithTrafficLight = true;                         
+                return;
             }
+            if (tlc.Green && mytruck.Direction == tlc.Position.Reverse())
+            {                
+                mytruck.CollidingWithTrafficLight = false;
+                mytruck.myTLC = null;
+                return;
+            }            
+        }
+        else
+        {
+            
+        }
+
+        
+
+    }
+    void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "TruckCollider" || other.tag == "FrontTruck")
+        {            
+            mytruck.CollidingWithTruck = false;
+        }
+        if (other.tag == "TraficLight")
+        {            
+            mytruck.CollidingWithTrafficLight = false;
+            mytruck.myTLC = null;
         }
 
     }
-        void OnTriggerExit(Collider other)
-    {
-            if (other.tag == "TruckCollider")
-            {
-                mytruck.Colliding = false;
-            }
-
-        }
     }

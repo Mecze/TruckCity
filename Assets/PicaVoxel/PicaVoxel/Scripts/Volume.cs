@@ -399,7 +399,7 @@ namespace PicaVoxel
         public void SetFrame(int frame)
         {
             if (frame < 0 || frame >= NumFrames) return;
-            Debug.Log("ASDF");
+            //Debug.Log("ASDF");
             CurrentFrame = frame;
             ChangeFrame();
         }

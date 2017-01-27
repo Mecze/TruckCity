@@ -1,5 +1,6 @@
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 public class RoadColl : MonoBehaviour {
     
@@ -12,21 +13,26 @@ public class RoadColl : MonoBehaviour {
     [HideInInspector]
     bool firstCheck;
 
+    
+
+    List<TruckEnt> TrucksOnSecondCheck;
+
     void Awake()
     {
+        TrucksOnSecondCheck = new List<TruckEnt>();
         firstCheck = true;
     }
-
+    #region Truck Checker
     void OnTriggerEnter(Collider other)
     {       
-        #region Truck Checker
+        
 
         if (other.gameObject.tag == "Truck")//Es un Camion:
         {
             TruckEnt otherTruck = other.GetComponent<TruckEnt>();
             //We try to check now!
             //Thanks to 1st line in CheckTruck, we only care if truck is our way
-            CheckTruck(otherTruck, false, false);
+            CheckTruck(otherTruck, false, false, false);
 
             //if (otherTruck.Direction != myCardinalPoint)
             //{
@@ -35,25 +41,29 @@ public class RoadColl : MonoBehaviour {
                 //otherTruck.OnTruckDirectionChanged += CheckTruck;
             //}
         }
-        #endregion
+        if (other.gameObject.tag == "TruckSecondColl")
+        {
+            
+            TruckEnt otherTruck = other.transform.parent.GetComponent<TruckEnt>();
+            if (otherTruck == null) return;
+            TrucksOnSecondCheck.Add(otherTruck);
+            CheckTruck(otherTruck, false, false, true);
+        }
+        
     }
-    /*
     void OnTriggerExit(Collider other)
     {
-
-        #region Truck Checker disable
-        if (other.tag == "Truck")
+        if (other.gameObject.tag == "TruckoSecondColl")
         {
-            TruckEnt otherTruck = other.GetComponent<TruckEnt>();
-            //we forget the to check this truck when it turns!
-            //otherTruck.OnTruckDirectionChanged -= CheckTruck;
+            TruckEnt otherTruck = other.transform.parent.GetComponent<TruckEnt>();
+            if (otherTruck == null) return;
+            TrucksOnSecondCheck.Remove(otherTruck);
         }
-        #endregion
     }
-    */
+    #endregion
     #region Main Check for TRUCK!
     //This is, also, a listener
-    void CheckTruck(TruckEnt theTruck, bool ComesFromAdjacentRoadChange, bool ComesFromTruckDirectionChange)
+    void CheckTruck(TruckEnt theTruck, bool ComesFromAdjacentRoadChange, bool ComesFromTruckDirectionChange, bool SecondCheck)
     {
         bool pass = false;
         if (theTruck.Direction == CardinalPoint.None)
@@ -64,6 +74,10 @@ public class RoadColl : MonoBehaviour {
             if (theTruck.Direction == myCardinalPoint) pass = true;
         }
         if (!pass) return;
+
+        if ((ComesFromAdjacentRoadChange || ComesFromTruckDirectionChange) && !TrucksOnSecondCheck.Find(x => x == theTruck)) return;
+        
+
         //we only check trucks on top of our own road
         if (theTruck.StandingRoad != myRoadEnt) return;
 
@@ -89,6 +103,9 @@ public class RoadColl : MonoBehaviour {
 
         //If the direcction didnt change in the last sentence we continue
         if (theTruck.Direction != myCardinalPoint) return;
+
+
+        if (!SecondCheck) return;
 
 
         //Now, the truck will try to enter the next road

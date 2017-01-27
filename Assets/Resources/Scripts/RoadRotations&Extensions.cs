@@ -658,6 +658,33 @@ public static class RoadRotationBlueExtensions
 public static class RoadRotationPurpleExtensions
 {
     /// <summary>
+    /// Reverses current direction
+    /// </summary>
+    /// <param name="thisRPP"></param>
+    /// <returns></returns>
+    public static RoadPositionPurple Reverse(this RoadPositionPurple thisRPP)
+    {
+        RoadPositionPurple candidate = RoadPositionPurple.None;
+        switch (thisRPP)
+        {
+            case RoadPositionPurple.N:
+                candidate = RoadPositionPurple.S;
+                break;
+            case RoadPositionPurple.E:
+                candidate = RoadPositionPurple.W;
+                break;
+            case RoadPositionPurple.S:
+                candidate = RoadPositionPurple.N;
+                break;
+            case RoadPositionPurple.W:
+                candidate = RoadPositionPurple.E;
+                break;
+        }
+        return candidate;
+    }
+
+
+    /// <summary>
     /// Calculates Next Direction (Currently deprecate?)
     /// </summary>
     /// <param name="purpleRoadcurrent"></param>

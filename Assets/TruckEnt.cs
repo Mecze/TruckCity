@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
 
-public delegate void TruckEntChangedDirectionEventHander(TruckEnt theTruck, bool RaisedFromRoad, bool RaisedFromTruck);
+public delegate void TruckEntChangedDirectionEventHander(TruckEnt theTruck, bool RaisedFromRoad, bool RaisedFromTruck, bool SecondCheck);
 
-public class TruckEnt : MonoBehaviour {
+public class TruckEnt : MonoBehaviour
+{
     #region Atributtes
     [SerializeField]
     float StartingSpeed = 0.1f;
@@ -27,7 +28,100 @@ public class TruckEnt : MonoBehaviour {
     public CardinalPoint oldDirection = CardinalPoint.None;
     [HideInInspector]
     public int NumberOfGreenRotations = 0;
+    [HideInInspector]
+    public CardinalPoint DirectionWhenEnteredRoad = CardinalPoint.None;
+    [HideInInspector]
+    bool ClampActive = false;
+    [HideInInspector]
+    bool ClampTargetAxisY = false;
+    [HideInInspector]
+    float TargetClamp = 0f;
+    [SerializeField]
+    float ClampDuration = 1f;
+    [HideInInspector]
+    float ClampTimer = 0f;
 
+
+    #region Colliding bools
+    [HideInInspector]
+    public TrafficLightColl myTLC;
+    bool _Colliding = false;
+    [HideInInspector]
+    bool Colliding
+    {
+        set
+        {
+            if (_Colliding != value)
+            {
+                _Colliding = value;
+                if (value)
+                {
+                    MoveAnimator.speed = 0f;
+                    StartCoroutine(TryToStart(2f));
+                }
+                else
+                {
+                    myTLC = null;
+                    MoveAnimator.speed = 1f;
+                }
+            }
+        }
+
+        get
+        {
+            return _Colliding;
+        }
+    }
+    [HideInInspector]
+    bool _collidingWithTrafficLight;
+    public bool CollidingWithTrafficLight
+    {
+        get
+        {
+            return _collidingWithTrafficLight;
+        }
+
+        set
+        {
+            if (_collidingWithTrafficLight != value)
+            {
+                _collidingWithTrafficLight = value;
+                if (value)
+                {
+                    Colliding = true;
+                }else
+                {
+                    if (!_collidingWithTruck) Colliding = false;
+                }
+            }
+        }
+    }
+
+    [HideInInspector]
+    bool _collidingWithTruck;
+    public bool CollidingWithTruck
+    {
+        get
+        {
+            return _collidingWithTruck;
+        }
+
+        set
+        {
+            if (_collidingWithTruck != value)
+            {
+                _collidingWithTruck = value;
+                if (value)
+                {
+                    Colliding = true;
+                }else
+                {
+                    if (!_collidingWithTrafficLight) Colliding = false;
+                }
+            }
+        }
+    }
+    #endregion
     #endregion
 
     #region Properties
@@ -36,7 +130,7 @@ public class TruckEnt : MonoBehaviour {
     /// </summary>
     public bool Moving { get { return !(_direction == CardinalPoint.None); } }
 
-    
+
     [HideInInspector]
     public CardinalPoint lastDirection;
     [SerializeField]
@@ -59,7 +153,7 @@ public class TruckEnt : MonoBehaviour {
             if (_direction != value)
             {
                 Point = value;
-                if (_onTruckDirectionChanged != null) _onTruckDirectionChanged(this, false, true);
+                if (_onTruckDirectionChanged != null) _onTruckDirectionChanged(this, false, true, false);
             }
         }
     }
@@ -82,11 +176,14 @@ public class TruckEnt : MonoBehaviour {
                 lastDirection = _direction;
 
                 //Commit the change:
+
                 _direction = value;
 
                 //Commit the change to the animator (Direction Integer in Animator will never be 0)
-                //Instead, if CardinalPoint.None (0) Moving will be false.
+                //Instead, if CardinalPoint.None (0) Moving will be false.                
                 MoveAnimator.SetBool("Moving", (_direction != CardinalPoint.None));
+                
+
 
                 //the Commit to direction happens here
                 if (_direction != CardinalPoint.None) MoveAnimator.SetInteger("Direction", (int)_direction);
@@ -105,10 +202,10 @@ public class TruckEnt : MonoBehaviour {
                     CardinalPoint CP = GuessRealDirection();
                     if (CP != CardinalPoint.None) MoveAnimator.SetInteger("Direction", (int)CP);
                 }
-            }          
+            }
         }
     }
-       
+
     /// <summary>
     /// Gets current Speed from the animator itself
     /// </summary>
@@ -121,7 +218,7 @@ public class TruckEnt : MonoBehaviour {
 
         set
         {
-            MoveAnimator.SetFloat("Speed", value);                
+            MoveAnimator.SetFloat("Speed", value);
         }
     }
 
@@ -150,6 +247,11 @@ public class TruckEnt : MonoBehaviour {
         }
     }
 
+    [SerializeField]
+    private float DeltaToRoadMarginError = 0.05f;
+    
+
+
     /// <summary>
     /// This is used internally to keep track of the road position where the truck is standing
     /// it's used to discover whenever the truck has to update his standing road
@@ -168,14 +270,50 @@ public class TruckEnt : MonoBehaviour {
             if (_onTruckDirectionChanged == null || !_onTruckDirectionChanged.GetInvocationList().Contains(value))
             {
                 _onTruckDirectionChanged += value;
-            }    
+            }
         }
         remove
         {
-            _onTruckDirectionChanged -= value;            
+            _onTruckDirectionChanged -= value;
         }
     }
+    public bool DeltaXMoreThanRoad
+    {
+        get
+        {
+            float r = transform.position.x - myRoadPos.x;
+            return ((r > -DeltaToRoadMarginError) || Mathf.Approximately(r, -DeltaToRoadMarginError));
+        }
+    }
+    public bool DeltaXLessThanRoad
+    {
+        get
+        {
+            float r = transform.position.x - myRoadPos.x;
+            return ((r < DeltaToRoadMarginError) || Mathf.Approximately(r, DeltaToRoadMarginError));
+        }
+    }
+    public bool DeltaYLessThanRoad
+    {
+        get
+        {
+            float r = transform.position.z - myRoadPos.y;
+            return ((r < DeltaToRoadMarginError) || Mathf.Approximately(r, DeltaToRoadMarginError));
+        }
+    }
+    public bool DeltaYMoreThanRoad
+    {
+        get
+        {
+            float r = transform.position.z - myRoadPos.y;
+            return ((r > -DeltaToRoadMarginError) || Mathf.Approximately(r, -DeltaToRoadMarginError));
+        }
+    }
+
     
+
+
+
 
     #endregion
 
@@ -193,7 +331,7 @@ public class TruckEnt : MonoBehaviour {
         CardinalPoint CP = CardinalPoint.None;
         float y = this.gameObject.transform.rotation.eulerAngles.y;
         if (y > 150f && y < 210f) CP = CardinalPoint.S;
-        if (y > 60f && y < 130f) CP = CardinalPoint.E;        
+        if (y > 60f && y < 130f) CP = CardinalPoint.E;
         if (y > -30f && y < 30f) CP = CardinalPoint.N;
         if (y > 330f && y < 390f) CP = CardinalPoint.N;
         if (y > 240f && y < 300f) CP = CardinalPoint.W;
@@ -202,7 +340,7 @@ public class TruckEnt : MonoBehaviour {
     }
     //initializes de animator!
     void InitializeAnimator()
-    {        
+    {
         CardinalPoint temp = _direction;
         Direction = CardinalPoint.None;
         Direction = temp;
@@ -240,7 +378,7 @@ public class TruckEnt : MonoBehaviour {
         if (!position.CheckAdjacencyWith(StandingRoad.position, out where)) return;
         if (position == standingRoad.position && !CheckSelf) return;
 
-        if (_onTruckDirectionChanged != null) _onTruckDirectionChanged(this, true, false);       
+        if (_onTruckDirectionChanged != null) _onTruckDirectionChanged(this, true, false, true);
     }
 
 
@@ -251,6 +389,7 @@ public class TruckEnt : MonoBehaviour {
     {
         UpdateMyStandingRoad();
         //ChangeSpeed();
+        Clamp();
     }
     /// <summary>
     /// Updates which road is this truck standing when it gets too far from it
@@ -272,11 +411,11 @@ public class TruckEnt : MonoBehaviour {
         //We find the new Road where we are not standing on
         //We do it by finding it on the array of all road and comparing the positions (LINQ)
         RoadEnt newRoad = GameObject.FindObjectsOfType<RoadEnt>().ToList<RoadEnt>().Find(x => Mathf.RoundToInt(x.gameObject.transform.position.x) == Mathf.RoundToInt(transform.position.x) && Mathf.RoundToInt(x.gameObject.transform.position.z) == Mathf.RoundToInt(transform.position.z));
-        
+
         //force here, means that this method was called from "AWAKE" instead of "UPDATE".
         //So this will destroy any truck that is not standing on a road at the begining of the game
         if (newRoad == null && force) DestroyImmediate(this.gameObject);
-        
+
         //we asign our new Standing road (see StandingRoad Property for more)
         StandingRoad = newRoad;
 
@@ -287,23 +426,30 @@ public class TruckEnt : MonoBehaviour {
     public Vector2 DistanceToMyRoad()
     {
         Vector2 r = new Vector2();
+        r.x = transform.position.x - myRoadPos.x;
+        r.y = transform.position.z - myRoadPos.y;
+        /*
         r.x = myRoadPos.x - transform.position.x;
         r.y = myRoadPos.y - transform.position.z;
+        */
         return r;
     }
+
+
     public float DistanceToMyRoad(bool X)
     {
         if (X)
         {
             return DistanceToMyRoad().x;
-        }else
+        }
+        else
         {
             return DistanceToMyRoad().y;
         }
     }
 
     #endregion
-        
+
     #region finishing rotation
     /// <summary>
     /// This is called by the animator to Clamp the position and rotation of 
@@ -318,70 +464,141 @@ public class TruckEnt : MonoBehaviour {
 
         //Now we clamp it
         //MoveAnimator.SetBool("OutSideChange", false);
-        ClampRotation();        
+        ClampRotation();
         bool b = (_direction == CardinalPoint.N || _direction == CardinalPoint.S);
         ClampAxis(b);
     }
-    void ClampRotation()
+    void ClampRotation(CardinalPoint newDirection = CardinalPoint.None)
     {
-        Vector3 rot = this.transform.rotation.eulerAngles;
-
-        switch (_direction)
+        if (newDirection == CardinalPoint.None)
         {
-            case CardinalPoint.None:
-                break;
-            case CardinalPoint.N:
-                rot.y = 0f;
-                break;
-            case CardinalPoint.E:
-                rot.y = 90f;
-                break;
-            case CardinalPoint.W:
-                rot.y = 270f;
-                break;
-            case CardinalPoint.S:
-                rot.y = 180f;
-                break;
-            default:
-                break;
+            Vector3 rot = this.transform.rotation.eulerAngles;
+
+            switch (_direction)
+            {
+                case CardinalPoint.None:
+                    break;
+                case CardinalPoint.N:
+                    rot.y = 0f;
+                    break;
+                case CardinalPoint.E:
+                    rot.y = 90f;
+                    break;
+                case CardinalPoint.W:
+                    rot.y = 270f;
+                    break;
+                case CardinalPoint.S:
+                    rot.y = 180f;
+                    break;
+                default:
+                    break;
+            }
+            this.transform.rotation = Quaternion.Euler(rot);
         }
-        this.transform.rotation = Quaternion.Euler(rot);
+        
     }
-    void ClampAxis(bool verticalAxis = false)
+
+
+    public void ClampAxis(bool verticalAxis = false)
     {
+        if (ClampActive)
+        {
+            Vector3 pos = new Vector3();
+            pos = transform.position;
+            if (ClampTargetAxisY) { pos.x = TargetClamp; } else { pos.z = TargetClamp; }
+            transform.position = pos;
+        }
+
+        
         Vector3 newPos = new Vector3();
+        float targetPos = 0f;
         bool neg = false;
-        newPos = transform.position;
+        newPos = standingRoad.position.ToVector3();
         if (!verticalAxis)
         {
             if (newPos.z < 0) neg = true;
             if (_direction == CardinalPoint.W || _direction == CardinalPoint.N)
             {
+                newPos.x = transform.position.x;
+                newPos.y = 1f;
                 newPos.z = Mathf.Round(Mathf.Abs(newPos.z));
+                
             }
             else if (_direction == CardinalPoint.E || _direction == CardinalPoint.S)
             {
+                newPos.x = transform.position.x;
+                newPos.y = 1f;
                 newPos.z = Mathf.Round(Mathf.Abs(newPos.z));
             }
             if (neg) newPos.z = -newPos.z;
+            targetPos = newPos.z;
         }
         else
         {
             if (newPos.x < 0) neg = true;
             if (_direction == CardinalPoint.W || _direction == CardinalPoint.N)
             {
+                newPos.z = transform.position.z;
+                newPos.y = 1f;
                 newPos.x = Mathf.Round(Mathf.Abs(newPos.x));
             }
             else if (_direction == CardinalPoint.E || _direction == CardinalPoint.S)
             {
+                newPos.z = transform.position.z;
+                newPos.y = 1f;
                 newPos.x = Mathf.Round(Mathf.Abs(newPos.x));
             }
             if (neg) newPos.x = -newPos.x;
+            targetPos = newPos.x;
         }
 
-        transform.position = newPos;
+
+
+        TargetClamp = targetPos;
+        ClampTargetAxisY = verticalAxis;
+        ClampActive = true;
+        ClampTimer = Time.time+ClampDuration;
+
+        //transform.position = newPos;
+        
+    }
+
+    void Clamp()
+    {
+        if (!ClampActive) return;
+        //X axis
+        Vector3 target = new Vector3();
+        target = standingRoad.position.ToVector3();
+        if (ClampTargetAxisY)
+        {
+            target.z = transform.position.z;
+            target.y = 1f;
+            target.x = TargetClamp;
+
+            transform.position = Vector3.Lerp(transform.position, target, Time.deltaTime*5f);
+
+        }else
+        //Y axis
+        {
+
+            target.x = transform.position.x;
+            target.y = 1f;
+            target.z = TargetClamp;
+            transform.position = Vector3.Lerp(transform.position, target, Time.deltaTime*5f);
+        }
+        if (ClampTimer < Time.time)
+        {
+            ClampActive = false;
+            ClampTimer = 0f;
+            Vector3 pos = new Vector3();
+            pos = transform.position;
+            if (ClampTargetAxisY) { pos.x = TargetClamp; } else { pos.z = TargetClamp; }
+            
+            transform.position = pos;
+        }
 
     }
+
     #endregion
 
     #region Outside Rotation Change
@@ -400,14 +617,33 @@ public class TruckEnt : MonoBehaviour {
 
     IEnumerator DisableNoRotationEffect()
     {
-        float time = (0.1f / CurrentSpeed) +0.3f;
-        
+        float time = (0.1f / CurrentSpeed) + 0.3f;
+
         yield return new WaitForSeconds(time);
         MoveAnimator.SetBool("OutSideChange", false);
     }
-
+    
+    public void FireOnTruckDirectionChanged(bool fromRoad,bool fromSelf)
+    {
+        if (_onTruckDirectionChanged != null) _onTruckDirectionChanged(this, fromRoad, fromSelf, true);
+    }
 
 
     #endregion
-     
+
+
+    #region Colliding method
+
+    IEnumerator TryToStart(float timer)
+    {
+        yield return new WaitForSeconds(timer);
+        while (Colliding)
+        {
+            if (myTLC != null) CollidingWithTrafficLight = !myTLC.Green;
+            if (!CollidingWithTrafficLight && !CollidingWithTruck) Colliding = false;
+            yield return new WaitForSeconds(timer);
+
+        }
+    }
+    #endregion
 }

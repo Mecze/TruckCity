@@ -32,8 +32,21 @@ public class RoadEnt : MonoBehaviour {
     public Vector3Int position;
     //[HideInInspector]
     //public List<RoadEnt> Neightbours;
-    RoadColl[] myColliders;
+    RoadColl[] _myColliders;
+    RoadColl[] myColliders
+    {
+        get
+        {
+            if (_myColliders == null)
+            {
+                _myColliders = GetComponentsInChildren<RoadColl>();
+            }
 
+            return _myColliders;
+        }
+
+       
+    }
     #endregion
 
     #region Properties
@@ -53,6 +66,9 @@ public class RoadEnt : MonoBehaviour {
     }
 
     private TruckLeftTheRoadEventHandler _onTruckLeftTheRoad;
+
+    
+
     public event TruckLeftTheRoadEventHandler OnTruckLeftTheRoad
     {
         add
@@ -74,9 +90,10 @@ public class RoadEnt : MonoBehaviour {
 
     void Awake()
     {
-        RecordPosition();
-        myColliders = GetComponentsInChildren<RoadColl>();
+        RecordPosition();    
     }
+    
+
 
     /// <summary>
     /// Records its own position on the MapController in order to be
@@ -215,6 +232,7 @@ public class RoadEnt : MonoBehaviour {
         }
 
         //Manage ONTOPTRUCKS ARRAY (and its events)
+        Thetruck.DirectionWhenEnteredRoad = Thetruck.Direction;
         OnTopTrucks.Add(Thetruck);
         OnTopTruckSprite();
     }

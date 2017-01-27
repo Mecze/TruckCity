@@ -92,7 +92,7 @@ public class GreenRotationRoad : MonoBehaviour {
     /// </summary>
     void InitializeAnimator()
     {
-        GoToRotation(StartingRotation, true);    
+        GoToRotation(StartingRotation, true, true);    
     }
     #endregion
 
@@ -103,10 +103,10 @@ public class GreenRotationRoad : MonoBehaviour {
     /// </summary>
     /// <param name="toRotation">target rotation</param>
     /// <param name="NoAnim">if TRUE, the rotation is instant</param>
-    public void GoToRotation(RoadRotationGreen toRotation, bool NoAnim = false)
+    public void GoToRotation(RoadRotationGreen toRotation, bool NoAnim = false, bool force = false)
     {
         RoadDirection newRD = toRotation.toRoadDirection();
-        if (newRD == myDirection) return;
+        if (newRD == myDirection && !force) return;
         string s = "";
         switch (toRotation)
         {
@@ -134,6 +134,18 @@ public class GreenRotationRoad : MonoBehaviour {
     #endregion
 
     #region Onclick
+
+    /// <summary>
+    /// Outside Click
+    /// Simulate a click from another script
+    /// </summary>
+    /// <param name="isPressed"></param>
+    
+    public void SimulateClick()
+    {
+        OnPress(true);
+    }
+    
 
     //This is Called from NGUI event System.
     void OnPress(bool isPressed)
@@ -291,8 +303,34 @@ public class GreenRotationRoad : MonoBehaviour {
 
 
     }
+    void Update()
+    {
+
+        CheckIfTruckStuck();
+    }
+
+    //This will give one more rotation if a truck is stuck inside this road.
+    void CheckIfTruckStuck()
+    {
+        if (myRoadEnt.OnTopTrucks.Count == 0) return;
+        bool exit = false;
+        foreach (CardinalPoint cp in myRoadEnt.myDirection.GetExits())
+        {
+            RoadEnt temp;
+            if (MapController.s.CheckNextTile(myRoadEnt.position, cp, out temp))
+            {
+                if (cp != CardinalPoint.None)exit = true;
+            }
+        }
+        //If we found no exits:
+        if (!exit && _RotationsWithTrucks >= MaximunNumberOfRotationsWithTrucks)
+        {
+            _RotationsWithTrucks--;
+            SetSpriteGreen();
+        }
 
 
+    }
 
     #endregion
 

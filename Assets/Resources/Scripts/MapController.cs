@@ -86,7 +86,7 @@ public class MapController : MonoBehaviour {
     /// <param name="pos"></param>
     public void GreenTileClicked(Vector3Int pos)
     {
-        if (_onGreenTileClicked != null) _onGreenTileClicked(pos, false);
+        if (_onGreenTileClicked != null) _onGreenTileClicked(pos, true);
     }
 
 
